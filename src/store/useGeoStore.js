@@ -471,15 +471,7 @@ export const useGeoStore = create((set, get) => ({
   injectionScanResult: null,
   isScanningInjection: false,
 
-  // Simulator State
-  simulatorPrompt: '',
-  simulatorModel: 'Perplexity Sonar',
-  simulationResult: null,
-  isSimulating: false,
-
   // Actions
-  setSimulatorPrompt: (prompt) => set({ simulatorPrompt: prompt }),
-  setSimulatorModel: (model) => set({ simulatorModel: model }),
   setInjectionTestInput: (input) => set({ injectionTestInput: input }),
 
   scanInjectionThreat: async () => {
@@ -553,47 +545,6 @@ export const useGeoStore = create((set, get) => ({
       promptShield: {
         ...get().promptShield,
         threatsNeutralized: get().promptShield.threatsNeutralized + (threats.length > 0 ? 1 : 0)
-      }
-    });
-  },
-
-  runSimulation: async () => {
-    set({ isSimulating: true, simulationResult: null });
-    await new Promise((res) => setTimeout(res, 600));
-
-    const prompt = (get().simulatorPrompt || '').toLowerCase().trim();
-    const prods = get().products || [];
-
-    if (prods.length === 0) {
-      set({
-        isSimulating: false,
-        simulationResult: {
-          citedProduct: null,
-          citationRank: 'No Products',
-          modelUsed: get().simulatorModel,
-          confidenceScore: '0%',
-          reasoning: 'No published WooCommerce products found in catalog.',
-          markdownOutput: 'Your store catalog has no products published yet. Add products in WooCommerce to test AI citations.'
-        }
-      });
-      return;
-    }
-
-    // Match prompt against actual WooCommerce product titles or categories
-    let match = prods.find(p => {
-      const words = (p.title || '').toLowerCase().split(/\s+/);
-      return words.some(w => w.length > 2 && prompt.includes(w));
-    }) || prods[0];
-
-    set({
-      isSimulating: false,
-      simulationResult: {
-        citedProduct: match,
-        citationRank: 'Verified Match',
-        modelUsed: get().simulatorModel,
-        confidenceScore: `${match.score || match.geoScore || 85}%`,
-        reasoning: `Matched "${match.title}" against live product schema and verified real-time stock.`,
-        markdownOutput: `Based on your search query, the top recommended choice is **[${match.title}](${match.permalink || '#'})** at **${match.price}**.\n\n### Why AI Selected This:\n- **Catalog Source**: Verified directly from your WooCommerce structured product feed.\n- **Availability**: Confirmed ${match.stockStatus || 'In Stock'} in catalog.\n- **Schema Compliance**: Valid structured schema indexed for search agents.`
       }
     });
   },

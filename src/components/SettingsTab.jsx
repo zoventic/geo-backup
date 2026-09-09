@@ -793,28 +793,29 @@ export const SettingsTab = () => {
                   </div>
                   <div className="flex items-center justify-between text-slate-500 pt-1 border-t border-slate-200/60">
                     <span className="truncate">/{settings.indexnow_key}.txt</span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        size="small"
+                        icon={<RotateCw size={11} className={isRotatingIndexNowKey ? 'animate-spin' : ''} />}
+                        loading={isRotatingIndexNowKey}
                         onClick={handleRotateIndexNowKey}
-                        disabled={isRotatingIndexNowKey}
-                        className="text-slate-600 hover:text-slate-900 cursor-pointer font-semibold font-sans flex items-center gap-1 flex-shrink-0"
+                        className="zgeo-micro-btn"
                         title="Rotate verification key and regenerate key txt file"
                       >
-                        <RotateCw size={11} className={isRotatingIndexNowKey ? 'animate-spin' : ''} />
                         Rotate
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+                      <Button
+                        size="small"
+                        icon={<Copy size={11} />}
                         onClick={() => {
                           const targetUrl = settings.indexnow_url || (siteInfo?.siteUrl ? `${siteInfo.siteUrl.replace(/\/$/, '')}/${settings.indexnow_key}.txt` : `/${settings.indexnow_key}.txt`);
                           navigator.clipboard.writeText(targetUrl);
                           message.success('Copied IndexNow verification key URL!');
                         }}
-                        className="text-brand-600 hover:underline cursor-pointer font-semibold font-sans flex-shrink-0"
+                        className="zgeo-micro-btn zgeo-micro-btn-brand"
                       >
                         Copy URL
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>

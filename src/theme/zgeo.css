@@ -4174,3 +4174,51 @@ button.zgeo-radar-email-cancel-btn:hover {
   padding: 3px 8px !important;
   line-height: normal !important;
 }
+
+/* ---------------------------------------------------------
+   Micro Action Buttons (Rotate Key, Copy URL, etc.)
+   --------------------------------------------------------- */
+.zgeo-micro-btn.ant-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  height: 26px !important;
+  padding: 0 9px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  border-radius: 7px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+}
+
+.zgeo-micro-btn.ant-btn:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.zgeo-micro-btn-brand.ant-btn {
+  color: #4f46e5 !important;
+  background: #f5f3ff !important;
+  border-color: #ddd6fe !important;
+}
+
+.zgeo-micro-btn-brand.ant-btn:hover {
+  background: #ede9fe !important;
+  color: #4338ca !important;
+  border-color: #c4b5fd !important;
+}
+
+/* Hard reset against WordPress Core UI button bevel & 3D borders */
+#zgeo-root button,
+.zgeo-admin-container button {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  text-shadow: none !important;
+}

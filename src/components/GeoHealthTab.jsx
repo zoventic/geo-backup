@@ -533,7 +533,15 @@ export const GeoHealthTab = () => {
         width={540}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
-        className="zgeo-drawer"
+        zIndex={100001}
+        maskClosable={true}
+        className="zgeo-drawer select-text"
+        styles={{
+          mask: { zIndex: 1 },
+          wrapper: { zIndex: 2, pointerEvents: 'auto' },
+          content: { zIndex: 3, pointerEvents: 'auto', userSelect: 'text' },
+          body: { pointerEvents: 'auto', userSelect: 'text' }
+        }}
         footer={
           <div className="flex gap-3">
             <button
@@ -628,7 +636,7 @@ export const GeoHealthTab = () => {
                   )}
                 </Flex>
               </div>
-              <pre className="zgeo-light-pre">
+              <pre className="zgeo-light-pre select-text" style={{ userSelect: 'text', WebkitUserSelect: 'text' }}>
                 {JSON.stringify(selectedProduct.json, null, 2)}
               </pre>
             </div>

@@ -2699,6 +2699,10 @@ body.toplevel_page_zoventic-geo div.updated {
   line-height: 1.6;
   max-height: 220px;
   overflow: auto;
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  cursor: text;
+  pointer-events: auto !important;
 }
 
 /* ==========================================================================
@@ -3273,15 +3277,21 @@ button.zgeo-radar-email-cancel-btn:hover {
 }
 
 /* Product Inspection Drawer Improvements */
-.ant-drawer-mask {
-  z-index: 100000 !important;
-}
-
 .zgeo-drawer.ant-drawer,
 .ant-drawer {
   z-index: 100001 !important;
   top: var(--wp-admin--admin-bar--height, 32px) !important;
   height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)) !important;
+}
+
+.ant-drawer-mask {
+  z-index: 1 !important;
+}
+
+.ant-drawer-content-wrapper,
+.zgeo-drawer .ant-drawer-content-wrapper {
+  z-index: 2 !important;
+  pointer-events: auto !important;
 }
 
 @media screen and (max-width: 782px) {
@@ -3294,18 +3304,45 @@ button.zgeo-radar-email-cancel-btn:hover {
 
 .zgeo-drawer .ant-drawer-content {
   background: #ffffff !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 .zgeo-drawer .ant-drawer-header {
   padding: 20px 24px !important;
   border-bottom: 1px solid #f1f5f9 !important;
+  pointer-events: auto !important;
 }
 .zgeo-drawer .ant-drawer-body {
   padding: 24px !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 .zgeo-drawer .ant-drawer-footer {
   padding: 16px 24px !important;
   border-top: 1px solid #f1f5f9 !important;
   background: #ffffff !important;
+  pointer-events: auto !important;
+}
+
+.zgeo-drawer,
+.zgeo-drawer .ant-drawer-wrapper-body,
+.zgeo-drawer pre,
+.zgeo-drawer code,
+.zgeo-drawer p,
+.zgeo-drawer span,
+.zgeo-drawer h3,
+.zgeo-drawer h4 {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+.zgeo-drawer button,
+.zgeo-drawer a,
+.zgeo-drawer .ant-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
 }
 
 /* Global Ant Design Feedback / Overlays vs WP Admin Bar */

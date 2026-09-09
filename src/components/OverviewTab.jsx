@@ -22,8 +22,11 @@ import {
   Sparkles,
   Cpu,
   ShoppingCart,
+  ShoppingBag,
   Globe,
-  Radio
+  Radio,
+  Tag,
+  Copy
 } from 'lucide-react';
 import { Chart, registerables } from 'chart.js';
 import { useGeoStore, decodeCurrencySymbol } from '../store/useGeoStore';
@@ -560,32 +563,32 @@ export const OverviewTab = () => {
       </div>
 
       {/* 5. AI ENGINE REVENUE & SALES ATTRIBUTION BREAKDOWN */}
-      <Card className="zgeo-glass-card" bordered={false}>
+      <Card className="zgeo-attribution-card" bordered={false}>
         <div className="space-y-4">
-          <Flex justify="space-between" align="center" wrap="wrap" gap="middle" className="pb-3.5 border-b border-slate-100">
-            <Flex align="center" gap="middle">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 border border-emerald-100/80 flex items-center justify-center font-bold shadow-2xs">
-                <Banknote size={20} />
+          <div className="zgeo-attribution-top">
+            <div className="zgeo-attribution-left">
+              <div className="zgeo-attribution-icon">
+                <Banknote size={22} />
               </div>
               <div>
-                <Title level={4} className="zgeo-title-clean">AI Answer Engine Sales Attribution</Title>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <div className="zgeo-attribution-heading">AI Answer Engine Sales Attribution</div>
+                <div className="zgeo-attribution-sub">
                   Direct revenue &amp; order citations tracked across ChatGPT, Perplexity, Claude, Copilot, and Gemini via UTM parameters &amp; referral coupons.
-                </p>
+                </div>
               </div>
-            </Flex>
+            </div>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="zgeo-attribution-active-badge">
+              <span className="zgeo-badge-dot"></span>
               WooCommerce Attribution Active
             </span>
-          </Flex>
+          </div>
 
           {/* Engine Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 pt-1">
+          <div className="zgeo-attribution-grid">
             {[
               { name: 'ChatGPT', vendor: 'OpenAI', key: 'chatgpt', phpKey: 'ChatGPT', color: '#10a37f', icon: <Bot size={13} /> },
-              { name: 'Perplexity', vendor: 'Sonar', key: 'perplexity', phpKey: 'Perplexity', color: '#20b2aa', icon: <Search size={13} /> },
+              { name: 'Perplexity', vendor: 'Sonar', key: 'perplexity', phpKey: 'Perplexity', color: '#0d9488', icon: <Search size={13} /> },
               { name: 'Claude', vendor: 'Anthropic', key: 'claude', phpKey: 'Claude', color: '#d97706', icon: <Cpu size={13} /> },
               { name: 'Copilot', vendor: 'Microsoft', key: 'copilot', phpKey: 'Copilot', color: '#0284c7', icon: <Globe size={13} /> },
               { name: 'Gemini', vendor: 'Google', key: 'gemini', phpKey: 'Gemini', color: '#8b5cf6', icon: <Sparkles size={13} /> }
@@ -604,67 +607,55 @@ export const OverviewTab = () => {
                 ? (breakdown.find(e => (e.name || '').toLowerCase() === engine.phpKey.toLowerCase())?.orders || 0)
                 : 0;
               return (
-                <div
-                  key={engine.key}
-                  className="p-3.5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 relative overflow-hidden group space-y-2.5"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: engine.color }}></div>
+                <div key={engine.key} className="zgeo-engine-card">
+                  <div className="zgeo-engine-top-bar" style={{ backgroundColor: engine.color }} />
 
-                  <Flex justify="space-between" align="center">
-                    <div className="flex items-center gap-1.5">
+                  <div className="zgeo-engine-head">
+                    <div className="zgeo-engine-title-group">
                       <div
-                        className="w-5 h-5 rounded-md flex items-center justify-center text-white text-[10px] shadow-2xs flex-shrink-0"
+                        className="zgeo-engine-icon-badge"
                         style={{ backgroundColor: engine.color }}
                       >
                         {engine.icon}
                       </div>
-                      <span className="font-bold text-xs text-slate-800 tracking-tight">{engine.name}</span>
+                      <span className="zgeo-engine-name">{engine.name}</span>
                     </div>
-                    <span className="text-[10px] font-semibold text-slate-400 bg-slate-100/80 px-1.5 py-0.5 rounded border border-slate-200/50">
-                      {engine.vendor}
-                    </span>
-                  </Flex>
+                    <span className="zgeo-engine-vendor">{engine.vendor}</span>
+                  </div>
 
-                  <div className="pt-0.5">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-xs font-bold text-slate-400 font-sans">{currencySym}</span>
-                      <span className="text-xl font-black text-slate-900 tracking-tight font-sans">
-                        {amount.toFixed(2)}
-                      </span>
+                  <div className="zgeo-engine-metric">
+                    <div className="zgeo-engine-metric-label">Attributed Revenue</div>
+                    <div className="zgeo-engine-val">
+                      <span className="zgeo-engine-currency">{currencySym}</span>
+                      <span className="zgeo-engine-amount">{amount.toFixed(2)}</span>
                     </div>
                   </div>
 
                   {amount > 0 ? (
-                    <div className="space-y-1 pt-1 border-t border-slate-100">
-                      <div className="flex justify-between items-center text-[10px] text-slate-500 font-medium">
-                        <span>{engineOrders} order{engineOrders !== 1 ? 's' : ''}</span>
-                        <span className="font-bold text-emerald-600">
+                    <div>
+                      <div className="zgeo-engine-stats-row">
+                        <span className="zgeo-engine-orders-count">{engineOrders} order{engineOrders !== 1 ? 's' : ''}</span>
+                        <span className="zgeo-engine-share-badge">
                           {totalAiRevenue > 0 ? ((amount / totalAiRevenue) * 100).toFixed(0) : 0}% share
                         </span>
                       </div>
-                      <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                      <div className="zgeo-engine-progress-track">
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className="zgeo-engine-progress-bar"
                           style={{
                             width: `${totalAiRevenue > 0 ? Math.min(100, Math.max(5, (amount / totalAiRevenue) * 100)) : 0}%`,
                             backgroundColor: engine.color
                           }}
-                        ></div>
+                        />
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100 text-[10px] text-slate-400 font-medium">
-                      <span className="relative flex h-2 w-2">
-                        <span
-                          className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                          style={{ backgroundColor: engine.color }}
-                        ></span>
-                        <span
-                          className="relative inline-flex rounded-full h-2 w-2"
-                          style={{ backgroundColor: engine.color }}
-                        ></span>
+                    <div className="zgeo-engine-status-row">
+                      <span className="zgeo-engine-live-pill">
+                        <span className="zgeo-pulse-dot" style={{ backgroundColor: engine.color }} />
+                        Listening for checkouts
                       </span>
-                      <span className="truncate">Listening for checkouts</span>
+                      <span className="zgeo-engine-orders-count">0 orders</span>
                     </div>
                   )}
                 </div>
@@ -672,46 +663,65 @@ export const OverviewTab = () => {
             })}
           </div>
 
-          <div className="p-3 bg-slate-50/90 rounded-xl border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex flex-wrap items-center gap-2 text-slate-600">
-              <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                <Target size={13} className="text-emerald-600" />
+          {/* Attribution Intelligence Strip */}
+          <div className="zgeo-attribution-strip">
+            <div className="zgeo-attribution-strip-left">
+              <span className="zgeo-attribution-strip-title">
+                <Target size={14} className="text-emerald-600" />
                 Attribution Channels:
               </span>
-              <code className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-mono text-slate-700 shadow-2xs">
-                utm_source=chatgpt|perplexity|claude
-              </code>
-              <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-mono text-slate-700 shadow-2xs">
-                AI Coupons (AI10)
-              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText('utm_source=chatgpt|perplexity|claude|copilot|gemini');
+                  message.success('Copied UTM tracking parameters!');
+                }}
+                className="zgeo-channel-chip group"
+                title="Click to copy UTM tracking query"
+              >
+                <code>utm_source=chatgpt|perplexity|claude|copilot|gemini</code>
+                <Copy size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText('AI10');
+                  message.success('Copied sample coupon code (AI10)!');
+                }}
+                className="zgeo-channel-chip group"
+                title="Click to copy AI coupon code"
+              >
+                <Tag size={11} className="text-amber-500" />
+                <span>AI Coupons (AI10)</span>
+                <Copy size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+              </button>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-slate-600 font-medium">
-                <span>Total AI Revenue:</span>
-                <span className="text-sm font-black text-emerald-600 font-sans tracking-tight">
-                  {formattedRevenue}
-                </span>
-                <span className="text-[11px] text-slate-400">({totalAiOrders} order{totalAiOrders === 1 ? '' : 's'})</span>
-              </div>
+
+            <div className="zgeo-attribution-strip-right">
+              <span className="zgeo-strip-label">Total AI Revenue:</span>
+              <span className="zgeo-strip-val">{formattedRevenue}</span>
+              <span className="zgeo-strip-pill">
+                {totalAiOrders} order{totalAiOrders === 1 ? '' : 's'}
+              </span>
             </div>
           </div>
 
           {/* Recent AI Referred Orders List */}
-          <div className="pt-2 border-t border-slate-100 space-y-2.5">
-            <Flex justify="space-between" align="center">
-              <span className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                <ShoppingCart size={14} className="text-amber-600" />
+          <div className="zgeo-orders-section">
+            <div className="zgeo-orders-header">
+              <span className="zgeo-orders-title">
+                <ShoppingCart size={15} className="text-amber-600" />
                 Recent Orders Referred by AI Engines:
               </span>
-              <span className="text-[11px] text-slate-500 font-mono">
+              <span className="zgeo-orders-count-badge">
                 {aiRevenueSummary?.recentOrders?.length || 0} order{aiRevenueSummary?.recentOrders?.length === 1 ? '' : 's'} recorded
               </span>
-            </Flex>
+            </div>
 
             {aiRevenueSummary?.recentOrders && aiRevenueSummary.recentOrders.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 pt-1">
                 {aiRevenueSummary.recentOrders.map((ord, i) => (
-                  <div key={ord.id || i} className="p-3 bg-white rounded-xl border border-slate-200/80 space-y-1.5 text-xs shadow-2xs hover:border-slate-300 transition-all">
+                  <div key={ord.id || i} className="zgeo-order-card">
                     <Flex justify="space-between" align="center">
                       <a
                         href={
@@ -721,7 +731,7 @@ export const OverviewTab = () => {
                         }
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-mono font-bold text-brand-700 hover:text-brand-900 hover:underline flex items-center gap-1"
+                        className="font-mono font-bold text-brand-700 hover:text-brand-900 hover:underline flex items-center gap-1 text-xs"
                         title="View order in WooCommerce"
                       >
                         #{ord.orderNumber || ord.id}
@@ -748,21 +758,21 @@ export const OverviewTab = () => {
                 ))}
               </div>
             ) : (
-              <div className="p-4 bg-gradient-to-r from-slate-50 via-white to-slate-50 rounded-xl border border-dashed border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center flex-shrink-0">
-                    <Radio size={16} className="animate-pulse text-emerald-600" />
+              <div className="zgeo-orders-empty-card">
+                <div className="zgeo-orders-empty-left">
+                  <div className="zgeo-orders-empty-icon">
+                    <ShoppingBag size={20} />
                   </div>
-                  <div className="text-slate-600 text-left">
-                    <span className="font-bold text-slate-800">WooCommerce Attribution Active</span>
-                    <span className="text-slate-400 block text-[11px] mt-0.5">
-                      Listening for checkouts with <code>utm_source=chatgpt|perplexity|claude</code> or AI referral coupons.
-                    </span>
+                  <div>
+                    <div className="zgeo-orders-empty-title">Awaiting AI-Referred Checkouts</div>
+                    <div className="zgeo-orders-empty-desc">
+                      Listening for store orders arriving from AI search citations via <code>utm_source</code> parameters or AI promo coupons. Real-time conversion details will appear here.
+                    </div>
                   </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/70 shadow-2xs flex-shrink-0 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                  Live Hook Active
+                <span className="zgeo-cron-badge">
+                  <span className="zgeo-badge-dot"></span>
+                  Live Listener Active
                 </span>
               </div>
             )}

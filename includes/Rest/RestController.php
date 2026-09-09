@@ -487,14 +487,17 @@ class RestController {
         $settings = get_option( 'zoventic_geo_settings', [] );
 
         // Encrypt new API keys using AES-256-CBC with auth salt
-        if ( ! empty( $params['openai_api_key'] ) && strpos( $params['openai_api_key'], '••••' ) === false ) {
-            $settings['openai_api_key'] = self::encrypt( sanitize_text_field( $params['openai_api_key'] ) );
+        $openai_val = $params['openai_api_key'] ?? ( $params['openaiApiKey'] ?? '' );
+        if ( ! empty( $openai_val ) && strpos( $openai_val, '••••' ) === false ) {
+            $settings['openai_api_key'] = self::encrypt( sanitize_text_field( $openai_val ) );
         }
-        if ( ! empty( $params['perplexity_api_key'] ) && strpos( $params['perplexity_api_key'], '••••' ) === false ) {
-            $settings['perplexity_api_key'] = self::encrypt( sanitize_text_field( $params['perplexity_api_key'] ) );
+        $pplx_val = $params['perplexity_api_key'] ?? ( $params['perplexityApiKey'] ?? '' );
+        if ( ! empty( $pplx_val ) && strpos( $pplx_val, '••••' ) === false ) {
+            $settings['perplexity_api_key'] = self::encrypt( sanitize_text_field( $pplx_val ) );
         }
-        if ( ! empty( $params['anthropic_api_key'] ) && strpos( $params['anthropic_api_key'], '••••' ) === false ) {
-            $settings['anthropic_api_key'] = self::encrypt( sanitize_text_field( $params['anthropic_api_key'] ) );
+        $anthropic_val = $params['anthropic_api_key'] ?? ( $params['anthropicApiKey'] ?? '' );
+        if ( ! empty( $anthropic_val ) && strpos( $anthropic_val, '••••' ) === false ) {
+            $settings['anthropic_api_key'] = self::encrypt( sanitize_text_field( $anthropic_val ) );
         }
 
         if ( isset( $params['rate_limit_hits'] ) ) {

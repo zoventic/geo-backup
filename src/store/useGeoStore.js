@@ -102,6 +102,8 @@ export const useGeoStore = create((set, get) => ({
     anthropicApiKey: '',
     perplexityApiKey: '',
     autoPurgeOutOfStock: true,
+    autoKillJobs: true,
+    emailWarning: true,
     cacheDurationMinutes: 60,
     enableIndexNow: true,
     enableEmailDigest: true,

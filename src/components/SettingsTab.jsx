@@ -95,9 +95,9 @@ export const SettingsTab = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [purgeModalOpen, setPurgeModalOpen] = useState(false);
-  const [autoKillJobs, setAutoKillJobs] = useState(true);
-  const [emailWarning, setEmailWarning] = useState(true);
-  const [autoPurgeOutOfStock, setAutoPurgeOutOfStock] = useState(settings?.autoPurgeOutOfStock ?? true);
+  const [autoKillJobs, setAutoKillJobs] = useState(settings?.autoKillJobs ?? settings?.auto_kill_jobs ?? true);
+  const [emailWarning, setEmailWarning] = useState(settings?.emailWarning ?? settings?.email_warning ?? true);
+  const [autoPurgeOutOfStock, setAutoPurgeOutOfStock] = useState(settings?.autoPurgeOutOfStock ?? settings?.auto_purge_out_of_stock ?? true);
   const [isSendingTestDigest, setIsSendingTestDigest] = useState(false);
   const [isPingingIndexNow, setIsPingingIndexNow] = useState(false);
   const [licenseKeyInput, setLicenseKeyInput] = useState(licenseInfo?.key || '');
@@ -183,8 +183,11 @@ export const SettingsTab = () => {
       if (settings.blockAggressiveBots !== undefined) setBlockAggressiveBots(settings.blockAggressiveBots);
       if (settings.rateLimitCrawlerHits !== undefined) setRateLimitCrawlerHits(settings.rateLimitCrawlerHits);
       if (settings.autoPurgeOutOfStock !== undefined) setAutoPurgeOutOfStock(settings.autoPurgeOutOfStock);
+      else if (settings.auto_purge_out_of_stock !== undefined) setAutoPurgeOutOfStock(settings.auto_purge_out_of_stock);
       if (settings.autoKillJobs !== undefined) setAutoKillJobs(settings.autoKillJobs);
+      else if (settings.auto_kill_jobs !== undefined) setAutoKillJobs(settings.auto_kill_jobs);
       if (settings.emailWarning !== undefined) setEmailWarning(settings.emailWarning);
+      else if (settings.email_warning !== undefined) setEmailWarning(settings.email_warning);
       if (settings.enableJsonLdEnhancer !== undefined) setEnableJsonLdEnhancer(settings.enableJsonLdEnhancer);
       if (settings.enableBotLogging !== undefined) setEnableBotLogging(settings.enableBotLogging);
       if (settings.enableLlmsTxt !== undefined) setEnableLlmsTxt(settings.enableLlmsTxt);

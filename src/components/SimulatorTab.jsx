@@ -416,6 +416,20 @@ export const SimulatorTab = () => {
               >
                 ✅ Clean Safe Product
               </button>
+              {products && products.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const sample = products[0];
+                    const text = `${sample.title} - SKU: ${sample.sku || 'N/A'}. Category: ${sample.category || 'General'}. Price: ${sample.price || '$0.00'}. Stock: ${sample.stockStatus || 'In Stock'}.`;
+                    setInjectionTestInput(text);
+                    message.info(`Loaded catalog product "${sample.title}" into scanner!`);
+                  }}
+                  className="px-2.5 py-1 rounded-lg border border-indigo-200 text-[11px] font-semibold bg-indigo-50/70 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 transition-all cursor-pointer"
+                >
+                  📦 Load Store Product Specs
+                </button>
+              )}
             </div>
 
             <Flex justify="flex-end" align="center" className="pt-2">

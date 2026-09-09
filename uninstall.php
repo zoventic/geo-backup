@@ -27,10 +27,18 @@ function zgeo_uninstall() {
     $options_to_delete = [
         'zoventic_geo_version',
         'zoventic_geo_settings',
+        'zgeo_installed_at',
+        'zgeo_indexnow_key',
+        'zoventic_geo_tracked_queries',
+        'zgeo_threats_neutralized',
+        'zoventic_geo_threats_neutralized',
+        'zgeo_bulk_enrichment_progress',
+        'zoventic_geo_license_key',
+        'zoventic_geo_license_status',
+        'zoventic_geo_license_tier',
         'zoventic_geo_llms_txt_etag',
         'zoventic_geo_db_version',
         'zoventic_geo_active_subfeeds',
-        'zoventic_geo_threats_neutralized',
     ];
 
     foreach ( $options_to_delete as $option_name ) {
@@ -39,12 +47,24 @@ function zgeo_uninstall() {
     }
 
     // 3. Delete all cached transients
+    delete_transient( 'zgeo_llms_txt_cache_standard' );
+    delete_transient( 'zgeo_llms_txt_cache_full' );
     delete_transient( 'zgeo_remote_bot_manifest' );
     delete_transient( 'zgeo_llms_txt_catalog_cache' );
     delete_transient( 'zgeo_ai_revenue_summary' );
     delete_transient( 'zgeo_rdns_verified_ips' );
 
-    // 4. Remove physical fallback llms.txt file in root if created by plugin
+    // 4. Delete all product postmeta registered by plugin
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+    $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_zgeo_score', '_zgeo_optimized_at', '_zgeo_last_optimized')" );
+
+    // 5. Clear scheduled Action Scheduler actions and WP crons
+    wp_clear_scheduled_hook( 'zgeo_weekly_digest_cron' );
+    if ( function_exists( 'as_unschedule_all_actions' ) ) {
+        as_unschedule_all_actions( 'zgeo_process_catalog_batch' );
+    }
+
+    // 6. Remove physical fallback llms.txt file in root if created by plugin
     $physical_llms = ABSPATH . 'llms.txt';
     if ( file_exists( $physical_llms ) ) {
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
@@ -54,7 +74,7 @@ function zgeo_uninstall() {
         }
     }
 
-    // 5. Flush rewrite rules
+    // 7. Flush rewrite rules
     flush_rewrite_rules();
 }
 

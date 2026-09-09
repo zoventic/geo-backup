@@ -32,7 +32,8 @@ import {
   User,
   KeyRound,
   Hash,
-  Crown
+  Crown,
+  Trash2
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 
@@ -97,6 +98,21 @@ export const Header = () => {
       await updateSettings({ activeStoreId: store.id, connectedStores: updated });
     }
     message.success(`Switched active catalog to ${store.name} (${store.products} Products • Health: ${store.health})`);
+  };
+
+  const handleRemoveStore = async (e, storeId) => {
+    e.stopPropagation();
+    const targetStore = stores.find(s => s.id === storeId);
+    const updated = stores.filter(s => s.id !== storeId);
+    setStores(updated);
+    if (String(activeSavedId) === String(storeId)) {
+      setCurrentStore(realStoreName);
+      setCurrentProductCount(totalProducts);
+    }
+    if (updateSettings) {
+      await updateSettings({ connectedStores: updated });
+    }
+    message.success(`Disconnected ${targetStore?.name || 'store property'}.`);
   };
 
   const handleConnectStore = async (values) => {
@@ -319,11 +335,23 @@ export const Header = () => {
                 </div>
               </Flex>
 
-              {store.active ? (
-                <span className="zgeo-store-active-badge">ACTIVE</span>
-              ) : (
-                <span className="zgeo-store-switch-link">Switch &rarr;</span>
-              )}
+              <Flex align="center" gap="small" className="flex-shrink-0">
+                {store.active ? (
+                  <span className="zgeo-store-active-badge">ACTIVE</span>
+                ) : (
+                  <span className="zgeo-store-switch-link">Switch &rarr;</span>
+                )}
+                {store.id !== '1' && (
+                  <button
+                    type="button"
+                    title="Disconnect this store property"
+                    onClick={(e) => handleRemoveStore(e, store.id)}
+                    className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors ml-1 cursor-pointer"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                )}
+              </Flex>
             </div>
           ))}
         </div>

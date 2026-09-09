@@ -39,7 +39,8 @@ export const OverviewTab = () => {
     regenerateLlmsTxt,
     setActiveTab,
     simulateCrawlerHit,
-    fetchAiRevenue
+    fetchAiRevenue,
+    settings
   } = useGeoStore();
 
   const [timeRange, setTimeRange] = useState('30d');
@@ -317,7 +318,11 @@ export const OverviewTab = () => {
                 <span>Daily Automated Rank Tracker</span>
                 <span className="zgeo-cron-badge">
                   <span className="zgeo-badge-dot"></span>
-                  WP_Cron Active
+                  {(settings?.rankRadarFrequency || settings?.rank_radar_frequency) === '12h'
+                    ? 'WP_Cron Active (Every 12h)'
+                    : (settings?.rankRadarFrequency || settings?.rank_radar_frequency) === '6h'
+                    ? 'WP_Cron Active (Every 6h)'
+                    : 'WP_Cron Active (Daily 04:00 AM)'}
                 </span>
                 <span className="zgeo-cron-badge" style={{ background: '#f0fdf4', borderColor: '#bbf7d0', color: '#166534', marginLeft: 6 }}>
                   <span className="zgeo-badge-dot" style={{ background: '#16a34a' }}></span>

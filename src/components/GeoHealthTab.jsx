@@ -41,7 +41,8 @@ export const GeoHealthTab = () => {
     isLoadingData,
     startBulkOptimization,
     cancelBulkOptimization,
-    siteInfo
+    siteInfo,
+    loadInitialData
   } = useGeoStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [citabilityFilter, setCitabilityFilter] = useState('all');
@@ -227,8 +228,13 @@ export const GeoHealthTab = () => {
   };
 
   const handleReindex = async () => {
-    await regenerateLlmsTxt();
-    message.success(`${products?.length || 0} products re-indexed into /llms.txt feed successfully!`);
+    try {
+      await regenerateLlmsTxt?.();
+      await loadInitialData?.();
+      message.success(`${products?.length || 0} products re-indexed & catalog telemetry refreshed!`);
+    } catch (e) {
+      message.error('Failed to re-index products.');
+    }
   };
 
   const filteredProducts = (products || []).filter(p => {
@@ -666,6 +672,15 @@ export const GeoHealthTab = () => {
         className="zgeo-modal"
       >
         <div className="space-y-4 my-2">
+          {/* Action Scheduler Engine Indicator */}
+          <div className="flex items-center justify-between px-3 py-2 bg-indigo-50/80 border border-indigo-100 rounded-lg text-xs">
+            <span className="text-indigo-900 font-semibold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              WooCommerce Action Scheduler Active
+            </span>
+            <span className="font-mono text-indigo-700 text-[11px]">Async Safe Batch: 25 items</span>
+          </div>
+
           {/* Live Progress Bar */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">

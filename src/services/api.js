@@ -110,6 +110,14 @@ export const api = {
   }),
 
   getAbilities: () => request("abilities"),
+  executeAbility: (ability) => request("abilities/execute", {
+    method: "POST",
+    body: JSON.stringify({ ability })
+  }),
+  resetThreats: () => request("safety/reset-threats", {
+    method: "POST",
+    body: JSON.stringify({})
+  }),
 
   runQueriesAudit: () => request("queries/run-audit", {
     method: "POST",

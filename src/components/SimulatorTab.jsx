@@ -9,7 +9,8 @@ import {
   Typography,
   Space,
   Tag,
-  Segmented
+  Segmented,
+  Popconfirm
 } from 'antd';
 import {
   Search,
@@ -23,7 +24,8 @@ import {
   Shield,
   Bot,
   AlertTriangle,
-  Lock
+  Lock,
+  RotateCcw
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 
@@ -41,7 +43,8 @@ export const SimulatorTab = () => {
     promptShield,
     metrics,
     simulatorTestQuery,
-    setSimulatorTestQuery
+    setSimulatorTestQuery,
+    resetThreats
   } = useGeoStore();
   const storeLabel = siteInfo?.siteName || 'Your Store';
 
@@ -396,6 +399,20 @@ export const SimulatorTab = () => {
                 <ShieldAlert size={13} />
                 {(promptShield?.threatsNeutralized ?? metrics?.threatsNeutralized ?? 0)} Threats Neutralized
               </span>
+              <Popconfirm
+                title="Reset neutralized threats counter?"
+                description="This resets the database counter to 0."
+                onConfirm={async () => {
+                  await resetThreats?.();
+                  message.success('Neutralized threats counter reset to 0.');
+                }}
+                okText="Reset"
+                cancelText="Cancel"
+              >
+                <Button size="small" icon={<RotateCcw size={11} />} className="text-xs text-slate-500 hover:text-rose-600">
+                  Reset
+                </Button>
+              </Popconfirm>
               <span className="zgeo-verified-key-badge">
                 <ShieldCheck size={14} className="text-emerald-600" /> Active Catalog Guard
               </span>

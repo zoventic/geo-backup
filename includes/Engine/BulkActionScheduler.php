@@ -188,11 +188,14 @@ class BulkActionScheduler {
      * @return array
      */
     public static function get_progress() {
-        return get_option( self::OPTION_PROGRESS, [
+        $data = get_option( self::OPTION_PROGRESS, [
             'status'    => 'idle',
             'total'     => 0,
             'processed' => 0,
         ] );
+        $data['action_scheduler_active'] = function_exists( 'as_schedule_single_action' );
+        $data['batch_size']              = self::BATCH_SIZE;
+        return $data;
     }
 
     /**

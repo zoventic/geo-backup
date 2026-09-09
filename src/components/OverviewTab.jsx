@@ -48,7 +48,8 @@ export const OverviewTab = () => {
     simulateCrawlerHit,
     fetchAiRevenue,
     settings,
-    abilitiesManifest
+    abilitiesManifest,
+    loadInitialData
   } = useGeoStore();
 
   const [timeRange, setTimeRange] = useState('30d');
@@ -243,8 +244,18 @@ export const OverviewTab = () => {
   }, [timeRange, totalCrawls, gptHits, perpHits, claudeHits]);
 
   const handleRefresh = async () => {
-    await regenerateLlmsTxt();
-    message.success('Synced with WordPress & WooCommerce database.');
+    try {
+      await Promise.all([
+        loadInitialData?.(),
+        regenerateLlmsTxt?.()
+      ]);
+      const daysMap = { '24h': 1, '7d': 7, '30d': 30 };
+      const days = daysMap[timeRange] || 30;
+      await fetchAiRevenue?.(days);
+      message.success('Synced overview metrics, orders & feed with live WordPress database.');
+    } catch (e) {
+      message.error('Failed to sync with database.');
+    }
   };
 
   const handleSimulateHit = async () => {
@@ -857,17 +868,12 @@ export const OverviewTab = () => {
                       setIsTestingAbility(ability.name);
                       setAbilityTestResult(null);
                       try {
-                        let res;
-                        if (ability.name.includes('get_store_context') || ability.name.includes('abilities')) {
-                          res = await api.getAbilities();
-                        } else {
-                          res = await api.runQueriesAudit();
-                        }
+                        const res = await api.executeAbility(ability.name);
                         setAbilityTestResult({ name: ability.name, data: res });
                         message.success(`Ability "${ability.name}" executed successfully!`);
                       } catch (err) {
                         setAbilityTestResult({ name: ability.name, error: err.message });
-                        message.warning(`Executed: ${err.message}`);
+                        message.warning(`Execution note: ${err.message}`);
                       } finally {
                         setIsTestingAbility(null);
                       }

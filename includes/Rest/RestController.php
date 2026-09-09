@@ -188,6 +188,20 @@ class RestController {
             'callback'            => [ $this, 'get_abilities' ],
             'permission_callback' => [ $this, 'check_permissions' ],
         ] );
+
+        // Execute / Test WordPress Agent Ability
+        register_rest_route( self::NAMESPACE, '/abilities/execute', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [ $this, 'execute_ability' ],
+            'permission_callback' => [ $this, 'check_permissions' ],
+        ] );
+
+        // Reset Neutralized Threats Counter
+        register_rest_route( self::NAMESPACE, '/safety/reset-threats', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [ $this, 'reset_threats' ],
+            'permission_callback' => [ $this, 'check_permissions' ],
+        ] );
     }
 
     public function check_permissions() {
@@ -984,6 +998,22 @@ class RestController {
             'enabled'   => $enabled,
             'abilities' => $manifest,
             'isWp68'    => function_exists( 'wp_register_ability' ),
+        ] );
+    }
+
+    public function execute_ability( $request ) {
+        $params  = $request->get_json_params();
+        $ability = isset( $params['ability'] ) ? sanitize_text_field( $params['ability'] ) : '';
+        $result  = \Zoventic\Geo\Abilities\AbilitiesRegistry::execute_ability( $ability );
+        return rest_ensure_response( $result );
+    }
+
+    public function reset_threats() {
+        update_option( 'zgeo_threats_neutralized', 0 );
+        return rest_ensure_response( [
+            'success'            => true,
+            'threatsNeutralized' => 0,
+            'message'            => __( 'Neutralized threats counter reset to 0.', 'zoventic-geo' ),
         ] );
     }
 

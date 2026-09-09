@@ -552,6 +552,27 @@ export const useGeoStore = create((set, get) => ({
     });
   },
 
+  resetThreats: async () => {
+    try {
+      await api.resetThreats();
+      set((state) => ({
+        promptShield: {
+          ...state.promptShield,
+          threatsNeutralized: 0
+        },
+        metrics: {
+          ...state.metrics,
+          threatsNeutralized: 0
+        },
+        injectionScanResult: null
+      }));
+      return true;
+    } catch (e) {
+      console.warn('[Zoventic GEO] Error resetting threats:', e);
+      return false;
+    }
+  },
+
   optimizeProduct: async (productId) => {
     set((state) => {
       const updated = state.products.map((p) => {

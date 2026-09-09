@@ -73,11 +73,53 @@ class AbilitiesRegistry {
     }
 
     public static function ability_run_audit() {
+        $total_products = function_exists( 'wp_count_posts' ) && isset( wp_count_posts( 'product' )->publish )
+            ? (int) wp_count_posts( 'product' )->publish
+            : 0;
+
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $optimized = (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(DISTINCT post_id) FROM {$wpdb->postmeta} WHERE meta_key = %s",
+                '_zgeo_optimized_at'
+            )
+        );
+
+        $score = $total_products > 0 ? (int) round( ( $optimized / $total_products ) * 100 ) : 100;
+
         return [
-            'geoHealthScore' => 86,
-            'status'         => 'AI Search Ready',
-            'schemaCoverage' => '96%',
-            'freshness'      => 'Active',
+            'geoHealthScore'    => $score,
+            'status'            => $score >= 70 ? 'AI Search Ready' : 'Optimization Recommended',
+            'totalProducts'     => $total_products,
+            'optimizedProducts' => $optimized,
+            'schemaCoverage'    => $score . '%',
+            'timestamp'         => current_time( 'mysql' ),
+        ];
+    }
+
+    public static function execute_ability( $ability_name ) {
+        if ( $ability_name === 'zoventic_geo/get_store_context' ) {
+            return [
+                'success' => true,
+                'ability' => $ability_name,
+                'type'    => 'text/markdown',
+                'result'  => self::ability_get_store_context(),
+            ];
+        }
+
+        if ( $ability_name === 'zoventic_geo/run_geo_audit' ) {
+            return [
+                'success' => true,
+                'ability' => $ability_name,
+                'type'    => 'application/json',
+                'result'  => self::ability_run_audit(),
+            ];
+        }
+
+        return [
+            'success' => false,
+            'error'   => __( 'Unknown agent ability specified.', 'zoventic-geo' ),
         ];
     }
 }

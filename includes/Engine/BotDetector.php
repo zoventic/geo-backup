@@ -127,7 +127,7 @@ class BotDetector {
             self::log_crawler( $detected_bot, $bot_vendor, $ip, $user_agent, $endpoint, 403 );
             status_header( 403 );
             header( 'Content-Type: text/plain; charset=utf-8' );
-            echo "403 Forbidden: {$detected_bot} access disallowed by store policy (Zoventic GEO).";
+            echo esc_html( "403 Forbidden: {$detected_bot} access disallowed by store policy (Zoventic GEO)." );
             exit;
         }
 
@@ -142,7 +142,7 @@ class BotDetector {
             self::log_crawler( $detected_bot, $bot_vendor, $ip, $user_agent, $endpoint, 429 );
             status_header( 429 );
             header( 'Retry-After: 3600' );
-            echo '429 Too Many Requests (AI Crawler Rate Limited by Zoventic GEO)';
+            echo esc_html( '429 Too Many Requests (AI Crawler Rate Limited by Zoventic GEO)' );
             exit;
         }
 

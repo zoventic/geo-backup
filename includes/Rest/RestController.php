@@ -202,12 +202,14 @@ class RestController {
             : 0;
 
         $table_name = $wpdb->prefix . 'zgeo_crawler_logs';
-        $bot_hits = 0;
+        $bot_hits   = 0;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) === $table_name ) {
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table_name ) ) ) === $table_name ) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $bot_hits = (int) $wpdb->get_var(
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
                 $wpdb->prepare(
-                    "SELECT COUNT(*) FROM {$table_name} WHERE created_at >= %s",
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}zgeo_crawler_logs WHERE created_at >= %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
                     gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS )
                 )
             );
@@ -890,7 +892,7 @@ class RestController {
                 'user_agent'  => 'Mozilla/5.0 (compatible; ' . $bot . '/1.0; +https://' . strtolower( $bot ) . '.com/bot)',
                 'endpoint'    => '/llms.txt',
                 'status_code' => 200,
-                'latency_ms'  => rand( 12, 35 ),
+                'latency_ms'  => wp_rand( 12, 35 ),
                 'is_cached'   => 1,
                 'created_at'  => current_time( 'mysql' ),
             ],

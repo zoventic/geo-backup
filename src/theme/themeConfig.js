@@ -95,8 +95,8 @@ export const antdTheme = {
       fontSize: 12,
     },
     Switch: {
-      colorPrimary: '#4f46e5',
-      colorPrimaryHover: '#4338ca',
+      colorPrimary: '#10b981',
+      colorPrimaryHover: '#059669',
     },
     Slider: {
       colorPrimary: '#4f46e5',

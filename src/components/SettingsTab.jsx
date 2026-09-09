@@ -686,6 +686,7 @@ export const SettingsTab = () => {
                         e.stopPropagation();
                       }
                     }}
+                    className="zgeo-switch-emerald"
                     style={{ flexShrink: 0, marginLeft: 8 }}
                   />
                 </div>

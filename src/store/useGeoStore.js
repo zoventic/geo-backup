@@ -119,15 +119,22 @@ export const useGeoStore = create((set, get) => ({
   // Settings & Crawler Permissions
   openAiApiKey: '',
   setOpenAiApiKey: (key) => set({ openAiApiKey: key }),
+  perplexityApiKey: '',
+  setPerplexityApiKey: (key) => set({ perplexityApiKey: key }),
+  anthropicApiKey: '',
+  setAnthropicApiKey: (key) => set({ anthropicApiKey: key }),
   monthlyBudgetCap: 5,
   setMonthlyBudgetCap: (cap) => set({ monthlyBudgetCap: cap }),
+  abilitiesManifest: [],
   crawlerPermissions: {
     gptbot: true,
     perplexity: true,
     claudebot: true,
     googleExtended: true,
     amazonbot: true,
-    meta: true
+    meta: true,
+    applebot: true,
+    bytespider: true
   },
   toggleCrawlerPermission: (botKey) =>
     set((state) => ({
@@ -180,6 +187,25 @@ export const useGeoStore = create((set, get) => ({
     }
   },
 
+  rotateIndexNowKey: async () => {
+    try {
+      const res = await api.rotateIndexNowKey();
+      if (res && res.key) {
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            indexnow_key: res.key,
+            indexnow_url: res.indexnow_url
+          }
+        }));
+      }
+      return res;
+    } catch (e) {
+      console.warn('[Zoventic GEO] Error rotating IndexNow key:', e);
+      throw e;
+    }
+  },
+
   // Initial Data Fetching from WordPress REST API
   loadInitialData: async () => {
     set({ isLoadingData: true, dataLoadError: null });
@@ -192,10 +218,11 @@ export const useGeoStore = create((set, get) => ({
         api.getLlmsTxt(),
         api.getSettings(),
         api.getQueries(),
-        api.getLicense()
+        api.getLicense(),
+        api.getAbilities()
       ]);
 
-      const [overviewRes, productsRes, crawlersRes, llmsRes, settingsRes, queriesRes, licenseRes] = results;
+      const [overviewRes, productsRes, crawlersRes, llmsRes, settingsRes, queriesRes, licenseRes, abilitiesRes] = results;
       const updates = { isRealData: true };
 
       if (overviewRes.status === 'fulfilled' && overviewRes.value) {
@@ -282,6 +309,10 @@ export const useGeoStore = create((set, get) => ({
           isPro: !!lic.isPro || ['valid', 'active'].includes(lic.status),
           isAgency: !!lic.isAgency || lic.tier === 'agency'
         };
+      }
+
+      if (abilitiesRes.status === 'fulfilled' && abilitiesRes.value && Array.isArray(abilitiesRes.value.abilities)) {
+        updates.abilitiesManifest = abilitiesRes.value.abilities;
       }
 
       set({ ...updates, isLoadingData: false });

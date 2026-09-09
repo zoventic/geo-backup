@@ -36,16 +36,28 @@ class LlmsTxtGenerator {
             return;
         }
 
+        $settings = get_option( 'zoventic_geo_settings', [] );
+        $enable_feed = isset( $settings['enableLlmsTxt'] ) ? (bool) $settings['enableLlmsTxt'] : ( isset( $settings['enable_llms_txt'] ) ? (bool) $settings['enable_llms_txt'] : true );
+        if ( ! $enable_feed ) {
+            status_header( 404 );
+            header( 'Content-Type: text/plain; charset=utf-8' );
+            echo "# /llms.txt feed is currently paused by store administrator.\n";
+            exit;
+        }
+
+        $cache_mins = isset( $settings['cacheDurationMinutes'] ) ? absint( $settings['cacheDurationMinutes'] ) : ( isset( $settings['cache_duration_minutes'] ) ? absint( $settings['cache_duration_minutes'] ) : 60 );
+        $cache_ttl  = max( 300, min( 86400, ( $cache_mins ?: 60 ) * MINUTE_IN_SECONDS ) );
+
         // Check cache first
         $cached = get_transient( self::CACHE_KEY . '_' . $endpoint );
         if ( false === $cached ) {
             $cached = self::generate_content( $endpoint === 'full' );
-            set_transient( self::CACHE_KEY . '_' . $endpoint, $cached, HOUR_IN_SECONDS );
+            set_transient( self::CACHE_KEY . '_' . $endpoint, $cached, $cache_ttl );
         }
 
         // Set optimal plain text and caching headers
         header( 'Content-Type: text/plain; charset=utf-8' );
-        header( 'Cache-Control: public, max-age=3600, stale-while-revalidate=600' );
+        header( 'Cache-Control: public, max-age=' . $cache_ttl . ', stale-while-revalidate=600' );
         header( 'X-Robots-Tag: all' );
         echo $cached; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         exit;

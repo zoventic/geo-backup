@@ -89,12 +89,34 @@ class BulkActionScheduler {
             return;
         }
 
+        // Check if merchant enabled auto-killing long-running jobs (15 minutes / 900 seconds)
+        $progress = get_option( self::OPTION_PROGRESS, [] );
+        $settings = get_option( 'zoventic_geo_settings', [] );
+        $auto_kill = ! empty( $settings['autoKillJobs'] ) || ! empty( $settings['auto_kill_jobs'] );
+
+        if ( $auto_kill && ! empty( $progress['started_at'] ) && ( time() - (int) $progress['started_at'] ) > 900 ) {
+            $progress['status']       = 'timed_out';
+            $progress['completed_at'] = time();
+            update_option( self::OPTION_PROGRESS, $progress );
+
+            if ( ! empty( $settings['emailWarning'] ) || ! empty( $settings['email_warning'] ) ) {
+                $alert_email = ! empty( $settings['alertEmail'] ) ? $settings['alertEmail'] : ( ! empty( $settings['alert_email'] ) ? $settings['alert_email'] : get_option( 'admin_email' ) );
+                if ( is_email( $alert_email ) ) {
+                    $site_name = get_bloginfo( 'name' );
+                    /* translators: %s: Store website name */
+                    $sub = sprintf( __( '[%s] Zoventic GEO: Long-running catalog enrichment job stopped', 'zoventic-geo' ), $site_name );
+                    $msg = __( "A bulk catalog enrichment background job exceeded the 15-minute maximum limit and was safely paused to protect server resources.\n\nYou can resume optimization anytime from your Store Admin.", 'zoventic-geo' );
+                    wp_mail( $alert_email, $sub, $msg );
+                }
+            }
+            return;
+        }
+
         foreach ( $products as $product ) {
             self::enrich_product( $product );
         }
 
         // Update progress
-        $progress = get_option( self::OPTION_PROGRESS, [] );
         $progress['processed']  = ( isset( $progress['processed'] ) ? $progress['processed'] : 0 ) + $count;
         $progress['offset']     = $offset + $count;
         $progress['updated_at'] = time();
@@ -180,6 +202,6 @@ class BulkActionScheduler {
      */
     public static function flag_product_dirty( $product_id ) {
         update_post_meta( $product_id, '_zgeo_dirty', 1 );
-        delete_transient( 'zgeo_llms_txt_catalog_cache' );
+        \Zoventic\Geo\Engine\LlmsTxtGenerator::purge_cache();
     }
 }

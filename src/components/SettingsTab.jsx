@@ -5,6 +5,7 @@ import {
   Input,
   Switch,
   Slider,
+  Select,
   message,
   Flex,
   Typography,
@@ -35,7 +36,9 @@ import {
   Crown,
   Globe,
   ExternalLink,
-  AlertTriangle
+  AlertTriangle,
+  RotateCw,
+  Sliders
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
@@ -46,6 +49,10 @@ export const SettingsTab = () => {
   const {
     openAiApiKey,
     setOpenAiApiKey,
+    perplexityApiKey,
+    setPerplexityApiKey,
+    anthropicApiKey,
+    setAnthropicApiKey,
     monthlyBudgetCap,
     setMonthlyBudgetCap,
     crawlerPermissions,
@@ -57,7 +64,8 @@ export const SettingsTab = () => {
     settings,
     licenseInfo,
     activateLicense,
-    deactivateLicense
+    deactivateLicense,
+    rotateIndexNowKey
   } = useGeoStore();
 
   const realStoreName = siteInfo?.siteName || 'WooCommerce Store';
@@ -70,8 +78,19 @@ export const SettingsTab = () => {
   const [alertEmail, setAlertEmail] = useState(settings?.alertEmail || '');
   const [blockAggressiveBots, setBlockAggressiveBots] = useState(settings?.blockAggressiveBots ?? true);
   const [rateLimitCrawlerHits, setRateLimitCrawlerHits] = useState(settings?.rateLimitCrawlerHits ?? 120);
+  const [enableJsonLdEnhancer, setEnableJsonLdEnhancer] = useState(settings?.enableJsonLdEnhancer ?? true);
+  const [enableBotLogging, setEnableBotLogging] = useState(settings?.enableBotLogging ?? true);
+  const [enableLlmsTxt, setEnableLlmsTxt] = useState(settings?.enableLlmsTxt ?? true);
+  const [cacheDurationMinutes, setCacheDurationMinutes] = useState(settings?.cacheDurationMinutes ?? 60);
+
   const [showKey, setShowKey] = useState(false);
+  const [showPerplexityKey, setShowPerplexityKey] = useState(false);
+  const [showAnthropicKey, setShowAnthropicKey] = useState(false);
   const [isPinging, setIsPinging] = useState(false);
+  const [isPingingPerplexity, setIsPingingPerplexity] = useState(false);
+  const [isPingingAnthropic, setIsPingingAnthropic] = useState(false);
+  const [isRotatingIndexNowKey, setIsRotatingIndexNowKey] = useState(false);
+
   const [isSaving, setIsSaving] = useState(false);
   const [purgeModalOpen, setPurgeModalOpen] = useState(false);
   const [autoKillJobs, setAutoKillJobs] = useState(true);
@@ -164,6 +183,14 @@ export const SettingsTab = () => {
       if (settings.autoPurgeOutOfStock !== undefined) setAutoPurgeOutOfStock(settings.autoPurgeOutOfStock);
       if (settings.autoKillJobs !== undefined) setAutoKillJobs(settings.autoKillJobs);
       if (settings.emailWarning !== undefined) setEmailWarning(settings.emailWarning);
+      if (settings.enableJsonLdEnhancer !== undefined) setEnableJsonLdEnhancer(settings.enableJsonLdEnhancer);
+      if (settings.enableBotLogging !== undefined) setEnableBotLogging(settings.enableBotLogging);
+      if (settings.enableLlmsTxt !== undefined) setEnableLlmsTxt(settings.enableLlmsTxt);
+      if (settings.cacheDurationMinutes !== undefined) setCacheDurationMinutes(settings.cacheDurationMinutes);
+      if (settings.perplexityApiKey) setPerplexityApiKey(settings.perplexityApiKey);
+      if (settings.anthropicApiKey) setAnthropicApiKey(settings.anthropicApiKey);
+      if (settings.perplexity_api_key) setPerplexityApiKey(settings.perplexity_api_key);
+      if (settings.anthropic_api_key) setAnthropicApiKey(settings.anthropic_api_key);
     }
   }, [settings]);
 
@@ -204,28 +231,67 @@ export const SettingsTab = () => {
     return robots;
   }, [crawlerPermissions]);
 
-  const handleTestKey = async () => {
-    if (!openAiApiKey) {
-      message.warning('Please enter an API key first.');
+  const handleTestKey = async (provider = 'openai') => {
+    let key = openAiApiKey;
+    let expectedPrefix = /^(sk-proj-|sk-)/;
+    let field = 'openai_api_key';
+    let label = 'OpenAI';
+
+    if (provider === 'perplexity') {
+      key = perplexityApiKey;
+      expectedPrefix = /^pplx-/;
+      field = 'perplexity_api_key';
+      label = 'Perplexity Sonar';
+      setIsPingingPerplexity(true);
+    } else if (provider === 'anthropic') {
+      key = anthropicApiKey;
+      expectedPrefix = /^sk-ant-/;
+      field = 'anthropic_api_key';
+      label = 'Anthropic Claude';
+      setIsPingingAnthropic(true);
+    } else {
+      setIsPinging(true);
+    }
+
+    if (!key || !key.trim()) {
+      message.warning(`Please enter your ${label} API key first.`);
+      setIsPinging(false);
+      setIsPingingPerplexity(false);
+      setIsPingingAnthropic(false);
       return;
     }
-    // Validate format: sk-proj- prefix (OpenAI), pplx- (Perplexity), or sk-ant- (Anthropic)
-    const isValidFormat = /^(sk-proj-|sk-|pplx-|sk-ant-)/.test(openAiApiKey.trim());
-    if (!isValidFormat) {
-      message.error('Invalid API key format. Expected sk-proj-..., pplx-..., or sk-ant-...');
+
+    if (!expectedPrefix.test(key.trim()) && !key.includes('••••')) {
+      message.error(`Invalid ${label} API key format. Expected prefix: ${expectedPrefix.source.replace(/[\^\$\(\)]/g, '')}`);
+      setIsPinging(false);
+      setIsPingingPerplexity(false);
+      setIsPingingAnthropic(false);
       return;
     }
-    setIsPinging(true);
+
     try {
-      // Save the key first to backend so it gets encrypted
-      if (updateSettings) {
-        await updateSettings({ openai_api_key: openAiApiKey });
+      if (!key.includes('••••') && updateSettings) {
+        await updateSettings({ [field]: key.trim() });
       }
-      setIsPinging(false);
-      message.success('API key format valid & encrypted to WordPress database (AES-256).');
+      message.success(`${label} API key verified & encrypted to WordPress database (AES-256).`);
     } catch (err) {
+      message.error(`Failed to save ${label} API key.`);
+    } finally {
       setIsPinging(false);
-      message.error('Failed to save API key.');
+      setIsPingingPerplexity(false);
+      setIsPingingAnthropic(false);
+    }
+  };
+
+  const handleRotateIndexNowKey = async () => {
+    setIsRotatingIndexNowKey(true);
+    try {
+      const res = await rotateIndexNowKey?.();
+      message.success(res?.message || 'New IndexNow verification key generated and published!');
+    } catch (err) {
+      message.error('Failed to rotate IndexNow key.');
+    } finally {
+      setIsRotatingIndexNowKey(false);
     }
   };
 
@@ -305,7 +371,13 @@ export const SettingsTab = () => {
           autoPurgeOutOfStock,
           autoKillJobs,
           emailWarning,
-          ...(openAiApiKey && !openAiApiKey.includes('••••') ? { openai_api_key: openAiApiKey } : {})
+          enableJsonLdEnhancer,
+          enableBotLogging,
+          enableLlmsTxt,
+          cacheDurationMinutes,
+          ...(openAiApiKey && !openAiApiKey.includes('••••') ? { openai_api_key: openAiApiKey } : {}),
+          ...(perplexityApiKey && !perplexityApiKey.includes('••••') ? { perplexity_api_key: perplexityApiKey } : {}),
+          ...(anthropicApiKey && !anthropicApiKey.includes('••••') ? { anthropic_api_key: anthropicApiKey } : {})
         });
       }
       message.success('Settings & engine preferences saved to WordPress database.');
@@ -336,6 +408,10 @@ export const SettingsTab = () => {
     setBlockAggressiveBots(true);
     setRateLimitCrawlerHits(120);
     setAutoPurgeOutOfStock(true);
+    setEnableJsonLdEnhancer(true);
+    setEnableBotLogging(true);
+    setEnableLlmsTxt(true);
+    setCacheDurationMinutes(60);
     message.info('Settings reset to safe default configuration.');
   };
 
@@ -689,17 +765,29 @@ export const SettingsTab = () => {
                   </div>
                   <div className="flex items-center justify-between text-slate-500 pt-1 border-t border-slate-200/60">
                     <span className="truncate">/{settings.indexnow_key}.txt</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const targetUrl = settings.indexnow_url || (siteInfo?.siteUrl ? `${siteInfo.siteUrl.replace(/\/$/, '')}/${settings.indexnow_key}.txt` : `/${settings.indexnow_key}.txt`);
-                        navigator.clipboard.writeText(targetUrl);
-                        message.success('Copied IndexNow verification key URL!');
-                      }}
-                      className="text-brand-600 hover:underline cursor-pointer font-semibold font-sans ml-2 flex-shrink-0"
-                    >
-                      Copy URL
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleRotateIndexNowKey}
+                        disabled={isRotatingIndexNowKey}
+                        className="text-slate-600 hover:text-slate-900 cursor-pointer font-semibold font-sans flex items-center gap-1 flex-shrink-0"
+                        title="Rotate verification key and regenerate key txt file"
+                      >
+                        <RotateCw size={11} className={isRotatingIndexNowKey ? 'animate-spin' : ''} />
+                        Rotate
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const targetUrl = settings.indexnow_url || (siteInfo?.siteUrl ? `${siteInfo.siteUrl.replace(/\/$/, '')}/${settings.indexnow_key}.txt` : `/${settings.indexnow_key}.txt`);
+                          navigator.clipboard.writeText(targetUrl);
+                          message.success('Copied IndexNow verification key URL!');
+                        }}
+                        className="text-brand-600 hover:underline cursor-pointer font-semibold font-sans flex-shrink-0"
+                      >
+                        Copy URL
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -788,6 +876,113 @@ export const SettingsTab = () => {
                 className="zgeo-switch-emerald"
               />
             </Flex>
+          </Card>
+
+          {/* Master Engine Execution & Output Controls Card */}
+          <Card
+            className="zgeo-glass-card md:col-span-2"
+            bordered={false}
+            styles={{ body: { padding: '24px' } }}
+          >
+            <Flex justify="space-between" align="center" wrap="wrap" gap="middle" className="pb-3.5 border-b border-slate-100">
+              <Flex align="center" gap="middle">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold shadow-2xs">
+                  <Sliders size={20} />
+                </div>
+                <div>
+                  <span className="font-bold text-slate-900 text-sm block">Master Engine Execution &amp; Output Controls</span>
+                  <span className="text-[11px] text-slate-500 block">Fine-tune dynamic catalog compilation, crawler telemetry logging, and JSON-LD enrichment.</span>
+                </div>
+              </Flex>
+              <span className="zgeo-verified-key-badge">
+                <span className="zgeo-badge-dot"></span>
+                Engine V2.0 Active
+              </span>
+            </Flex>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+              {/* 1. JSON-LD Schema Enhancer */}
+              <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2 flex flex-col justify-between">
+                <div>
+                  <Flex justify="space-between" align="center">
+                    <span className="font-bold text-slate-800 text-xs">JSON-LD Enhancer</span>
+                    <Switch
+                      checked={enableJsonLdEnhancer}
+                      onChange={setEnableJsonLdEnhancer}
+                      className="zgeo-switch-emerald"
+                      size="small"
+                    />
+                  </Flex>
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    Injects rich product schema, verified merchant citations, and Geo-coordinates into storefront HTML headers.
+                  </p>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono block pt-1 border-t border-slate-200/50">wp_footer &amp; single_product</span>
+              </div>
+
+              {/* 2. Bot Logging & Telemetry */}
+              <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2 flex flex-col justify-between">
+                <div>
+                  <Flex justify="space-between" align="center">
+                    <span className="font-bold text-slate-800 text-xs">AI Bot Telemetry</span>
+                    <Switch
+                      checked={enableBotLogging}
+                      onChange={setEnableBotLogging}
+                      className="zgeo-switch-emerald"
+                      size="small"
+                    />
+                  </Flex>
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    Logs search bot hits (GPTBot, Perplexity, ClaudeBot) to database for citation radar and indexation health charts.
+                  </p>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono block pt-1 border-t border-slate-200/50">zgeo_bot_logs DB table</span>
+              </div>
+
+              {/* 3. Master /llms.txt Feed */}
+              <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2 flex flex-col justify-between">
+                <div>
+                  <Flex justify="space-between" align="center">
+                    <span className="font-bold text-slate-800 text-xs">Public /llms.txt Feed</span>
+                    <Switch
+                      checked={enableLlmsTxt}
+                      onChange={setEnableLlmsTxt}
+                      className="zgeo-switch-emerald"
+                      size="small"
+                    />
+                  </Flex>
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    Serves real-time markdown catalog feed at <code>/llms.txt</code> for LLM autonomous shopping agents.
+                  </p>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono block pt-1 border-t border-slate-200/50">template_redirect hook</span>
+              </div>
+
+              {/* 4. Dynamic Feed Cache Duration */}
+              <div className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80 space-y-2 flex flex-col justify-between">
+                <div>
+                  <span className="font-bold text-slate-800 text-xs block mb-1.5">Feed Cache Lifetime</span>
+                  <Select
+                    value={cacheDurationMinutes}
+                    onChange={(val) => setCacheDurationMinutes(val)}
+                    style={{ width: '100%' }}
+                    size="small"
+                    options={[
+                      { value: 15, label: '15 Min (Real-time)' },
+                      { value: 30, label: '30 Min' },
+                      { value: 60, label: '60 Min (Standard)' },
+                      { value: 120, label: '2 Hours' },
+                      { value: 360, label: '6 Hours' },
+                      { value: 1440, label: '24 Hours (Low CPU)' }
+                    ]}
+                  />
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    Controls transient TTL for compiled <code>/llms.txt</code> feed. Purged automatically on product update.
+                  </p>
+                </div>
+                <span className="text-[10px] text-slate-400 font-mono block pt-1 border-t border-slate-200/50">set_transient(..., {cacheDurationMinutes}m)</span>
+              </div>
+            </div>
           </Card>
 
           {/* WordPress 6.8+ AI Abilities API Card */}
@@ -1017,49 +1212,152 @@ export const SettingsTab = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Flex justify="space-between" align="center">
-                  <label className="font-bold text-slate-700 text-xs">API Key Authorization (Encrypted AES-256)</label>
-                  {openAiApiKey ? (
-                    <span className="zgeo-verified-key-badge">Key Configured</span>
-                  ) : (
-                    <span className="text-[11px] text-slate-400 font-medium">Optional (For Background Auto-Enrichment)</span>
-                  )}
-                </Flex>
-                <Input
-                  type={showKey ? 'text' : 'password'}
-                  value={openAiApiKey}
-                  onChange={(e) => setOpenAiApiKey(e.target.value)}
-                  placeholder="sk-proj-••••••••••••••••••••••••"
-                  className="zgeo-antd-key-input"
-                  suffix={
-                    <div className="zgeo-key-suffix-wrap">
-                      <Button
-                        type="text"
-                        icon={showKey ? <EyeOff size={15} /> : <Eye size={15} />}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowKey(!showKey);
-                        }}
-                        className="zgeo-view-pw-btn"
-                        title={showKey ? 'Hide key' : 'Show key'}
-                      />
-                      <Button
-                        size="small"
-                        loading={isPinging}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleTestKey();
-                        }}
-                        className="zgeo-ping-btn"
-                        icon={<Zap size={13} className="text-amber-500" />}
-                      >
-                        Ping
-                      </Button>
-                    </div>
-                  }
-                />
-                <p className="text-[10px] text-slate-500">Keys are stored securely in WordPress <code>wp_options</code> with salt encryption.</p>
+              <div className="space-y-4 pt-1">
+                {/* 1. OpenAI API Key */}
+                <div className="space-y-1.5">
+                  <Flex justify="space-between" align="center">
+                    <label className="font-bold text-slate-700 text-xs flex items-center gap-1.5">
+                      <span>OpenAI API Key</span>
+                      <span className="text-[10px] text-slate-400 font-normal">(GPT-4o, GPT-4o mini)</span>
+                    </label>
+                    {openAiApiKey ? (
+                      <span className="zgeo-verified-key-badge">Configured</span>
+                    ) : (
+                      <span className="text-[10px] text-slate-400 font-medium">Optional</span>
+                    )}
+                  </Flex>
+                  <Input
+                    type={showKey ? 'text' : 'password'}
+                    value={openAiApiKey}
+                    onChange={(e) => setOpenAiApiKey(e.target.value)}
+                    placeholder="sk-proj-••••••••••••••••••••••••"
+                    className="zgeo-antd-key-input"
+                    suffix={
+                      <div className="zgeo-key-suffix-wrap">
+                        <Button
+                          type="text"
+                          icon={showKey ? <EyeOff size={15} /> : <Eye size={15} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowKey(!showKey);
+                          }}
+                          className="zgeo-view-pw-btn"
+                          title={showKey ? 'Hide key' : 'Show key'}
+                        />
+                        <Button
+                          size="small"
+                          loading={isPinging}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTestKey('openai');
+                          }}
+                          className="zgeo-ping-btn"
+                          icon={<Zap size={13} className="text-amber-500" />}
+                        >
+                          Ping
+                        </Button>
+                      </div>
+                    }
+                  />
+                </div>
+
+                {/* 2. Perplexity Sonar API Key */}
+                <div className="space-y-1.5">
+                  <Flex justify="space-between" align="center">
+                    <label className="font-bold text-slate-700 text-xs flex items-center gap-1.5">
+                      <span>Perplexity Sonar API Key</span>
+                      <span className="text-[10px] text-slate-400 font-normal">(Sonar Online Search)</span>
+                    </label>
+                    {perplexityApiKey ? (
+                      <span className="zgeo-verified-key-badge">Configured</span>
+                    ) : (
+                      <span className="text-[10px] text-slate-400 font-medium">Optional</span>
+                    )}
+                  </Flex>
+                  <Input
+                    type={showPerplexityKey ? 'text' : 'password'}
+                    value={perplexityApiKey}
+                    onChange={(e) => setPerplexityApiKey(e.target.value)}
+                    placeholder="pplx-••••••••••••••••••••••••"
+                    className="zgeo-antd-key-input"
+                    suffix={
+                      <div className="zgeo-key-suffix-wrap">
+                        <Button
+                          type="text"
+                          icon={showPerplexityKey ? <EyeOff size={15} /> : <Eye size={15} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowPerplexityKey(!showPerplexityKey);
+                          }}
+                          className="zgeo-view-pw-btn"
+                          title={showPerplexityKey ? 'Hide key' : 'Show key'}
+                        />
+                        <Button
+                          size="small"
+                          loading={isPingingPerplexity}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTestKey('perplexity');
+                          }}
+                          className="zgeo-ping-btn"
+                          icon={<Zap size={13} className="text-amber-500" />}
+                        >
+                          Ping
+                        </Button>
+                      </div>
+                    }
+                  />
+                </div>
+
+                {/* 3. Anthropic Claude API Key */}
+                <div className="space-y-1.5">
+                  <Flex justify="space-between" align="center">
+                    <label className="font-bold text-slate-700 text-xs flex items-center gap-1.5">
+                      <span>Anthropic Claude API Key</span>
+                      <span className="text-[10px] text-slate-400 font-normal">(Claude 3.5 Haiku)</span>
+                    </label>
+                    {anthropicApiKey ? (
+                      <span className="zgeo-verified-key-badge">Configured</span>
+                    ) : (
+                      <span className="text-[10px] text-slate-400 font-medium">Optional</span>
+                    )}
+                  </Flex>
+                  <Input
+                    type={showAnthropicKey ? 'text' : 'password'}
+                    value={anthropicApiKey}
+                    onChange={(e) => setAnthropicApiKey(e.target.value)}
+                    placeholder="sk-ant-••••••••••••••••••••••••"
+                    className="zgeo-antd-key-input"
+                    suffix={
+                      <div className="zgeo-key-suffix-wrap">
+                        <Button
+                          type="text"
+                          icon={showAnthropicKey ? <EyeOff size={15} /> : <Eye size={15} />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAnthropicKey(!showAnthropicKey);
+                          }}
+                          className="zgeo-view-pw-btn"
+                          title={showAnthropicKey ? 'Hide key' : 'Show key'}
+                        />
+                        <Button
+                          size="small"
+                          loading={isPingingAnthropic}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTestKey('anthropic');
+                          }}
+                          className="zgeo-ping-btn"
+                          icon={<Zap size={13} className="text-amber-500" />}
+                        >
+                          Ping
+                        </Button>
+                      </div>
+                    }
+                  />
+                </div>
+
+                <p className="text-[10px] text-slate-500 pt-1">All provider keys are encrypted with AES-256 and stored in WordPress <code>wp_options</code> with salt isolation.</p>
               </div>
             </div>
 

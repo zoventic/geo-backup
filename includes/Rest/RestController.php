@@ -169,6 +169,20 @@ class RestController {
             'callback'            => [ $this, 'simulate_crawler_hit' ],
             'permission_callback' => [ $this, 'check_permissions' ],
         ] );
+
+        // Rotate IndexNow verification key endpoint
+        register_rest_route( self::NAMESPACE, '/indexnow/rotate-key', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [ $this, 'rotate_indexnow_key' ],
+            'permission_callback' => [ $this, 'check_permissions' ],
+        ] );
+
+        // WordPress Abilities API manifest endpoint
+        register_rest_route( self::NAMESPACE, '/abilities', [
+            'methods'             => \WP_REST_Server::READABLE,
+            'callback'            => [ $this, 'get_abilities' ],
+            'permission_callback' => [ $this, 'check_permissions' ],
+        ] );
     }
 
     public function check_permissions() {
@@ -418,6 +432,7 @@ class RestController {
                 'bytespider'     => true,
             ],
             'auto_purge_out_of_stock' => true,
+            'autoPurgeOutOfStock'     => true,
             'rank_radar_frequency'    => '24h',
             'rankRadarFrequency'     => '24h',
             'auto_kill_jobs'          => true,
@@ -426,6 +441,14 @@ class RestController {
             'emailWarning'            => true,
             'active_store_id'         => '1',
             'activeStoreId'           => '1',
+            'enable_json_ld_enhancer' => true,
+            'enableJsonLdEnhancer'    => true,
+            'enable_bot_logging'      => true,
+            'enableBotLogging'        => true,
+            'enable_llms_txt'         => true,
+            'enableLlmsTxt'           => true,
+            'cache_duration_minutes'  => 60,
+            'cacheDurationMinutes'    => 60,
         ];
 
         $merged = wp_parse_args( $settings, $defaults );
@@ -436,6 +459,9 @@ class RestController {
         }
         if ( ! empty( $merged['perplexity_api_key'] ) ) {
             $merged['perplexity_api_key'] = 'pplx-••••••••••••••••';
+        }
+        if ( ! empty( $merged['anthropic_api_key'] ) ) {
+            $merged['anthropic_api_key'] = 'sk-ant-••••••••••••••••';
         }
         $indexnow_key = get_option( 'zgeo_indexnow_key', '' );
         if ( empty( $indexnow_key ) ) {
@@ -587,6 +613,31 @@ class RestController {
             $store_id = sanitize_text_field( $params['activeStoreId'] ?? $params['active_store_id'] );
             $settings['active_store_id'] = $store_id;
             $settings['activeStoreId']   = $store_id;
+        }
+
+        if ( isset( $params['enableJsonLdEnhancer'] ) || isset( $params['enable_json_ld_enhancer'] ) ) {
+            $val = (bool) ( $params['enableJsonLdEnhancer'] ?? $params['enable_json_ld_enhancer'] );
+            $settings['enable_json_ld_enhancer'] = $val;
+            $settings['enableJsonLdEnhancer']    = $val;
+        }
+
+        if ( isset( $params['enableBotLogging'] ) || isset( $params['enable_bot_logging'] ) ) {
+            $val = (bool) ( $params['enableBotLogging'] ?? $params['enable_bot_logging'] );
+            $settings['enable_bot_logging'] = $val;
+            $settings['enableBotLogging']   = $val;
+        }
+
+        if ( isset( $params['enableLlmsTxt'] ) || isset( $params['enable_llms_txt'] ) ) {
+            $val = (bool) ( $params['enableLlmsTxt'] ?? $params['enable_llms_txt'] );
+            $settings['enable_llms_txt'] = $val;
+            $settings['enableLlmsTxt']   = $val;
+        }
+
+        if ( isset( $params['cacheDurationMinutes'] ) || isset( $params['cache_duration_minutes'] ) ) {
+            $mins = absint( $params['cacheDurationMinutes'] ?? $params['cache_duration_minutes'] );
+            $mins = max( 5, min( 1440, $mins ) );
+            $settings['cache_duration_minutes'] = $mins;
+            $settings['cacheDurationMinutes']   = $mins;
         }
 
         \Zoventic\Geo\Engine\LlmsTxtGenerator::purge_cache();
@@ -873,6 +924,27 @@ class RestController {
             'scan'               => $result,
             'report'             => $result,
             'threatsNeutralized' => $current_threats,
+        ] );
+    }
+
+    public function rotate_indexnow_key() {
+        $new_key = wp_generate_password( 32, false );
+        update_option( 'zgeo_indexnow_key', $new_key, 'no' );
+        return rest_ensure_response( [
+            'success'     => true,
+            'key'         => $new_key,
+            'indexnow_key'=> $new_key,
+            'indexnow_url'=> home_url( '/' . $new_key . '.txt' ),
+            'message'     => __( 'New IndexNow verification key generated and published.', 'zoventic-geo' ),
+        ] );
+    }
+
+    public function get_abilities() {
+        $manifest = \Zoventic\Geo\Abilities\AbilitiesRegistry::get_abilities_manifest();
+        return rest_ensure_response( [
+            'success'   => true,
+            'abilities' => $manifest,
+            'isWp68'    => function_exists( 'wp_register_ability' ),
         ] );
     }
 

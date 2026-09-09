@@ -102,6 +102,13 @@ export const api = {
     body: JSON.stringify({})
   }),
 
+  rotateIndexNowKey: () => request("indexnow/rotate-key", {
+    method: "POST",
+    body: JSON.stringify({})
+  }),
+
+  getAbilities: () => request("abilities"),
+
   runQueriesAudit: () => request("queries/run-audit", {
     method: "POST",
     body: JSON.stringify({})

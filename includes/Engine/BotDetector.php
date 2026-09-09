@@ -147,6 +147,12 @@ class BotDetector {
     }
 
     private static function log_crawler( $bot, $vendor, $ip, $ua, $endpoint, $status ) {
+        $settings = get_option( 'zoventic_geo_settings', [] );
+        $enable_logging = isset( $settings['enableBotLogging'] ) ? (bool) $settings['enableBotLogging'] : ( isset( $settings['enable_bot_logging'] ) ? (bool) $settings['enable_bot_logging'] : true );
+        if ( ! $enable_logging ) {
+            return;
+        }
+
         global $wpdb;
         $table = $wpdb->prefix . 'zgeo_crawler_logs';
 

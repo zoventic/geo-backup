@@ -16,6 +16,12 @@ class SchemaBuilder {
             return $markup;
         }
 
+        $settings = get_option( 'zoventic_geo_settings', [] );
+        $enable_schema = isset( $settings['enableJsonLdEnhancer'] ) ? (bool) $settings['enableJsonLdEnhancer'] : ( isset( $settings['enable_json_ld_enhancer'] ) ? (bool) $settings['enable_json_ld_enhancer'] : true );
+        if ( ! $enable_schema ) {
+            return $markup;
+        }
+
         // Sanitize existing schema fields against prompt injections
         if ( isset( $markup['name'] ) ) {
             $markup['name'] = PromptSanitizer::sanitize( $markup['name'] );

@@ -6,6 +6,7 @@ import {
   Typography,
   Space,
   Segmented,
+  Modal,
   message
 } from 'antd';
 import {
@@ -24,6 +25,7 @@ import {
 } from 'lucide-react';
 import { Chart, registerables } from 'chart.js';
 import { useGeoStore, decodeCurrencySymbol } from '../store/useGeoStore';
+import { api } from '../services/api';
 
 Chart.register(...registerables);
 
@@ -40,11 +42,15 @@ export const OverviewTab = () => {
     setActiveTab,
     simulateCrawlerHit,
     fetchAiRevenue,
-    settings
+    settings,
+    abilitiesManifest
   } = useGeoStore();
 
   const [timeRange, setTimeRange] = useState('30d');
   const [isSimulatingHit, setIsSimulatingHit] = useState(false);
+  const [abilitiesModalOpen, setAbilitiesModalOpen] = useState(false);
+  const [isTestingAbility, setIsTestingAbility] = useState(null);
+  const [abilityTestResult, setAbilityTestResult] = useState(null);
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
 
@@ -324,7 +330,12 @@ export const OverviewTab = () => {
                     ? 'WP_Cron Active (Every 6h)'
                     : 'WP_Cron Active (Daily 04:00 AM)'}
                 </span>
-                <span className="zgeo-cron-badge" style={{ background: '#f0fdf4', borderColor: '#bbf7d0', color: '#166534', marginLeft: 6 }}>
+                <span
+                  className="zgeo-cron-badge cursor-pointer hover:opacity-90 transition-opacity"
+                  style={{ background: '#f0fdf4', borderColor: '#bbf7d0', color: '#166534', marginLeft: 6 }}
+                  title="Click to inspect registered WordPress 6.8+ AI Abilities"
+                  onClick={() => setAbilitiesModalOpen(true)}
+                >
                   <span className="zgeo-badge-dot" style={{ background: '#16a34a' }}></span>
                   WP 6.8+ Abilities API Active
                 </span>
@@ -679,6 +690,127 @@ export const OverviewTab = () => {
           </div>
         </div>
       </Card>
+
+      {/* WordPress 6.8+ Abilities API Inspector Modal */}
+      <Modal
+        title={
+          <Flex align="center" gap="small">
+            <Sparkles size={18} className="text-emerald-600" />
+            <span className="font-bold text-slate-900">WordPress 6.8+ AI Abilities API Inspector</span>
+          </Flex>
+        }
+        open={abilitiesModalOpen}
+        onCancel={() => {
+          setAbilitiesModalOpen(false);
+          setAbilityTestResult(null);
+        }}
+        footer={[
+          <Button
+            key="close"
+            onClick={() => {
+              setAbilitiesModalOpen(false);
+              setAbilityTestResult(null);
+            }}
+          >
+            Close Inspector
+          </Button>
+        ]}
+        width={680}
+      >
+        <div className="space-y-4 py-2">
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Zoventic GEO implements the official <strong>WordPress 6.8+ AI Abilities API</strong> specification. Autonomous AI shopping agents (e.g. OpenAI Operator, Perplexity Shopping, Claude Coworker) use these registered abilities to retrieve verified store catalog schemas and trigger diagnostic audits.
+          </p>
+
+          <div className="space-y-3">
+            {(abilitiesManifest && abilitiesManifest.length > 0 ? abilitiesManifest : [
+              {
+                name: 'zoventic_geo/get_store_context',
+                label: 'Get Store Context & Catalog Manifest',
+                description: 'Allows autonomous AI shopping agents to retrieve sanitized, structured product catalog specs & real-time stock levels.',
+                type: 'read_only',
+                category: 'commerce_ai',
+                auth_level: 'public_sanitized',
+                endpoint: '/wp-json/zoventic-geo/v1/abilities'
+              },
+              {
+                name: 'zoventic_geo/run_geo_audit',
+                label: 'Run Real-time GEO Diagnostic Audit',
+                description: 'Provides self-healing schema scoring and knowledge graph readiness evaluation directly to WordPress core tools.',
+                type: 'idempotent',
+                category: 'diagnostic',
+                auth_level: 'manage_options',
+                endpoint: '/wp-json/zoventic-geo/v1/queries/run-audit'
+              }
+            ]).map((ability, idx) => (
+              <div key={idx} className="p-3.5 bg-slate-50/90 rounded-xl border border-slate-200/80 space-y-2">
+                <Flex justify="space-between" align="center" wrap="wrap" gap="small">
+                  <div>
+                    <span className="font-mono font-bold text-xs text-indigo-700 block">{ability.name}</span>
+                    <span className="text-xs font-semibold text-slate-800">{ability.label || ability.name}</span>
+                  </div>
+                  <Flex align="center" gap="small">
+                    <span className="text-[10px] bg-slate-200 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">
+                      {ability.type || 'read_only'}
+                    </span>
+                    <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded font-semibold">
+                      {ability.auth_level || 'sanitized'}
+                    </span>
+                  </Flex>
+                </Flex>
+                <p className="text-[11px] text-slate-600">{ability.description}</p>
+                <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 text-[11px]">
+                  <code className="text-[10px] text-slate-500 truncate max-w-[340px]">{ability.endpoint || '/wp-json/zoventic-geo/v1/...'}</code>
+                  <Button
+                    size="small"
+                    loading={isTestingAbility === ability.name}
+                    onClick={async () => {
+                      setIsTestingAbility(ability.name);
+                      setAbilityTestResult(null);
+                      try {
+                        let res;
+                        if (ability.name.includes('get_store_context') || ability.name.includes('abilities')) {
+                          res = await api.getAbilities();
+                        } else {
+                          res = await api.runQueriesAudit();
+                        }
+                        setAbilityTestResult({ name: ability.name, data: res });
+                        message.success(`Ability "${ability.name}" executed successfully!`);
+                      } catch (err) {
+                        setAbilityTestResult({ name: ability.name, error: err.message });
+                        message.warning(`Executed: ${err.message}`);
+                      } finally {
+                        setIsTestingAbility(null);
+                      }
+                    }}
+                    className="zgeo-btn-white text-xs"
+                  >
+                    Test Ability Call
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {abilityTestResult && (
+            <div className="mt-3 p-3 bg-slate-900 text-slate-200 rounded-xl font-mono text-[11px] space-y-1">
+              <div className="flex items-center justify-between text-slate-400 pb-1 border-b border-slate-700">
+                <span>Execution Payload: {abilityTestResult.name}</span>
+                <button
+                  type="button"
+                  onClick={() => setAbilityTestResult(null)}
+                  className="text-slate-400 hover:text-white text-[10px]"
+                >
+                  Clear
+                </button>
+              </div>
+              <pre className="max-h-48 overflow-y-auto pt-1 text-[10px] leading-tight text-emerald-400">
+                {JSON.stringify(abilityTestResult.data || abilityTestResult.error, null, 2)}
+              </pre>
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

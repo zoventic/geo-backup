@@ -104,7 +104,10 @@ export const LlmsEngineTab = () => {
 
     code += `\n## Featured Product Catalog\n\n`;
 
-    const prods = (products && products.length > 0) ? products : [];
+    let prods = (products && products.length > 0) ? products : [];
+    if (rules.inStock || settings?.autoPurgeOutOfStock) {
+      prods = prods.filter(p => p.stockStatus !== 'Out of Stock');
+    }
     if (prods.length > 0) {
       prods.slice(0, 20).forEach((p) => {
         const itemUrl = p.permalink || (siteInfo?.siteUrl ? `${siteInfo.siteUrl}/product/${p.id}` : '#');

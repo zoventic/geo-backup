@@ -143,6 +143,7 @@ class BulkActionScheduler {
         }
 
         update_post_meta( $product_id, '_zgeo_score', min( 100, $score ) );
+        update_post_meta( $product_id, '_zgeo_optimized_at', current_time( 'mysql' ) );
         update_post_meta( $product_id, '_zgeo_last_optimized', time() );
     }
 

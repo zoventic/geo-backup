@@ -591,7 +591,19 @@ class RestController {
 
         \Zoventic\Geo\Engine\LlmsTxtGenerator::purge_cache();
         update_option( 'zoventic_geo_settings', $settings, 'no' );
-        return rest_ensure_response( [ 'success' => true, 'message' => 'Settings saved.', 'settings' => $settings ] );
+
+        $response_settings = $settings;
+        if ( ! empty( $response_settings['openai_api_key'] ) ) {
+            $response_settings['openai_api_key'] = 'sk-proj-••••••••••••••••';
+        }
+        if ( ! empty( $response_settings['perplexity_api_key'] ) ) {
+            $response_settings['perplexity_api_key'] = 'pplx-••••••••••••••••';
+        }
+        if ( ! empty( $response_settings['anthropic_api_key'] ) ) {
+            $response_settings['anthropic_api_key'] = 'sk-ant-••••••••••••••••';
+        }
+
+        return rest_ensure_response( [ 'success' => true, 'message' => 'Settings saved.', 'settings' => $response_settings ] );
     }
 
     /**

@@ -240,20 +240,11 @@ export const SettingsTab = () => {
     }
     setIsSendingTestDigest(true);
     try {
-      const config = window.zgeoConfig || {};
-      const base = (config.restUrl || '/wp-json/zoventic-geo/v1/').replace(/\/$/, '');
-      const res = await fetch(`${base}/settings/test-digest`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(config.nonce ? { 'X-WP-Nonce': config.nonce } : {})
-        },
-        body: JSON.stringify({ email: alertEmail })
-      });
-      if (res.ok) {
+      const res = await api.sendTestDigest(alertEmail);
+      if (res && res.success) {
         message.success(`Test digest sent to ${alertEmail}! Check your inbox.`);
       } else {
-        message.info(`Digest queued for ${alertEmail}. wp_mail() will deliver shortly.`);
+        message.info(res?.message || `Digest queued for ${alertEmail}. wp_mail() will deliver shortly.`);
       }
     } catch (err) {
       message.info(`Digest queued for ${alertEmail}. WordPress will dispatch via wp_mail().`);
@@ -269,18 +260,9 @@ export const SettingsTab = () => {
     }
     setIsPingingIndexNow(true);
     try {
-      const config = window.zgeoConfig || {};
-      const base = (config.restUrl || '/wp-json/zoventic-geo/v1/').replace(/\/$/, '');
-      const res = await fetch(`${base}/indexnow/ping`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(config.nonce ? { 'X-WP-Nonce': config.nonce } : {})
-        },
-        body: JSON.stringify({})
-      });
-      if (res.ok) {
-        message.success('IndexNow ping sent to Microsoft Bing/Copilot successfully!');
+      const res = await api.pingIndexNow();
+      if (res && res.success) {
+        message.success(res.message || 'IndexNow ping sent to Microsoft Bing/Copilot successfully!');
       } else {
         message.info('IndexNow ping dispatched (non-blocking). Bing will index shortly.');
       }
@@ -297,6 +279,7 @@ export const SettingsTab = () => {
       if (updateSettings) {
         await updateSettings({ autoPurgeOutOfStock: checked, auto_purge_out_of_stock: checked });
       }
+      await purgeCache?.();
       message.success(checked ? 'Out-of-stock products will be excluded from /llms.txt in real-time.' : 'Out-of-stock products will remain in /llms.txt feed.');
     } catch (e) {
       message.error('Failed to update out-of-stock exclusion setting.');

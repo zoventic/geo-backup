@@ -164,6 +164,7 @@ class GeoAuditor {
             'success'     => true,
             'targetUrl'   => $domain_url,
             'auditedAt'   => current_time( 'mysql' ),
+            'score'       => $final_score,
             'overallScore'=> $final_score,
             'rating'      => $final_score >= 80 ? 'Excellent' : ( $final_score >= 50 ? 'Moderate' : 'Needs Optimization' ),
             'checks'      => $checks,

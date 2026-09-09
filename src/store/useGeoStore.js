@@ -600,17 +600,6 @@ export const useGeoStore = create((set, get) => ({
     }
   },
 
-  updateSettings: async (newSettings) => {
-    set((state) => ({
-      settings: { ...state.settings, ...newSettings }
-    }));
-    try {
-      await api.saveSettings(newSettings);
-    } catch (e) {
-      // silent catch
-    }
-  },
-
   startBulkOptimization: async () => {
     try {
       const res = await api.startBulkOptimize();
@@ -681,14 +670,5 @@ export const useGeoStore = create((set, get) => ({
         llmsTxtFreshness: 'Just updated (Active)'
       }
     });
-  },
-
-  clearCrawlerLogs: async () => {
-    set({ crawlerLogs: [] });
-    try {
-      await api.clearCrawlers();
-    } catch (e) {
-      // silent catch
-    }
   }
 }));

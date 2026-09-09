@@ -36,6 +36,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
+import { api } from '../services/api';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -120,18 +121,8 @@ export const Header = () => {
     setAuditResult(null);
     const cleanDomain = (values.domain || 'new-store.com').replace(/^https?:\/\//, '');
     try {
-      const config = window.zgeoConfig || {};
-      const base = (config.restUrl || '/wp-json/zoventic-geo/v1/').replace(/\/$/, '');
-      const res = await fetch(`${base}/audit/domain`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(config.nonce ? { 'X-WP-Nonce': config.nonce } : {})
-        },
-        body: JSON.stringify({ domain: `https://${cleanDomain}` })
-      });
-      const data = await res.json();
-      const auditScore = data?.score ?? 0;
+      const data = await api.auditDomain(`https://${cleanDomain}`);
+      const auditScore = data?.score ?? data?.overallScore ?? 0;
       const hasLlms = data?.checks?.llmsTxt?.status === 'pass';
       const healthLabel = auditScore >= 70 ? `${auditScore}% Healthy` : auditScore >= 40 ? `${auditScore}% Needs Work` : `${auditScore}% Critical`;
       setAuditResult({ score: auditScore, hasLlms, checks: data?.checks || {} });

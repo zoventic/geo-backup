@@ -37,7 +37,8 @@ export const RankRadarTab = () => {
     settings,
     updateSettings,
     runTrackedQueriesAudit,
-    products
+    products,
+    setSimulatorTestQuery
   } = useGeoStore();
 
   const domainName = siteInfo?.siteUrl ? siteInfo.siteUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '') : 'mystore.com';
@@ -249,7 +250,10 @@ export const RankRadarTab = () => {
         <Flex align="center" justify="end" gap="small">
           <Button
             size="small"
-            onClick={() => setActiveTab('simulator')}
+            onClick={() => {
+              setSimulatorTestQuery?.(record.query);
+              setActiveTab('simulator');
+            }}
             className="zgeo-sim-btn-action"
           >
             Test &rarr;

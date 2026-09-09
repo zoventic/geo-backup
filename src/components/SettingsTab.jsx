@@ -81,6 +81,7 @@ export const SettingsTab = () => {
   const [enableJsonLdEnhancer, setEnableJsonLdEnhancer] = useState(settings?.enableJsonLdEnhancer ?? true);
   const [enableBotLogging, setEnableBotLogging] = useState(settings?.enableBotLogging ?? true);
   const [enableLlmsTxt, setEnableLlmsTxt] = useState(settings?.enableLlmsTxt ?? true);
+  const [enableAbilitiesApi, setEnableAbilitiesApi] = useState(settings?.enableAbilitiesApi ?? true);
   const [cacheDurationMinutes, setCacheDurationMinutes] = useState(settings?.cacheDurationMinutes ?? 60);
 
   const [showKey, setShowKey] = useState(false);
@@ -186,6 +187,8 @@ export const SettingsTab = () => {
       if (settings.enableJsonLdEnhancer !== undefined) setEnableJsonLdEnhancer(settings.enableJsonLdEnhancer);
       if (settings.enableBotLogging !== undefined) setEnableBotLogging(settings.enableBotLogging);
       if (settings.enableLlmsTxt !== undefined) setEnableLlmsTxt(settings.enableLlmsTxt);
+      if (settings.enableAbilitiesApi !== undefined) setEnableAbilitiesApi(settings.enableAbilitiesApi);
+      if (settings.enable_abilities_api !== undefined) setEnableAbilitiesApi(settings.enable_abilities_api);
       if (settings.cacheDurationMinutes !== undefined) setCacheDurationMinutes(settings.cacheDurationMinutes);
       if (settings.perplexityApiKey) setPerplexityApiKey(settings.perplexityApiKey);
       if (settings.anthropicApiKey) setAnthropicApiKey(settings.anthropicApiKey);
@@ -374,6 +377,7 @@ export const SettingsTab = () => {
           enableJsonLdEnhancer,
           enableBotLogging,
           enableLlmsTxt,
+          enableAbilitiesApi,
           cacheDurationMinutes,
           ...(openAiApiKey && !openAiApiKey.includes('••••') ? { openai_api_key: openAiApiKey } : {}),
           ...(perplexityApiKey && !perplexityApiKey.includes('••••') ? { perplexity_api_key: perplexityApiKey } : {}),
@@ -411,6 +415,7 @@ export const SettingsTab = () => {
     setEnableJsonLdEnhancer(true);
     setEnableBotLogging(true);
     setEnableLlmsTxt(true);
+    setEnableAbilitiesApi(true);
     setCacheDurationMinutes(60);
     message.info('Settings reset to safe default configuration.');
   };
@@ -1002,10 +1007,19 @@ export const SettingsTab = () => {
                 </div>
               </Flex>
 
-              <span className="zgeo-verified-key-badge">
-                <span className="zgeo-badge-dot"></span>
-                wp_register_ability Active
-              </span>
+              <Flex align="center" gap="middle">
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center gap-1.5 ${
+                  enableAbilitiesApi ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'
+                }`}>
+                  <span className={`w-2 h-2 rounded-full ${enableAbilitiesApi ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></span>
+                  {enableAbilitiesApi ? 'wp_register_ability Active' : 'Abilities Disabled'}
+                </span>
+                <Switch
+                  checked={enableAbilitiesApi}
+                  onChange={setEnableAbilitiesApi}
+                  className="zgeo-switch-emerald"
+                />
+              </Flex>
             </Flex>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">

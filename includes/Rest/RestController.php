@@ -70,6 +70,11 @@ class RestController {
             'callback'            => [ $this, 'get_bulk_optimize_progress' ],
             'permission_callback' => [ $this, 'check_permissions' ],
         ] );
+        register_rest_route( self::NAMESPACE, '/products/bulk-optimize/cancel', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [ $this, 'cancel_bulk_optimize' ],
+            'permission_callback' => [ $this, 'check_permissions' ],
+        ] );
 
         // Commercial Licensing endpoints
         register_rest_route( self::NAMESPACE, '/license', [
@@ -447,6 +452,8 @@ class RestController {
             'enableBotLogging'        => true,
             'enable_llms_txt'         => true,
             'enableLlmsTxt'           => true,
+            'enable_abilities_api'    => true,
+            'enableAbilitiesApi'      => true,
             'cache_duration_minutes'  => 60,
             'cacheDurationMinutes'    => 60,
         ];
@@ -631,6 +638,12 @@ class RestController {
             $val = (bool) ( $params['enableLlmsTxt'] ?? $params['enable_llms_txt'] );
             $settings['enable_llms_txt'] = $val;
             $settings['enableLlmsTxt']   = $val;
+        }
+
+        if (isset( $params['enableAbilitiesApi'] ) || isset( $params['enable_abilities_api'] ) ) {
+            $val = (bool) ( $params['enableAbilitiesApi'] ?? $params['enable_abilities_api'] );
+            $settings['enable_abilities_api'] = $val;
+            $settings['enableAbilitiesApi']   = $val;
         }
 
         if ( isset( $params['cacheDurationMinutes'] ) || isset( $params['cache_duration_minutes'] ) ) {
@@ -883,6 +896,11 @@ class RestController {
         return rest_ensure_response( $progress );
     }
 
+    public function cancel_bulk_optimize() {
+        $result = \Zoventic\Geo\Engine\BulkActionScheduler::cancel_bulk_optimization();
+        return rest_ensure_response( $result );
+    }
+
     public function get_license_info() {
         $info = \Zoventic\Geo\Pro\Licensing::get_license_data();
         return rest_ensure_response( $info );
@@ -940,9 +958,11 @@ class RestController {
     }
 
     public function get_abilities() {
+        $enabled  = \Zoventic\Geo\Abilities\AbilitiesRegistry::is_abilities_enabled();
         $manifest = \Zoventic\Geo\Abilities\AbilitiesRegistry::get_abilities_manifest();
         return rest_ensure_response( [
             'success'   => true,
+            'enabled'   => $enabled,
             'abilities' => $manifest,
             'isWp68'    => function_exists( 'wp_register_ability' ),
         ] );

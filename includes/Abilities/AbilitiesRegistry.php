@@ -13,8 +13,19 @@ class AbilitiesRegistry {
         add_filter( 'zoventic_geo_available_abilities', [ __CLASS__, 'get_abilities_manifest' ] );
     }
 
+    public static function is_abilities_enabled() {
+        $settings = get_option( 'zoventic_geo_settings', [] );
+        if ( isset( $settings['enableAbilitiesApi'] ) ) {
+            return (bool) $settings['enableAbilitiesApi'];
+        }
+        if ( isset( $settings['enable_abilities_api'] ) ) {
+            return (bool) $settings['enable_abilities_api'];
+        }
+        return true;
+    }
+
     public static function register_abilities() {
-        if ( ! function_exists( 'wp_register_ability' ) ) {
+        if ( ! self::is_abilities_enabled() || ! function_exists( 'wp_register_ability' ) ) {
             return;
         }
 
@@ -38,6 +49,9 @@ class AbilitiesRegistry {
     }
 
     public static function get_abilities_manifest( $manifest = [] ) {
+        if ( ! self::is_abilities_enabled() ) {
+            return $manifest;
+        }
         return array_merge( $manifest, [
             [
                 'name'        => 'zoventic_geo/get_store_context',

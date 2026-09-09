@@ -87,6 +87,8 @@ export const api = {
 
   getBulkOptimizeProgress: () => request("products/bulk-optimize/progress"),
 
+  cancelBulkOptimize: () => request("products/bulk-optimize/cancel", { method: "POST" }),
+
   auditDomain: (domain) => request("audit/domain", {
     method: "POST",
     body: JSON.stringify({ domain })

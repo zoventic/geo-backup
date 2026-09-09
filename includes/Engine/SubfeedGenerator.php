@@ -39,6 +39,16 @@ class SubfeedGenerator {
             return;
         }
 
+        // Check master feed switch
+        $settings = get_option( 'zoventic_geo_settings', [] );
+        $feed_enabled = isset( $settings['enableLlmsTxt'] ) ? (bool) $settings['enableLlmsTxt'] : ( isset( $settings['enable_llms_txt'] ) ? (bool) $settings['enable_llms_txt'] : true );
+        if ( ! $feed_enabled ) {
+            status_header( 404 );
+            header( 'Content-Type: text/plain; charset=utf-8' );
+            echo "# Public /llms.txt feed and category sub-feeds are currently paused by the store administrator.";
+            exit;
+        }
+
         $term = get_term_by( 'slug', $category_slug, 'product_cat' );
         if ( ! $term || is_wp_error( $term ) ) {
             status_header( 404 );

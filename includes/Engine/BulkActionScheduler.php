@@ -204,4 +204,29 @@ class BulkActionScheduler {
         update_post_meta( $product_id, '_zgeo_dirty', 1 );
         \Zoventic\Geo\Engine\LlmsTxtGenerator::purge_cache();
     }
+
+    /**
+     * Cancel or stop an ongoing bulk optimization task
+     *
+     * @return array
+     */
+    public static function cancel_bulk_optimization() {
+        if ( function_exists( 'as_unschedule_all_actions' ) ) {
+            as_unschedule_all_actions( self::HOOK_BATCH_PROCESS );
+        }
+
+        $progress = get_option( self::OPTION_PROGRESS, [] );
+        $progress['status']       = 'cancelled';
+        $progress['completed_at'] = time();
+        update_option( self::OPTION_PROGRESS, $progress );
+
+        \Zoventic\Geo\Engine\LlmsTxtGenerator::purge_cache();
+
+        return [
+            'success'  => true,
+            'status'   => 'cancelled',
+            'progress' => $progress,
+            'message'  => __( 'Bulk catalog optimization cancelled.', 'zoventic-geo' ),
+        ];
+    }
 }

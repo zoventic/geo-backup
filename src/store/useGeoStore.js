@@ -105,6 +105,7 @@ export const useGeoStore = create((set, get) => ({
     cacheDurationMinutes: 60,
     enableIndexNow: true,
     enableEmailDigest: true,
+    enableAbilitiesApi: true,
     alertEmail: ''
   },
   isRefreshing: false,
@@ -126,6 +127,8 @@ export const useGeoStore = create((set, get) => ({
   monthlyBudgetCap: 5,
   setMonthlyBudgetCap: (cap) => set({ monthlyBudgetCap: cap }),
   abilitiesManifest: [],
+  simulatorTestQuery: '',
+  setSimulatorTestQuery: (query) => set({ simulatorTestQuery: query }),
   crawlerPermissions: {
     gptbot: true,
     perplexity: true,
@@ -652,6 +655,16 @@ export const useGeoStore = create((set, get) => ({
       });
       return res;
     } catch (e) {
+      return null;
+    }
+  },
+
+  cancelBulkOptimization: async () => {
+    try {
+      const res = await api.cancelBulkOptimize();
+      return res;
+    } catch (e) {
+      console.warn('[Zoventic GEO] Error cancelling bulk optimization:', e);
       return null;
     }
   },

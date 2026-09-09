@@ -36,7 +36,11 @@ export const SimulatorTab = () => {
     setInjectionTestInput,
     scanInjectionThreat,
     isScanningInjection,
-    injectionScanResult
+    injectionScanResult,
+    promptShield,
+    metrics,
+    simulatorTestQuery,
+    setSimulatorTestQuery
   } = useGeoStore();
   const storeLabel = siteInfo?.siteName || 'Your Store';
 
@@ -137,6 +141,16 @@ export const SimulatorTab = () => {
     setSelectedPresetId(id);
     handleRunSimulation(id);
   };
+
+  React.useEffect(() => {
+    if (simulatorTestQuery && simulatorTestQuery.trim()) {
+      const q = simulatorTestQuery.trim();
+      setQueryMode('custom');
+      setCustomQuery(q);
+      handleRunCustomQuery(q);
+      setSimulatorTestQuery?.('');
+    }
+  }, [simulatorTestQuery]);
 
   const currentActive = activeSimulation || presets[0] || null;
 
@@ -367,9 +381,15 @@ export const SimulatorTab = () => {
               </div>
             </Flex>
 
-            <span className="zgeo-verified-key-badge">
-              <ShieldCheck size={14} className="text-emerald-600" /> Active Catalog Guard
-            </span>
+            <Flex align="center" gap="small">
+              <span className="px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center gap-1.5 bg-rose-50 text-rose-700 border-rose-200 shadow-2xs">
+                <ShieldAlert size={13} />
+                {(promptShield?.threatsNeutralized ?? metrics?.threatsNeutralized ?? 0)} Threats Neutralized
+              </span>
+              <span className="zgeo-verified-key-badge">
+                <ShieldCheck size={14} className="text-emerald-600" /> Active Catalog Guard
+              </span>
+            </Flex>
           </Flex>
 
           <div className="space-y-3">

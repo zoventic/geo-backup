@@ -88,6 +88,7 @@ class Activator {
                     'meta'           => true,
                     'applebot'       => true,
                     'bytespider'     => true,
+                    'cohere'         => true,
                 ],
                 'crawlerPermissions'     => [
                     'gptbot'         => true,
@@ -98,6 +99,7 @@ class Activator {
                     'meta'           => true,
                     'applebot'       => true,
                     'bytespider'     => true,
+                    'cohere'         => true,
                 ],
             ];
             add_option( 'zoventic_geo_settings', $defaults, '', 'no' );

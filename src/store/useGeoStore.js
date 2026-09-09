@@ -137,7 +137,8 @@ export const useGeoStore = create((set, get) => ({
     amazonbot: true,
     meta: true,
     applebot: true,
-    bytespider: true
+    bytespider: true,
+    cohere: true
   },
   toggleCrawlerPermission: (botKey) =>
     set((state) => ({

@@ -14,6 +14,9 @@ class BotDetector {
         'ClaudeBot'          => 'Anthropic (Claude)',
         'Anthropic-AI'       => 'Anthropic Research',
         'Google-Extended'    => 'Google (Gemini AI Overviews)',
+        'Amazonbot'          => 'Amazon (Rufus AI Shopping)',
+        'Meta-ExternalAgent' => 'Meta (Llama AI Assistant)',
+        'FacebookBot'        => 'Meta (Llama AI Assistant)',
         'Bytespider'         => 'ByteDance (TikTok AI)',
         'Applebot-Extended'  => 'Apple Intelligence',
         'cohere-ai'          => 'Cohere AI',
@@ -46,6 +49,7 @@ class BotDetector {
             'meta'           => 'Meta-ExternalAgent',
             'applebot'       => 'Applebot-Extended',
             'bytespider'     => 'Bytespider',
+            'cohere'         => 'cohere-ai',
         ];
 
         $rules  = "\n# ----------------------------------------\n";
@@ -104,15 +108,18 @@ class BotDetector {
             : ( isset( $settings['crawlerPermissions'] ) && is_array( $settings['crawlerPermissions'] ) ? $settings['crawlerPermissions'] : [] );
 
         $bot_perm_map = [
-            'GPTBot'            => 'gptbot',
-            'ChatGPT-User'      => 'gptbot',
-            'PerplexityBot'     => 'perplexity',
-            'ClaudeBot'         => 'claudebot',
-            'Anthropic-AI'      => 'claudebot',
-            'Google-Extended'   => 'googleExtended',
-            'Bytespider'        => 'bytespider',
-            'Applebot-Extended' => 'applebot',
-            'cohere-ai'         => 'cohere',
+            'GPTBot'             => 'gptbot',
+            'ChatGPT-User'       => 'gptbot',
+            'PerplexityBot'      => 'perplexity',
+            'ClaudeBot'          => 'claudebot',
+            'Anthropic-AI'       => 'claudebot',
+            'Google-Extended'    => 'googleExtended',
+            'Amazonbot'          => 'amazonbot',
+            'Meta-ExternalAgent' => 'meta',
+            'FacebookBot'        => 'meta',
+            'Bytespider'         => 'bytespider',
+            'Applebot-Extended'  => 'applebot',
+            'cohere-ai'          => 'cohere',
         ];
 
         $matched_key = isset( $bot_perm_map[ $detected_bot ] ) ? $bot_perm_map[ $detected_bot ] : '';

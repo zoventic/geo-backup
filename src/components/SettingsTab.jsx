@@ -38,7 +38,8 @@ import {
   ExternalLink,
   AlertTriangle,
   RotateCw,
-  Sliders
+  Sliders,
+  Layers
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
@@ -229,6 +230,9 @@ export const SettingsTab = () => {
     }
     if (crawlerPermissions?.bytespider ?? true) {
       robots += 'User-agent: Bytespider\nAllow: /llms.txt\n\n';
+    }
+    if (crawlerPermissions?.cohere ?? true) {
+      robots += 'User-agent: cohere-ai\nAllow: /llms.txt\n\n';
     }
     robots += 'Sitemap: /llms.txt';
     return robots;
@@ -495,6 +499,14 @@ export const SettingsTab = () => {
       icon: <Radio size={16} />,
       colorClass: 'rose',
       active: crawlerPermissions?.bytespider ?? true
+    },
+    {
+      key: 'cohere',
+      name: 'Cohere AI',
+      org: 'Enterprise Search & RAG',
+      icon: <Layers size={16} />,
+      colorClass: 'emerald',
+      active: crawlerPermissions?.cohere ?? true
     }
   ];
 

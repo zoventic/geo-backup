@@ -435,6 +435,7 @@ class RestController {
                 'meta'           => true,
                 'applebot'       => true,
                 'bytespider'     => true,
+                'cohere'         => true,
             ],
             'auto_purge_out_of_stock' => true,
             'autoPurgeOutOfStock'     => true,
@@ -860,6 +861,16 @@ class RestController {
             $vendor = 'Anthropic (Claude)';
         } elseif ( stripos( $bot, 'apple' ) !== false ) {
             $vendor = 'Apple Intelligence';
+        } elseif ( stripos( $bot, 'amazon' ) !== false || stripos( $bot, 'rufus' ) !== false ) {
+            $vendor = 'Amazon (Rufus AI Commerce)';
+        } elseif ( stripos( $bot, 'meta' ) !== false || stripos( $bot, 'facebook' ) !== false ) {
+            $vendor = 'Meta (Llama 3.3 Assistant)';
+        } elseif ( stripos( $bot, 'google' ) !== false || stripos( $bot, 'gemini' ) !== false ) {
+            $vendor = 'Google (Gemini AI Overviews)';
+        } elseif ( stripos( $bot, 'byte' ) !== false || stripos( $bot, 'tiktok' ) !== false ) {
+            $vendor = 'ByteDance (TikTok AI)';
+        } elseif ( stripos( $bot, 'cohere' ) !== false ) {
+            $vendor = 'Cohere AI';
         }
 
         $table = $wpdb->prefix . 'zgeo_crawler_logs';

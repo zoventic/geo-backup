@@ -4141,3 +4141,36 @@ button.zgeo-radar-email-cancel-btn:hover {
 } @media (min-width: 1280px) { #zgeo-root .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr))
     }
 }
+
+/* ---------------------------------------------------------
+   Simulator Query Mode Segmented Control & WP Core UI Reset
+   --------------------------------------------------------- */
+#zgeo-root button:not(.ant-btn) {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.zgeo-sim-segmented.ant-segmented {
+  background: #f1f5f9 !important;
+  padding: 3px !important;
+  border-radius: 10px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.zgeo-sim-segmented .ant-segmented-item {
+  border-radius: 7px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.zgeo-sim-segmented .ant-segmented-item-selected {
+  background: #ffffff !important;
+  color: #4338ca !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.04) !important;
+}
+
+.zgeo-sim-segmented .ant-segmented-item-label {
+  padding: 3px 8px !important;
+  line-height: normal !important;
+}

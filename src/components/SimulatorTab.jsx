@@ -8,7 +8,8 @@ import {
   Flex,
   Typography,
   Space,
-  Tag
+  Tag,
+  Segmented
 } from 'antd';
 import {
   Search,
@@ -182,22 +183,31 @@ export const SimulatorTab = () => {
                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block">
                   Select or Input Buyer Search Query to Simulate
                 </label>
-                <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
-                  <button
-                    type="button"
-                    onClick={() => setQueryMode('preset')}
-                    className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${queryMode === 'preset' ? 'bg-white shadow-2xs text-brand-700 font-bold' : 'text-slate-500'}`}
-                  >
-                    Catalog Presets
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setQueryMode('custom')}
-                    className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${queryMode === 'custom' ? 'bg-white shadow-2xs text-brand-700 font-bold' : 'text-slate-500'}`}
-                  >
-                    Custom Buyer Query
-                  </button>
-                </div>
+                <Segmented
+                  options={[
+                    {
+                      label: (
+                        <span className="flex items-center gap-1.5 px-1 py-0.5 text-xs font-semibold">
+                          <Sparkles size={12} className={queryMode === 'preset' ? 'text-brand-600' : 'text-slate-400'} />
+                          Catalog Presets
+                        </span>
+                      ),
+                      value: 'preset'
+                    },
+                    {
+                      label: (
+                        <span className="flex items-center gap-1.5 px-1 py-0.5 text-xs font-semibold">
+                          <Search size={12} className={queryMode === 'custom' ? 'text-brand-600' : 'text-slate-400'} />
+                          Custom Buyer Query
+                        </span>
+                      ),
+                      value: 'custom'
+                    }
+                  ]}
+                  value={queryMode}
+                  onChange={(val) => setQueryMode(val)}
+                  className="zgeo-sim-segmented"
+                />
               </Flex>
 
               <div className="space-y-3">

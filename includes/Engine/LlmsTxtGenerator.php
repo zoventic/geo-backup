@@ -67,10 +67,12 @@ class LlmsTxtGenerator {
         $settings   = get_option( 'zoventic_geo_settings', [] );
         $feed_rules = isset( $settings['feed_rules'] ) && is_array( $settings['feed_rules'] ) ? $settings['feed_rules'] : ( $settings['feedRules'] ?? [] );
 
-        $in_stock_only      = isset( $feed_rules['inStock'] ) ? (bool) $feed_rules['inStock'] : true;
-        $include_variations = ! empty( $feed_rules['variations'] );
-        $include_reviews    = ! empty( $feed_rules['reviews'] );
-        $include_coupons    = ! empty( $feed_rules['coupons'] );
+        $auto_purge_disabled = isset( $settings['autoPurgeOutOfStock'] ) ? empty( $settings['autoPurgeOutOfStock'] ) : ( isset( $settings['auto_purge_out_of_stock'] ) ? empty( $settings['auto_purge_out_of_stock'] ) : false );
+        $in_stock_rule       = isset( $feed_rules['inStock'] ) ? (bool) $feed_rules['inStock'] : true;
+        $in_stock_only       = ! $auto_purge_disabled && $in_stock_rule;
+        $include_variations  = ! empty( $feed_rules['variations'] );
+        $include_reviews     = ! empty( $feed_rules['reviews'] );
+        $include_coupons     = ! empty( $feed_rules['coupons'] );
 
         $coupon_setting = ! empty( $settings['couponCode'] ) ? $settings['couponCode'] : ( $settings['coupon_code'] ?? 'AI10' );
         if ( preg_match( '/^[A-Za-z0-9_-]+/', trim( $coupon_setting ), $cm ) ) {

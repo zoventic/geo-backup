@@ -606,6 +606,9 @@ class RestController {
             $freq = sanitize_text_field( $params['rankRadarFrequency'] ?? $params['rank_radar_frequency'] );
             $settings['rank_radar_frequency'] = $freq;
             $settings['rankRadarFrequency']   = $freq;
+            if ( class_exists( '\Zoventic\Geo\Engine\RankRadarScheduler' ) ) {
+                \Zoventic\Geo\Engine\RankRadarScheduler::reschedule( $freq );
+            }
         }
 
         if ( isset( $params['autoKillJobs'] ) || isset( $params['auto_kill_jobs'] ) ) {

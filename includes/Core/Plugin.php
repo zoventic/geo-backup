@@ -34,6 +34,7 @@ class Plugin {
         \Zoventic\Geo\Engine\SubfeedGenerator::init();
         \Zoventic\Geo\Engine\IndexNowPinger::init();
         \Zoventic\Geo\Engine\WeeklyDigestMailer::init();
+        \Zoventic\Geo\Engine\RankRadarScheduler::init();
 
         // Commercial & Agency Services
         \Zoventic\Geo\Pro\Licensing::init();

@@ -9,7 +9,8 @@ import {
   message,
   Flex,
   Typography,
-  Space
+  Space,
+  Popconfirm
 } from 'antd';
 import {
   Radar,
@@ -258,17 +259,25 @@ export const RankRadarTab = () => {
           >
             Test &rarr;
           </Button>
-          <Button
-            size="small"
-            danger
-            type="text"
-            icon={<Trash2 size={13} />}
-            onClick={() => {
-              removeTrackedQuery(record.id);
-              message.info(`Query "${record.query}" removed from monitoring.`);
+          <Popconfirm
+            title="Delete tracked query?"
+            description={`Stop monitoring "${record.query}"?`}
+            onConfirm={() => {
+              removeTrackedQuery?.(record.id);
+              message.success(`Query "${record.query}" removed from monitoring.`);
             }}
-            title="Delete query from tracker"
-          />
+            okText="Delete"
+            cancelText="Cancel"
+            okButtonProps={{ danger: true, size: 'small' }}
+            cancelButtonProps={{ size: 'small' }}
+          >
+            <Button
+              size="small"
+              danger
+              icon={<Trash2 size={13} />}
+              title="Delete query from tracker"
+            />
+          </Popconfirm>
         </Flex>
       )
     }

@@ -85,7 +85,10 @@ class SubfeedGenerator {
         $cat_name  = $term->name;
 
         $settings   = get_option( 'zoventic_geo_settings', [] );
-        $feed_rules = isset( $settings['feed_rules'] ) && is_array( $settings['feed_rules'] ) ? $settings['feed_rules'] : ( $settings['feedRules'] ?? [] );
+        $auto_purge_disabled = isset( $settings['autoPurgeOutOfStock'] ) ? empty( $settings['autoPurgeOutOfStock'] ) : ( isset( $settings['auto_purge_out_of_stock'] ) ? empty( $settings['auto_purge_out_of_stock'] ) : false );
+        $in_stock_rule       = isset( $feed_rules['inStock'] ) ? (bool) $feed_rules['inStock'] : true;
+        $in_stock_only       = ! $auto_purge_disabled && $in_stock_rule;
+
         $include_coupons = ! empty( $feed_rules['coupons'] );
         $coupon_code = 'AI10';
         if ( $include_coupons ) {
@@ -111,11 +114,15 @@ class SubfeedGenerator {
         $out .= "## Products in {$cat_name}\n";
 
         if ( function_exists( 'wc_get_products' ) ) {
-            $products = wc_get_products( [
+            $query_args = [
                 'status'   => 'publish',
                 'category' => [ $term->slug ],
                 'limit'    => 100,
-            ] );
+            ];
+            if ( $in_stock_only ) {
+                $query_args['stock_status'] = 'instock';
+            }
+            $products = wc_get_products( $query_args );
 
             foreach ( $products as $product ) {
                 $title       = PromptSanitizer::sanitize( $product->get_name() );

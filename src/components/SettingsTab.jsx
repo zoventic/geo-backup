@@ -201,11 +201,25 @@ export const SettingsTab = () => {
     }
   }, [settings]);
 
-  const handleBotToggle = (botKey, event) => {
+  const handleBotToggle = async (botKey, event) => {
     if (event && event.stopPropagation) {
       event.stopPropagation();
     }
+    const currentVal = crawlerPermissions?.[botKey] ?? true;
+    const nextVal = !currentVal;
     toggleCrawlerPermission?.(botKey);
+    const updated = {
+      ...(crawlerPermissions || {}),
+      [botKey]: nextVal
+    };
+    try {
+      if (updateSettings) {
+        await updateSettings({ crawlerPermissions: updated, crawler_permissions: updated });
+        message.success(`${nextVal ? 'Allowed' : 'Blocked'} ${botKey} in robots.txt.`);
+      }
+    } catch (e) {
+      message.error('Failed to update crawler permission.');
+    }
   };
 
   const robotsTxtContent = useMemo(() => {
@@ -665,10 +679,7 @@ export const SettingsTab = () => {
                   <Switch
                     checked={bot.active}
                     onChange={(checked, e) => {
-                      if (e && e.stopPropagation) {
-                        e.stopPropagation();
-                      }
-                      toggleCrawlerPermission?.(bot.key);
+                      handleBotToggle(bot.key, e);
                     }}
                     onClick={(checked, e) => {
                       if (e && e.stopPropagation) {

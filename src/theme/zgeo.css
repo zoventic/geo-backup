@@ -1,0 +1,4106 @@
+/* ==========================================================================
+   Zoventic GEO - Master Standalone Scoped Stylesheet
+   100% Faithful Mirror of preview.html Prototype
+   Strictly Scoped to #zgeo-root - Zero WP Admin Bleeding - Zero External Compilers
+   ========================================================================== */
+
+/* ==========================================================================
+   Zoventic GEO - Master Scoped Stylesheet
+   100% Faithful Mirror of preview.html Prototype
+   Strictly Scoped to #zgeo-root - Zero WP Admin Bleeding
+   ========================================================================== */
+
+
+/* 1. WordPress Admin Full-Width Integration */
+html:has(body.toplevel_page_zoventic-geo),
+body.toplevel_page_zoventic-geo {
+  background: #f8fafc !important;
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable;
+}
+
+body.toplevel_page_zoventic-geo #wpcontent {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+body.toplevel_page_zoventic-geo #wpbody-content {
+  padding-bottom: 0 !important;
+  float: none !important;
+  width: 100% !important;
+}
+
+body.toplevel_page_zoventic-geo #wpbody {
+  padding-top: 0 !important;
+}
+
+@media screen and (max-width: 782px) {
+  body.toplevel_page_zoventic-geo #wpbody {
+    padding-top: 46px !important;
+  }
+}
+
+body.toplevel_page_zoventic-geo .wrap {
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+body.toplevel_page_zoventic-geo #wpfooter {
+  display: none !important;
+}
+
+body.toplevel_page_zoventic-geo .notice,
+body.toplevel_page_zoventic-geo div.error,
+body.toplevel_page_zoventic-geo div.updated {
+  margin: 12px 24px !important;
+}
+
+/* 2. Container Scoped Reset */
+#zgeo-root {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  color: #0f172a;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  min-height: calc(100vh - var(--wp-admin--admin-bar--height, 32px));
+  box-sizing: border-box;
+  position: relative;
+}
+
+#zgeo-root * {
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbars */
+#zgeo-root ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+#zgeo-root ::-webkit-scrollbar-track {
+  background: transparent;
+}
+#zgeo-root ::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 9999px;
+}
+#zgeo-root ::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* 3. Glass Cards */
+.glass-card,
+.zgeo-glass-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  padding: 24px;
+}
+
+.ant-card.glass-card,
+.ant-card.zgeo-glass-card,
+.ant-card.zgeo-glass-card-interactive {
+  padding: 0 !important;
+}
+.ant-card.glass-card > .ant-card-body,
+.ant-card.zgeo-glass-card > .ant-card-body,
+.ant-card.zgeo-glass-card-interactive > .ant-card-body {
+  padding: 24px !important;
+}
+
+.glass-card-interactive,
+.zgeo-glass-card-interactive {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-card-interactive:hover,
+.zgeo-glass-card-interactive:hover {
+  border-color: rgba(199, 210, 254, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -6px rgba(79, 70, 229, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+/* 4. Pulsing Dot Badge */
+@keyframes zgeo-pulse-ring {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.9); }
+}
+
+.badge-dot,
+.zgeo-badge-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #10b981;
+  animation: zgeo-pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  flex-shrink: 0;
+}
+
+/* 5. Monospace Code Styling */
+.zgeo-code,
+#zgeo-root code:not(pre code) {
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(79, 70, 229, 0.08);
+  color: #4338ca;
+  padding: 0.15em 0.45em;
+  border-radius: 6px;
+  font-size: 0.88em;
+  border: 1px solid rgba(199, 210, 254, 0.6);
+  font-weight: 600;
+}
+
+/* 6. Header Tier 1: Top Notification Banner */
+.zgeo-top-banner {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  padding: 8px 0;
+  position: relative;
+  z-index: 20;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  width: 100%;
+}
+
+.zgeo-top-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.zgeo-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zgeo-budget-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.zgeo-banner-text {
+  font-size: 12px;
+  color: #475569;
+  margin: 0;
+}
+
+.zgeo-banner-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zgeo-reindex-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #ffffff;
+  color: #4338ca;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid rgba(199, 210, 254, 0.8);
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: all 0.2s;
+}
+.zgeo-reindex-btn:hover {
+  background: #eef2ff;
+  border-color: #a5b4fc;
+}
+
+.zgeo-allowed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #047857;
+  font-weight: 600;
+  font-size: 11px;
+  background: rgba(236, 253, 245, 0.8);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1fae5;
+  white-space: nowrap;
+}
+
+/* 7. Header Tier 2: Top Store Info Bar */
+.zgeo-store-bar {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  padding: 12px 0;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.zgeo-store-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.zgeo-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.zgeo-logo-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zgeo-logo-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+}
+
+.zgeo-logo-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.zgeo-pro-badge {
+  font-size: 10px;
+  font-weight: 800;
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  border: 1px solid #c7d2fe;
+}
+
+.zgeo-logo-subtitle {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 500;
+  margin: 0;
+}
+
+.zgeo-divider-v {
+  width: 1px;
+  height: 24px;
+  background-color: #e2e8f0;
+}
+
+.zgeo-store-pill {
+  padding: 6px 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+.zgeo-store-pill:hover {
+  background-color: #f1f5f9;
+}
+
+.zgeo-store-pill-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.zgeo-store-pill-count {
+  font-size: 10px;
+  color: #64748b;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.zgeo-health-meter-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  padding: 6px 14px;
+}
+
+.zgeo-health-text {
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.zgeo-health-subtext {
+  font-size: 10px;
+  color: #64748b;
+  display: block;
+}
+
+.zgeo-health-progress-wrap {
+  width: 90px;
+}
+
+/* 8. Sticky Navigation Tabs Bar */
+.zgeo-nav-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  position: sticky;
+  top: 0 !important;
+  z-index: 990;
+  padding: 8px 0;
+  width: 100%;
+}
+
+.zgeo-nav-inner {
+  overflow-x: auto;
+}
+
+.zgeo-nav-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+}
+
+.zgeo-nav-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.zgeo-nav-pill {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.zgeo-nav-pill:hover {
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.7);
+}
+.zgeo-nav-pill.active {
+  background: #ffffff;
+  color: #4338ca;
+  font-weight: 700;
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.zgeo-nav-pill-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.zgeo-badge-emerald {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.zgeo-badge-indigo {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+.zgeo-badge-slate {
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+#zgeo-root .ant-layout.zgeo-admin-container {
+  background: #f8fafc !important;
+  min-height: calc(100vh - 32px);
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#zgeo-root .ant-layout-content.zgeo-main-wrapper {
+  background: transparent !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Master 1440px Centered Container Wrapper across all 4 tiers */
+#zgeo-root .zgeo-container-inner {
+  max-width: 1440px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  padding-left: 32px !important;
+  padding-right: 32px !important;
+}
+
+@media (max-width: 1024px) {
+  #zgeo-root .zgeo-container-inner {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  #zgeo-root .zgeo-container-inner {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* 9. Main Layout Content */
+.zgeo-main-content {
+  padding-top: 32px !important;
+  padding-bottom: 48px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 28px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 640px) {
+  .zgeo-main-content {
+    padding-top: 16px !important;
+    padding-bottom: 24px !important;
+  }
+}
+
+/* Universal Tab Page Containers - 100% Width Fidelity */
+.zgeo-overview-tab,
+.zgeo-radar-tab,
+.zgeo-products-tab,
+.zgeo-logs-tab,
+.zgeo-simulator-tab,
+.zgeo-llmstxt-tab,
+.zgeo-settings-tab {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 28px !important;
+  box-sizing: border-box !important;
+}
+
+#zgeo-root .space-y-7 {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Header & Filter Row */
+.zgeo-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.zgeo-section-title {
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  letter-spacing: -0.02em;
+  margin: 0 !important;
+}
+
+.zgeo-section-subtitle {
+  font-size: 13px !important;
+  color: #64748b !important;
+  margin: 2px 0 0 0 !important;
+}
+
+.zgeo-refresh-sq-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.zgeo-refresh-sq-btn:hover {
+  background: #f8fafc;
+}
+
+/* 10. Radar Spotlight Card (Overview) */
+.zgeo-radar-spotlight {
+  border-radius: 16px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(238, 242, 255, 0.3) 0%, #ffffff 50%, rgba(236, 253, 245, 0.2) 100%);
+  border: 1px solid rgba(199, 210, 254, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+
+.zgeo-radar-spotlight-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.zgeo-spotlight-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.zgeo-spotlight-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+}
+
+.zgeo-spotlight-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.zgeo-cron-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.zgeo-view-radar-btn {
+  height: 40px !important;
+  padding: 0 20px !important;
+  background: #4f46e5 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+}
+.zgeo-view-radar-btn:hover {
+  background: #4338ca !important;
+}
+
+.zgeo-queries-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-queries-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.zgeo-query-pill-card {
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.zgeo-query-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zgeo-rank-tag-green {
+  font-size: 11px;
+  font-weight: 800;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(167, 243, 208, 0.8);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.zgeo-rank-tag-slate {
+  font-size: 11px;
+  font-weight: 800;
+  color: #1e293b;
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.zgeo-rank-delta-green {
+  font-size: 10px;
+  font-weight: 700;
+  color: #059669;
+}
+.zgeo-rank-delta-gray {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.zgeo-query-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zgeo-query-product {
+  font-size: 10px;
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* 11. 4 Top KPI Cards */
+.zgeo-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .zgeo-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zgeo-kpi-card {
+  padding: 20px;
+  min-height: 145px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.zgeo-kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zgeo-kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.zgeo-kpi-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zgeo-kpi-val {
+  font-size: 30px;
+  font-weight: 800;
+  color: #0f172a;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
+}
+
+.zgeo-kpi-delta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.zgeo-kpi-delta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.zgeo-kpi-subval {
+  font-size: 18px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* 12. Grid 2 Column (Chart + Stream) */
+.zgeo-grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 28px;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zgeo-card-header-border {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.zgeo-chart-container {
+  padding-top: 20px;
+  height: 256px;
+  width: 100%;
+  position: relative;
+}
+
+.zgeo-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.zgeo-legend-item.gpt { color: #4338ca; }
+.zgeo-legend-item.perp { color: #047857; }
+.zgeo-legend-item.claude { color: #b45309; }
+
+.zgeo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.zgeo-dot.gpt { background: #4f46e5; }
+.zgeo-dot.perp { background: #10b981; }
+.zgeo-dot.claude { background: #f59e0b; }
+
+.zgeo-hit-btn {
+  font-size: 11px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  color: #4338ca !important;
+  background: #eef2ff !important;
+  border: 1px solid rgba(199, 210, 254, 0.6) !important;
+  border-radius: 8px !important;
+}
+
+.zgeo-stream-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+  max-height: 225px;
+  overflow-y: auto;
+}
+
+.zgeo-stream-item {
+  padding: 12px;
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+.zgeo-stream-item:hover {
+  background: rgba(241, 245, 249, 0.7);
+}
+
+.zgeo-stream-path {
+  margin: 4px 0;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zgeo-history-btn {
+  width: 100%;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4338ca;
+  background: #eef2ff;
+  border-radius: 12px;
+  border: 1px solid rgba(199, 210, 254, 0.6);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.zgeo-history-btn:hover {
+  background: #e0e7ff;
+}
+
+/* 13. GEO Health Tab: Amber Warning Banner */
+.zgeo-amber-banner {
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.zgeo-amber-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.zgeo-amber-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #fef3c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zgeo-amber-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zgeo-amber-pill {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: #fef3c7;
+  color: #78350f;
+  border: 1px solid #fde68a;
+}
+
+.zgeo-amber-desc {
+  font-size: 12px;
+  color: #78350f;
+  margin: 2px 0 0 0;
+  line-height: 1.5;
+}
+
+.zgeo-auto-enrich-banner-btn {
+  height: 38px !important;
+  padding: 0 16px !important;
+  background: #4f46e5 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2) !important;
+}
+
+/* Health Legend Grid */
+.zgeo-health-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-health-legend-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zgeo-legend-card {
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.zgeo-legend-ring-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+.zgeo-legend-ring-dot.emerald {
+  background: #10b981;
+  box-shadow: 0 0 0 4px #ecfdf5;
+}
+.zgeo-legend-ring-dot.amber {
+  background: #f59e0b;
+  box-shadow: 0 0 0 4px #fffbeb;
+}
+.zgeo-legend-ring-dot.rose {
+  background: #f43f5e;
+  box-shadow: 0 0 0 4px #fff1f2;
+}
+
+.zgeo-legend-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zgeo-prod-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Filter Bar in Tables */
+.zgeo-table-filter-bar {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: rgba(248, 250, 252, 0.4);
+}
+
+
+/* ==========================================================================
+   Ant Design Component Overrides — Scoped to #zgeo-root
+   Provides 100% Visual Fidelity to preview.html for Antd Components
+   ========================================================================== */
+
+/* Ant Design Search Input (Input with prefix icon) */
+#zgeo-root .zgeo-antd-search {
+  height: 38px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background-color: #ffffff !important;
+  padding: 0 12px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.2s !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .zgeo-antd-search.zgeo-slate-bg {
+  background-color: #f8fafc !important;
+}
+
+#zgeo-root .zgeo-antd-search .ant-input {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+#zgeo-root .zgeo-antd-search .ant-input::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+#zgeo-root .zgeo-antd-search:hover {
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-antd-search:focus-within,
+#zgeo-root .zgeo-antd-search.ant-input-affix-wrapper-focused {
+  border-color: #4f46e5 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* ==========================================================================
+   Ant Design Select Input Global Resets (Defeats WP Core forms.css bleeding)
+   ========================================================================== */
+#zgeo-root .ant-select input.ant-select-input,
+.ant-select input.ant-select-input,
+#zgeo-root .ant-select-input,
+.ant-select-input {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  line-height: inherit !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+}
+
+#zgeo-root .ant-select input.ant-select-input:focus,
+.ant-select input.ant-select-input:focus,
+#zgeo-root .ant-select-input:focus,
+.ant-select-input:focus {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+
+/* Keep selected value fully legible and prevent upward shift when dropdown opens */
+#zgeo-root .ant-select-open .ant-select-content-has-value,
+.ant-select-open .ant-select-content-has-value {
+  opacity: 1 !important;
+}
+
+#zgeo-root .ant-select .ant-select-suffix,
+.ant-select .ant-select-suffix {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-self: center !important;
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  pointer-events: none !important;
+}
+
+/* Ant Design Filter Select (AntD 6 + AntD 5 Fallback) */
+#zgeo-root .zgeo-antd-select,
+#zgeo-root .ant-select.zgeo-antd-select {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 10px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  transition: all 0.15s !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+#zgeo-root .zgeo-antd-select.zgeo-slate-bg,
+#zgeo-root .ant-select.zgeo-antd-select.zgeo-slate-bg {
+  background-color: #f8fafc !important;
+}
+
+#zgeo-root .zgeo-antd-select:hover,
+#zgeo-root .ant-select.zgeo-antd-select:hover {
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-antd-select.ant-select-focused,
+#zgeo-root .zgeo-antd-select.ant-select-open,
+#zgeo-root .ant-select.zgeo-antd-select.ant-select-focused,
+#zgeo-root .ant-select.zgeo-antd-select.ant-select-open {
+  border-color: #4f46e5 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+#zgeo-root .zgeo-antd-select .ant-select-content,
+#zgeo-root .ant-select.zgeo-antd-select .ant-select-content {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  line-height: 34px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  align-self: center !important;
+}
+
+/* AntD 5 selector fallback */
+#zgeo-root .zgeo-antd-select .ant-select-selector {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 0 10px !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .zgeo-antd-select .ant-select-selection-item {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  line-height: 34px !important;
+}
+
+#zgeo-root .zgeo-antd-select .ant-select-arrow {
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  right: 10px !important;
+}
+
+/* Simulator Large Select (AntD 6 + AntD 5 Fallback) */
+#zgeo-root .zgeo-sim-antd-select,
+#zgeo-root .ant-select.zgeo-sim-antd-select {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 0 16px !important;
+  background-color: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  transition: all 0.2s !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+#zgeo-root .zgeo-sim-antd-select:hover,
+#zgeo-root .ant-select.zgeo-sim-antd-select:hover {
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-sim-antd-select.ant-select-focused,
+#zgeo-root .zgeo-sim-antd-select.ant-select-open,
+#zgeo-root .ant-select.zgeo-sim-antd-select.ant-select-focused,
+#zgeo-root .ant-select.zgeo-sim-antd-select.ant-select-open {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+#zgeo-root .zgeo-sim-antd-select .ant-select-content,
+#zgeo-root .ant-select.zgeo-sim-antd-select .ant-select-content {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  line-height: 46px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 46px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  align-self: center !important;
+}
+
+/* AntD 5 fallback */
+#zgeo-root .zgeo-sim-antd-select .ant-select-selector {
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 16px !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .zgeo-sim-antd-select .ant-select-selection-item {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  line-height: 46px !important;
+}
+
+/* Radar Frequency Borderless Select (AntD 6 + AntD 5 Fallback) */
+#zgeo-root .zgeo-radar-freq-select,
+#zgeo-root .ant-select.zgeo-radar-freq-select {
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  min-width: 145px !important;
+  padding: 0 8px 0 10px !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  transition: all 0.15s ease !important;
+}
+
+#zgeo-root .zgeo-radar-freq-select:hover,
+#zgeo-root .ant-select.zgeo-radar-freq-select:hover {
+  background: rgba(241, 245, 249, 0.8) !important;
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-radar-freq-select.ant-select-focused,
+#zgeo-root .zgeo-radar-freq-select.ant-select-open,
+#zgeo-root .ant-select.zgeo-radar-freq-select.ant-select-focused,
+#zgeo-root .ant-select.zgeo-radar-freq-select.ant-select-open {
+  background: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+#zgeo-root .zgeo-radar-freq-select .ant-select-content,
+#zgeo-root .ant-select.zgeo-radar-freq-select .ant-select-content {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  line-height: 26px !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 6px 0 0 !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+#zgeo-root .zgeo-radar-freq-select .ant-select-suffix,
+#zgeo-root .ant-select.zgeo-radar-freq-select .ant-select-suffix {
+  margin-left: 2px !important;
+  color: #64748b !important;
+}
+
+/* AntD 5 fallback */
+#zgeo-root .zgeo-radar-freq-select .ant-select-selector {
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 8px 0 10px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .zgeo-radar-freq-select .ant-select-selection-item {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  line-height: 26px !important;
+  padding-right: 6px !important;
+}
+
+/* Settings Slate Inputs & Textarea */
+#zgeo-root .zgeo-antd-input-slate {
+  height: 44px !important;
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 0 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  transition: all 0.2s !important;
+}
+
+#zgeo-root .zgeo-antd-input-slate:hover {
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-antd-input-slate:focus {
+  background-color: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+#zgeo-root .zgeo-antd-textarea-slate {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  line-height: 1.5 !important;
+  transition: all 0.2s !important;
+}
+
+#zgeo-root .zgeo-antd-textarea-slate:hover {
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-antd-textarea-slate:focus {
+  background-color: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Dropdown Popup Panel (Common) */
+.ant-select-dropdown {
+  border-radius: 12px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+  padding: 6px !important;
+  background: #ffffff !important;
+  z-index: 100002 !important;
+  min-width: 165px !important;
+}
+
+.ant-select-item {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
+  min-height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 2px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.ant-select-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.ant-select-item-option-content {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+.ant-select-item-option-active,
+.ant-select-item-option:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.ant-select-item-option-selected {
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+  font-weight: 700 !important;
+}
+
+
+
+
+/* Hide default antd pagination extra elements */
+#zgeo-root .ant-pagination {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 14px 20px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background: rgba(248, 250, 252, 0.4) !important;
+  margin: 0 !important;
+  flex-wrap: wrap !important;
+}
+
+/* All page number items */
+#zgeo-root .ant-pagination-item {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  transition: all 0.15s !important;
+  min-width: unset !important;
+  line-height: 1 !important;
+}
+
+#zgeo-root .ant-pagination-item a {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#zgeo-root .ant-pagination-item:hover {
+  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+}
+
+#zgeo-root .ant-pagination-item:hover a {
+  color: #0f172a !important;
+}
+
+/* Active page — brand-600 matching preview.html */
+#zgeo-root .ant-pagination-item-active {
+  background: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25) !important;
+}
+
+#zgeo-root .ant-pagination-item-active a {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Prev / Next buttons */
+#zgeo-root .ant-pagination-prev,
+#zgeo-root .ant-pagination-next {
+  width: auto !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  transition: all 0.15s !important;
+  line-height: 1 !important;
+}
+
+#zgeo-root .ant-pagination-prev button,
+#zgeo-root .ant-pagination-next button {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #475569 !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  height: 100% !important;
+  line-height: 1 !important;
+}
+
+#zgeo-root .ant-pagination-prev:hover,
+#zgeo-root .ant-pagination-next:hover {
+  border-color: #cbd5e1 !important;
+  background: #f8fafc !important;
+}
+
+#zgeo-root .ant-pagination-prev:hover button,
+#zgeo-root .ant-pagination-next:hover button {
+  color: #0f172a !important;
+}
+
+#zgeo-root .ant-pagination-disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+/* Ellipsis (…) */
+#zgeo-root .ant-pagination-jump-prev,
+#zgeo-root .ant-pagination-jump-next {
+  width: 32px !important;
+  height: 32px !important;
+  border: none !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  color: #94a3b8 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  box-shadow: none !important;
+}
+
+/* Page size changer (if visible) */
+#zgeo-root .ant-pagination-options {
+  margin: 0 !important;
+}
+
+#zgeo-root .ant-pagination-options .ant-select,
+#zgeo-root .ant-pagination-options .ant-select-selector {
+  height: 32px !important;
+  min-height: 32px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .ant-pagination-options .ant-select .ant-select-content {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  line-height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* Total items text (if shown) */
+#zgeo-root .ant-pagination-total-text {
+  font-size: 12px !important;
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+/* zgeo-citability-select width */
+
+
+/* Pure Clean Table Styling */
+.zgeo-pure-table .ant-table {
+  background: transparent !important;
+}
+.zgeo-pure-table .ant-table-thead > tr > th {
+  background: rgba(248, 250, 252, 0.8) !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 12px 20px !important;
+}
+.zgeo-pure-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f8fafc !important;
+  padding: 14px 20px !important;
+  font-size: 12px !important;
+}
+.zgeo-pure-table .ant-table-tbody > tr:hover > td {
+  background: rgba(248, 250, 252, 0.7) !important;
+}
+
+/* 14. Simulator Tab Specifics */
+.zgeo-pro-pill {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.zgeo-micro-cost-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.zgeo-sim-select-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.zgeo-sim-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.zgeo-sim-select-input {
+  width: 100%;
+  height: 48px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding-left: 46px;
+  padding-right: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.zgeo-sim-run-btn {
+  height: 48px !important;
+  padding: 0 24px !important;
+  background: #4f46e5 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+}
+
+.zgeo-sim-chip {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.zgeo-sim-chip:hover,
+.zgeo-sim-chip.active {
+  background: #eef2ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}
+
+.zgeo-engine-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-weight: 700;
+}
+
+.zgeo-sim-rank-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px #ecfdf5;
+  flex-shrink: 0;
+}
+
+.zgeo-citability-match-badge {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.zgeo-sim-output-box {
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.zgeo-sim-products-border-box {
+  border-left: 2px solid #4f46e5;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zgeo-sim-p1-card {
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #c7d2fe;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zgeo-your-product-tag {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  background: #d1fae5;
+  color: #065f46;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.zgeo-sim-p2-card {
+  padding: 12px 14px;
+  background: rgba(241, 245, 249, 0.7);
+  border-radius: 12px;
+}
+
+.zgeo-why-win-box {
+  background: rgba(238, 242, 255, 0.7);
+  border: 1px solid #e0e7ff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  color: #1e1b4b;
+}
+
+/* 15. llms.txt Tab Specifics (LIGHT THEME) */
+.zgeo-llms-grid {
+  display: grid;
+  grid-template-columns: 400px minmax(0, 1fr);
+  gap: 28px;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-llms-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.zgeo-llms-grid > * {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.zgeo-llms-card {
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.zgeo-llms-card > .ant-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.zgeo-fast-rag-tag {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.zgeo-rule-item {
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  gap: 12px;
+  min-width: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.zgeo-rule-item:hover {
+  background: #f8fafc;
+  border-color: rgba(203, 213, 225, 0.9);
+}
+
+.zgeo-rule-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.zgeo-rule-icon-box.indigo { background: #eef2ff; color: #4f46e5; border: 1px solid #e0e7ff; }
+.zgeo-rule-icon-box.amber  { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+.zgeo-rule-icon-box.emerald{ background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+.zgeo-rule-icon-box.purple { background: #faf5ff; color: #9333ea; border: 1px solid #e9d5ff; }
+
+.zgeo-metric-box {
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.zgeo-spec-tag {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.zgeo-llms-pre-output {
+  background: rgba(248, 250, 252, 0.95);
+  color: #1e293b;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: all;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+  height: 520px !important;
+  min-height: 520px !important;
+  max-height: 520px !important;
+  scrollbar-gutter: stable;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex: 1;
+  margin: 0;
+}
+
+/* 16. Settings Tab Specifics */
+.zgeo-brand-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #eef2ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zgeo-auto-draft-btn {
+  background: #eef2ff !important;
+  color: #4338ca !important;
+  border: 1px solid #c7d2fe !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+.zgeo-setting-input {
+  width: 100%;
+  height: 42px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s;
+}
+.zgeo-setting-input:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+}
+
+.zgeo-setting-textarea {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s;
+  line-height: 1.5;
+}
+.zgeo-setting-textarea:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+}
+
+.zgeo-shield-icon-box-emerald {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #ecfdf5;
+  border: 1px solid #d1fae5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zgeo-do-robots-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.zgeo-robots-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 24px;
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-robots-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.zgeo-bot-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .zgeo-bot-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.zgeo-bot-switch-card {
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+  min-width: 0;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.zgeo-bot-switch-card:hover {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(203, 213, 225, 0.9);
+}
+
+.zgeo-bot-switch-card.allowed {
+  border-color: rgba(199, 210, 254, 0.7);
+  background: rgba(238, 242, 255, 0.15);
+}
+
+.zgeo-bot-switch-card.blocked {
+  border-color: rgba(226, 232, 240, 0.8);
+  background: #ffffff;
+  opacity: 0.85;
+}
+
+.zgeo-bot-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+.zgeo-bot-icon-box.indigo { background: #eef2ff; border-color: #e0e7ff; color: #4f46e5; }
+.zgeo-bot-icon-box.teal   { background: #f0fdfa; border-color: #ccfbf1; color: #0d9488; }
+.zgeo-bot-icon-box.amber  { background: #fffbeb; border-color: #fef3c7; color: #d97706; }
+.zgeo-bot-icon-box.sky    { background: #f0f9ff; border-color: #e0f2fe; color: #0284c7; }
+.zgeo-bot-icon-box.orange { background: #fff7ed; border-color: #ffedd5; color: #ea580c; }
+.zgeo-bot-icon-box.blue   { background: #eff6ff; border-color: #dbeafe; color: #2563eb; }
+
+.zgeo-bot-status-tag {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+.zgeo-bot-status-tag.allowed {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.zgeo-bot-status-tag.blocked {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+}
+
+.zgeo-robots-output-card {
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.zgeo-copy-small-btn {
+  font-size: 11px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+}
+
+.zgeo-robots-white-pre {
+  margin-top: 12px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  height: 220px !important;
+  min-height: 220px !important;
+  max-height: 220px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: all;
+  box-sizing: border-box;
+  scrollbar-gutter: stable;
+}
+
+.zgeo-do-robots-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.zgeo-zero-spend-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.zgeo-byok-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .zgeo-byok-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.zgeo-byok-grid > * {
+  min-width: 0;
+}
+
+.zgeo-model-btn {
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  min-width: 0;
+}
+.zgeo-model-btn:hover {
+  border-color: #cbd5e1;
+  background: rgba(248, 250, 252, 0.6);
+}
+.zgeo-model-btn.active {
+  border: 2px solid #4f46e5 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+}
+
+.zgeo-model-active-badge {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.zgeo-verified-key-badge {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Ant Design API Key Input with Suffix */
+#zgeo-root .zgeo-antd-key-input.ant-input-affix-wrapper {
+  height: 44px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 0 6px 0 14px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .zgeo-antd-key-input.ant-input-affix-wrapper:hover {
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-antd-key-input.ant-input-affix-wrapper-focused,
+#zgeo-root .zgeo-antd-key-input.ant-input-affix-wrapper:focus-within {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+}
+
+#zgeo-root .zgeo-antd-key-input input {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+#zgeo-root .zgeo-antd-key-input input::placeholder {
+  color: #94a3b8 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+#zgeo-root .zgeo-antd-key-input .ant-input-suffix {
+  margin-left: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#zgeo-root .zgeo-key-suffix-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* View Password Eye Button */
+#zgeo-root .zgeo-view-pw-btn,
+#zgeo-root .ant-btn.zgeo-view-pw-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+#zgeo-root .zgeo-view-pw-btn:hover,
+#zgeo-root .ant-btn.zgeo-view-pw-btn:hover {
+  color: #475569 !important;
+  background: #f1f5f9 !important;
+  border: none !important;
+}
+
+#zgeo-root .zgeo-view-pw-btn:active,
+#zgeo-root .ant-btn.zgeo-view-pw-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* Ping Test Button */
+#zgeo-root .zgeo-ping-btn,
+#zgeo-root .ant-btn.zgeo-ping-btn {
+  height: 32px !important;
+  padding: 0 12px !important;
+  background: #eef2ff !important;
+  border: 1px solid rgba(199, 210, 254, 0.8) !important;
+  border-radius: 8px !important;
+  color: #4338ca !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.15s ease !important;
+  line-height: 1 !important;
+}
+
+#zgeo-root .zgeo-ping-btn:hover,
+#zgeo-root .ant-btn.zgeo-ping-btn:hover {
+  background: #e0e7ff !important;
+  border-color: #c7d2fe !important;
+  color: #3730a3 !important;
+}
+
+#zgeo-root .zgeo-ping-btn:active,
+#zgeo-root .ant-btn.zgeo-ping-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.zgeo-spend-cap-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 14px;
+  color: #4338ca;
+  background: #ffffff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.zgeo-spend-threshold-banner {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  margin-top: 14px;
+}
+
+.zgeo-threshold-badge {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  background: #d1fae5;
+  color: #065f46;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+#zgeo-root .zgeo-safety-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+#zgeo-root .zgeo-safety-row:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+#zgeo-root .zgeo-switch-emerald.ant-switch.ant-switch-checked {
+  background: #059669 !important;
+}
+
+#zgeo-root .zgeo-switch-emerald.ant-switch.ant-switch-checked:hover:not(.ant-switch-disabled) {
+  background: #047857 !important;
+}
+
+.zgeo-bottom-bar {
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 17. Rank Radar Specifics */
+.zgeo-cron-active-pill {
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.zgeo-radar-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+}
+
+.zgeo-cron-select-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.zgeo-cron-select {
+  width: 140px;
+}
+
+.zgeo-radar-kpi-item {
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.zgeo-radar-kpi-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.zgeo-temp-email-input {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 11px;
+  width: 180px;
+}
+
+.zgeo-track-prompt-input {
+  width: 100%;
+  height: 36px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding-left: 36px;
+  padding-right: 12px;
+  font-size: 12px;
+  color: #1e293b;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.zgeo-engine-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.zgeo-engine-tag.teal {
+  background: #f0fdfa;
+  color: #0f766e;
+  border: 1px solid #99f6e4;
+}
+.zgeo-engine-tag.amber {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+.zgeo-engine-tag.indigo {
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+}
+
+.zgeo-traj-sq {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.zgeo-traj-sq.past-good {
+  background: #d1fae5;
+  color: #065f46;
+}
+.zgeo-traj-sq.today {
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.zgeo-traj-sq.past-gray {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.zgeo-sim-btn-action {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #4338ca !important;
+  background: #eef2ff !important;
+  border: 1px solid #c7d2fe !important;
+  border-radius: 8px !important;
+}
+
+/* 18. Crawler Logs Specifics */
+.zgeo-bot-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.zgeo-bot-dot.indigo { background: #6366f1; }
+.zgeo-bot-dot.emerald { background: #10b981; }
+.zgeo-bot-dot.amber { background: #f59e0b; }
+.zgeo-bot-dot.purple { background: #a855f7; }
+.zgeo-bot-dot.blue { background: #3b82f6; }
+.zgeo-bot-dot.teal { background: #14b8a6; }
+
+/* 19. Shared Button Tokens */
+.zgeo-btn-white {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  border-radius: 12px !important;
+  height: 38px !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+.zgeo-btn-white:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.zgeo-btn-brand {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border: 1px solid #4f46e5 !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  border-radius: 12px !important;
+  height: 38px !important;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2) !important;
+}
+.zgeo-btn-brand:hover {
+  background: #4338ca !important;
+}
+
+/* Common Color Helper Classes */
+.zgeo-mono { font-family: 'JetBrains Mono', monospace !important; }
+.zgeo-text-dark { color: #0f172a !important; }
+.zgeo-text-emerald { color: #047857 !important; }
+.zgeo-text-indigo { color: #4338ca !important; }
+.zgeo-text-amber { color: #b45309 !important; }
+.zgeo-text-micro { font-size: 10px !important; }
+.zgeo-text-small { font-size: 12px !important; }
+.zgeo-title-clean { margin: 0 !important; }
+
+/* KPI Icon Boxes */
+.zgeo-icon-emerald { background: #ecfdf5; color: #10b981; border: 1px solid #d1fae5; }
+.zgeo-icon-indigo { background: #eef2ff; color: #4f46e5; border: 1px solid #e0e7ff; }
+.zgeo-icon-amber { background: #fffbeb; color: #d97706; border: 1px solid #fef3c7; }
+.zgeo-icon-blue { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
+
+.zgeo-pill-emerald { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.zgeo-pill-indigo { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
+.zgeo-pill-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+/* Product Inspection Drawer Light Code Box */
+.zgeo-drawer-score-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.zgeo-attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.zgeo-light-pre {
+  background: #f8fafc;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  padding: 14px;
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  max-height: 220px;
+  overflow: auto;
+}
+
+/* ==========================================================================
+   20. Master Modal & Drawer Design System (100% Matching preview.html)
+   ========================================================================== */
+
+/* Ant Design Modal Backdrop & Root */
+.ant-modal-mask {
+  backdrop-filter: blur(4px) !important;
+  background: rgba(15, 23, 42, 0.4) !important;
+  z-index: 100000 !important;
+}
+
+.ant-modal-wrap {
+  z-index: 100001 !important;
+  padding-top: calc(var(--wp-admin--admin-bar--height, 32px) + 20px) !important;
+}
+
+@media screen and (max-width: 782px) {
+  .ant-modal-wrap {
+    padding-top: calc(46px + 16px) !important;
+  }
+}
+
+.zgeo-modal .ant-modal-content {
+  border-radius: 20px !important;
+  padding: 24px !important;
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  background: #ffffff !important;
+  position: relative !important;
+}
+
+.zgeo-modal .ant-modal-header {
+  padding: 0 !important;
+  margin-bottom: 20px !important;
+  background: transparent !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding-bottom: 16px !important;
+}
+
+.zgeo-modal .ant-modal-close {
+  top: 20px !important;
+  right: 20px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  color: #94a3b8 !important;
+  transition: all 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.zgeo-modal .ant-modal-close:hover {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+.zgeo-modal .ant-modal-body {
+  padding: 0 !important;
+}
+
+/* Modal Custom Header Layout */
+.zgeo-modal-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.zgeo-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zgeo-modal-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.zgeo-modal-icon-brand {
+  background: #eef2ff;
+  color: #4f46e5;
+  border: 1px solid #e0e7ff;
+}
+
+.zgeo-modal-icon-blue {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.zgeo-modal-icon-rose {
+  width: 40px;
+  height: 40px;
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #ffe4e6;
+}
+
+.zgeo-modal-icon-emerald {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #d1fae5;
+}
+
+.zgeo-modal-title {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.01em;
+}
+
+.zgeo-modal-subtitle {
+  font-size: 12px !important;
+  color: #64748b !important;
+  margin: 2px 0 0 0 !important;
+}
+
+/* Modal Action Footer */
+.zgeo-modal-footer {
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.zgeo-modal-btn-cancel {
+  height: 36px !important;
+  padding: 0 16px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  transition: all 0.2s !important;
+}
+.zgeo-modal-btn-cancel:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.zgeo-modal-btn-primary {
+  height: 36px !important;
+  padding: 0 18px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s !important;
+}
+.zgeo-modal-btn-primary:hover {
+  background: #4338ca !important;
+}
+
+.zgeo-modal-btn-danger {
+  height: 36px !important;
+  padding: 0 18px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  background: #e11d48 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25) !important;
+  transition: all 0.2s !important;
+}
+.zgeo-modal-btn-danger:hover {
+  background: #be123c !important;
+}
+
+/* Modal Link Buttons */
+.zgeo-connect-store-link,
+button.zgeo-connect-store-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 6px 10px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #4338ca !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+}
+.zgeo-connect-store-link:hover,
+button.zgeo-connect-store-link:hover {
+  background: #eef2ff !important;
+  color: #3730a3 !important;
+}
+
+.zgeo-modal-back-btn,
+button.zgeo-modal-back-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  border-radius: 8px !important;
+  transition: all 0.15s !important;
+}
+.zgeo-modal-back-btn:hover,
+button.zgeo-modal-back-btn:hover {
+  color: #1e293b !important;
+  background: #f1f5f9 !important;
+}
+
+/* Rank Radar Email Digest KPI Styles */
+.zgeo-radar-email-edit-badge,
+button.zgeo-radar-email-edit-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: #4f46e5 !important;
+  background-color: #eef2ff !important;
+  border: 1px solid rgba(199, 210, 254, 0.7) !important;
+  border-radius: 4px !important;
+  padding: 1px 6px !important;
+  line-height: normal !important;
+  min-height: 0 !important;
+  height: auto !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s !important;
+}
+.zgeo-radar-email-edit-badge:hover,
+button.zgeo-radar-email-edit-badge:hover {
+  background-color: #e0e7ff !important;
+  color: #4338ca !important;
+}
+
+#zgeo-root .zgeo-radar-email-input,
+.zgeo-radar-email-input {
+  height: 28px !important;
+  min-height: 28px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 0 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  flex: 1 !important;
+  box-sizing: border-box !important;
+}
+#zgeo-root .zgeo-radar-email-input:focus,
+.zgeo-radar-email-input:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15) !important;
+}
+
+#zgeo-root .zgeo-radar-email-save-btn,
+button.zgeo-radar-email-save-btn {
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 10px !important;
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s !important;
+  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2) !important;
+}
+#zgeo-root .zgeo-radar-email-save-btn:hover,
+button.zgeo-radar-email-save-btn:hover {
+  background-color: #4338ca !important;
+}
+
+#zgeo-root .zgeo-radar-email-cancel-btn,
+button.zgeo-radar-email-cancel-btn {
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 8px !important;
+  background: transparent !important;
+  color: #64748b !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s !important;
+}
+#zgeo-root .zgeo-radar-email-cancel-btn:hover,
+button.zgeo-radar-email-cancel-btn:hover {
+  color: #334155 !important;
+  background-color: #f1f5f9 !important;
+}
+
+#zgeo-root .zgeo-radar-switch.ant-switch-checked {
+  background-color: #4f46e5 !important;
+}
+
+/* Specific Store Switcher Items */
+.zgeo-store-select-item {
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+.zgeo-store-select-item:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+.zgeo-store-select-item.active {
+  border: 2px solid #4f46e5 !important;
+  background: rgba(238, 242, 255, 0.3) !important;
+}
+
+.zgeo-store-active-badge {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: #4338ca;
+  background: #eef2ff;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid #c7d2fe;
+}
+
+.zgeo-store-switch-link {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  transition: color 0.2s;
+}
+.zgeo-store-select-item:hover .zgeo-store-switch-link {
+  color: #4338ca;
+}
+
+/* Connect Store Modal Elements & Form Inputs (WP Admin Bleed Prevention) */
+.zgeo-modal .ant-modal-content {
+  border-radius: 16px !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.zgeo-modal .ant-input,
+.zgeo-modal input[type="text"],
+.zgeo-modal input[type="password"],
+.zgeo-modal-input {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.zgeo-modal .ant-input-affix-wrapper,
+.zgeo-modal-input.ant-input-affix-wrapper {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  padding: 4px 12px !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.zgeo-modal .ant-input-affix-wrapper > input.ant-input,
+.zgeo-modal .ant-input-affix-wrapper > input[type="text"],
+.zgeo-modal .ant-input-affix-wrapper > input[type="password"],
+.zgeo-modal-input.ant-input-affix-wrapper > input {
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  min-height: unset !important;
+  line-height: normal !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.zgeo-modal .ant-input-affix-wrapper:hover,
+.zgeo-modal-input.ant-input-affix-wrapper:hover,
+.zgeo-modal input[type="text"]:hover,
+.zgeo-modal input[type="password"]:hover {
+  border-color: #94a3b8 !important;
+}
+
+.zgeo-modal .ant-input-affix-wrapper:focus,
+.zgeo-modal .ant-input-affix-wrapper-focused,
+.zgeo-modal-input.ant-input-affix-wrapper-focused,
+.zgeo-modal input[type="text"]:focus,
+.zgeo-modal input[type="password"]:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+  outline: none !important;
+}
+
+.zgeo-modal .ant-select .ant-select-selector {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 0 11px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+}
+
+.zgeo-auth-radio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+.zgeo-auth-radio-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s;
+  background: #ffffff;
+}
+.zgeo-auth-radio-card:hover {
+  border-color: #cbd5e1;
+}
+.zgeo-auth-radio-card.active {
+  border: 2px solid #4f46e5;
+  background: rgba(238, 242, 255, 0.3);
+}
+
+.zgeo-sync-checkbox-box {
+  padding: 12px 14px;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zgeo-security-callout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+  background: rgba(248, 250, 252, 0.6);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+}
+
+/* Re-Index Log Box */
+.zgeo-reindex-log-box {
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.zgeo-reindex-log-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.zgeo-reindex-ok {
+  color: #059669;
+  font-weight: 700;
+}
+
+/* Bulk Enrich Modal Elements */
+.zgeo-enrich-list-box {
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.zgeo-enrich-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e293b;
+}
+.zgeo-enrich-token-callout {
+  padding: 12px 14px;
+  background: #ecfdf5;
+  border: 1px solid rgba(167, 243, 208, 0.8);
+  border-radius: 12px;
+  font-size: 12px;
+  color: #065f46;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Purge Warning Box */
+.zgeo-purge-callout {
+  padding: 12px 14px;
+  background: rgba(255, 241, 242, 0.8);
+  border: 1px solid rgba(254, 205, 211, 0.9);
+  border-radius: 12px;
+  font-size: 12px;
+  color: #881337;
+  line-height: 1.5;
+}
+
+/* Product Inspection Drawer Improvements */
+.ant-drawer-mask {
+  z-index: 100000 !important;
+}
+
+.zgeo-drawer.ant-drawer,
+.ant-drawer {
+  z-index: 100001 !important;
+  top: var(--wp-admin--admin-bar--height, 32px) !important;
+  height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)) !important;
+}
+
+@media screen and (max-width: 782px) {
+  .zgeo-drawer.ant-drawer,
+  .ant-drawer {
+    top: 46px !important;
+    height: calc(100vh - 46px) !important;
+  }
+}
+
+.zgeo-drawer .ant-drawer-content {
+  background: #ffffff !important;
+}
+.zgeo-drawer .ant-drawer-header {
+  padding: 20px 24px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+.zgeo-drawer .ant-drawer-body {
+  padding: 24px !important;
+}
+.zgeo-drawer .ant-drawer-footer {
+  padding: 16px 24px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  background: #ffffff !important;
+}
+
+/* Global Ant Design Feedback / Overlays vs WP Admin Bar */
+.ant-message,
+.ant-notification {
+  top: calc(var(--wp-admin--admin-bar--height, 32px) + 16px) !important;
+  z-index: 100005 !important;
+}
+
+@media screen and (max-width: 782px) {
+  .ant-message,
+  .ant-notification {
+    top: calc(46px + 16px) !important;
+  }
+}
+
+.ant-popover,
+.ant-tooltip,
+.ant-dropdown {
+  z-index: 100002 !important;
+}
+
+
+
+/* ==========================================================================
+   Input & Select Base Resets (Respects utility classes from preview.html)
+   ========================================================================== */
+
+#zgeo-root input[type="text"],
+#zgeo-root input[type="search"],
+#zgeo-root input[type="email"],
+#zgeo-root input[type="password"],
+#zgeo-root input[type="url"],
+#zgeo-root input[type="number"],
+#zgeo-root textarea,
+#zgeo-root select {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-sizing: border-box;
+  outline: none;
+}
+
+#zgeo-root input::placeholder,
+#zgeo-root textarea::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+#zgeo-root input:focus,
+#zgeo-root textarea:focus,
+#zgeo-root select:focus {
+  outline: none;
+}
+
+/* Monospace specific inputs (Keys, URLs, SKUs) */
+#zgeo-root .zgeo-key-input,
+#zgeo-root .zgeo-mono-input,
+#zgeo-root input.font-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+  letter-spacing: -0.01em !important;
+}
+
+
+
+/* ==========================================================================
+   Missing Tab Wrapper Classes
+   ========================================================================== */
+
+.zgeo-overview-tab,
+.zgeo-radar-tab,
+.zgeo-products-tab,
+.zgeo-logs-tab,
+.zgeo-simulator-tab,
+.zgeo-llmstxt-tab,
+.zgeo-settings-tab {
+  display: block;
+  width: 100%;
+}
+
+/* Table filter select wrapper */
+.zgeo-table-filter-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Score column */
+.zgeo-score-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Inspect / 1-click action button */
+.zgeo-inspect-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid rgba(199, 210, 254, 0.8);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.zgeo-inspect-action-btn:hover {
+  background: #e0e7ff;
+}
+
+/* Spacing helpers */
+.zgeo-mt-xs { margin-top: 6px !important; }
+.zgeo-mb-sm { margin-bottom: 12px !important; }
+.zgeo-text-muted { color: #64748b !important; font-size: 12px; }
+
+/* Modal desc text */
+.zgeo-modal-desc {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+/* Modal divider */
+.zgeo-modal-divider {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 16px 0;
+}
+
+/* Active store tag in header store-switcher */
+.zgeo-active-store-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Switch link (subtle text-link in modals) */
+.zgeo-switch-link {
+  color: #4338ca;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.zgeo-switch-link:hover {
+  color: #3730a3;
+}
+
+/* Form action row */
+.zgeo-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 16px;
+}
+
+/* Info banner (blue notice) */
+.zgeo-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #1d4ed8;
+}
+
+/* ==========================================================================
+   Additional Inline Utility Overrides (Missing from scoped block)
+   ========================================================================== */
+
+#zgeo-root .text-\[10px\] { font-size: 10px; line-height: 1.5; }
+#zgeo-root .text-\[11px\] { font-size: 11px; line-height: 1.5; }
+#zgeo-root .text-\[13px\] { font-size: 13px; line-height: 1.5; }
+#zgeo-root .mt-0\.5 { margin-top: 0.125rem; }
+#zgeo-root .pb-3\.5 { padding-bottom: 0.875rem; }
+#zgeo-root .pt-0\.5 { padding-top: 0.125rem; }
+#zgeo-root .mt-1\.5 { margin-top: 0.375rem; }
+#zgeo-root .mb-3\.5 { margin-bottom: 0.875rem; }
+#zgeo-root .gap-0\.5 { gap: 0.125rem; }
+#zgeo-root .gap-1\.5 { gap: 0.375rem; }
+#zgeo-root .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+#zgeo-root .top-2\.5 { top: 0.625rem; }
+#zgeo-root .w-1\.5 { width: 0.375rem; }
+#zgeo-root .h-1\.5 { height: 0.375rem; }
+#zgeo-root .min-w-\[260px\] { min-width: 260px; }
+#zgeo-root .min-w-\[780px\] { min-width: 780px; }
+#zgeo-root .border-slate-200\/70 { border-color: rgb(226 232 240 / 0.7); }
+#zgeo-root .hover\:text-brand-700:hover { color: #4338ca; }
+
+@media (min-width: 640px) {
+  #zgeo-root .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #zgeo-root .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #zgeo-root .sm\:col-span-2 { grid-column: span 2 / span 2; }
+  #zgeo-root .sm\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+  #zgeo-root .sm\:flex-row { flex-direction: row; }
+  #zgeo-root .sm\:items-center { align-items: center; }
+  #zgeo-root .sm\:w-auto { width: auto; }
+}
+@media (min-width: 768px) {
+  #zgeo-root .md\:w-80 { width: 20rem; }
+  #zgeo-root .md\:w-auto { width: auto; }
+  #zgeo-root .md\:flex-row { flex-direction: row; }
+  #zgeo-root .md\:items-center { align-items: center; }
+}
+
+/* ==========================================================================
+   Pure Scoped Utility Classes (Self-Contained - No Tailwind Dependency)
+   ========================================================================== */
+#zgeo-root .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0
+} #zgeo-root .pointer-events-none { pointer-events: none
+} #zgeo-root .visible { visibility: visible
+} #zgeo-root .static { position: static
+} #zgeo-root .fixed { position: fixed
+} #zgeo-root .absolute { position: absolute
+} #zgeo-root .relative { position: relative
+} #zgeo-root .sticky { position: sticky
+} #zgeo-root .inset-0 { inset: 0px
+} #zgeo-root .inset-y-0 { top: 0px; bottom: 0px
+} #zgeo-root .bottom-4 { bottom: 1rem
+} #zgeo-root .left-0 { left: 0px
+} #zgeo-root .left-3 { left: 0.75rem
+} #zgeo-root .left-4 { left: 1rem
+} #zgeo-root .right-0 { right: 0px
+} #zgeo-root .right-1\.5 { right: 0.375rem
+} #zgeo-root .right-4 { right: 1rem
+} #zgeo-root .top-0 { top: 0px
+} #zgeo-root .top-2\.5 { top: 0.625rem
+} #zgeo-root .top-3 { top: 0.75rem
+} #zgeo-root .top-3\.5 { top: 0.875rem
+} #zgeo-root .z-10 { z-index: 10
+} #zgeo-root .z-20 { z-index: 20
+} #zgeo-root .z-30 { z-index: 30
+} #zgeo-root .z-50 { z-index: 50
+} #zgeo-root .-mx-4 { margin-left: -1rem; margin-right: -1rem
+} #zgeo-root .mx-auto { margin-left: auto; margin-right: auto
+} #zgeo-root .my-1 { margin-top: 0.25rem; margin-bottom: 0.25rem
+} #zgeo-root .my-4 { margin-top: 1rem; margin-bottom: 1rem
+} #zgeo-root .-ml-1 { margin-left: -0.25rem
+} #zgeo-root .mb-1 { margin-bottom: 0.25rem
+} #zgeo-root .mb-1\.5 { margin-bottom: 0.375rem
+} #zgeo-root .mb-2 { margin-bottom: 0.5rem
+} #zgeo-root .mb-2\.5 { margin-bottom: 0.625rem
+} #zgeo-root .mb-3\.5 { margin-bottom: 0.875rem
+} #zgeo-root .ml-1 { margin-left: 0.25rem
+} #zgeo-root .ml-1\.5 { margin-left: 0.375rem
+} #zgeo-root .ml-2 { margin-left: 0.5rem
+} #zgeo-root .mr-1 { margin-right: 0.25rem
+} #zgeo-root .mr-1\.5 { margin-right: 0.375rem
+} #zgeo-root .mt-0\.5 { margin-top: 0.125rem
+} #zgeo-root .mt-1\.5 { margin-top: 0.375rem
+} #zgeo-root .mt-2 { margin-top: 0.5rem
+} #zgeo-root .mt-2\.5 { margin-top: 0.625rem
+} #zgeo-root .mt-3 { margin-top: 0.75rem
+} #zgeo-root .mt-4 { margin-top: 1rem
+} #zgeo-root .mt-5 { margin-top: 1.25rem
+} #zgeo-root .block { display: block
+} #zgeo-root .flex { display: flex
+} #zgeo-root .inline-flex { display: inline-flex
+} #zgeo-root .table { display: table
+} #zgeo-root .grid { display: grid
+} #zgeo-root .hidden { display: none
+} #zgeo-root .h-1\.5 { height: 0.375rem
+} #zgeo-root .h-10 { height: 2.5rem
+} #zgeo-root .h-11 { height: 2.75rem
+} #zgeo-root .h-12 { height: 3rem
+} #zgeo-root .h-2 { height: 0.5rem
+} #zgeo-root .h-2\.5 { height: 0.625rem
+} #zgeo-root .h-3 { height: 0.75rem
+} #zgeo-root .h-3\.5 { height: 0.875rem
+} #zgeo-root .h-4 { height: 1rem
+} #zgeo-root .h-5 { height: 1.25rem
+} #zgeo-root .h-6 { height: 1.5rem
+} #zgeo-root .h-64 { height: 16rem
+} #zgeo-root .h-7 { height: 1.75rem
+} #zgeo-root .h-8 { height: 2rem
+} #zgeo-root .h-9 { height: 2.25rem
+} #zgeo-root .h-full { height: 100%
+} #zgeo-root .max-h-56 { max-height: 14rem
+} #zgeo-root .max-h-\[225px\] { max-height: 225px
+} #zgeo-root .max-h-\[360px\] { max-height: 360px
+} #zgeo-root .min-h-\[145px\] { min-height: 145px
+} #zgeo-root .min-h-full { min-height: 100%
+} #zgeo-root .w-1\.5 { width: 0.375rem
+} #zgeo-root .w-10 { width: 2.5rem
+} #zgeo-root .w-11 { width: 2.75rem
+} #zgeo-root .w-2 { width: 0.5rem
+} #zgeo-root .w-2\.5 { width: 0.625rem
+} #zgeo-root .w-20 { width: 5rem
+} #zgeo-root .w-3 { width: 0.75rem
+} #zgeo-root .w-3\.5 { width: 0.875rem
+} #zgeo-root .w-4 { width: 1rem
+} #zgeo-root .w-5 { width: 1.25rem
+} #zgeo-root .w-7 { width: 1.75rem
+} #zgeo-root .w-8 { width: 2rem
+} #zgeo-root .w-9 { width: 2.25rem
+} #zgeo-root .w-full { width: 100%
+} #zgeo-root .w-px { width: 1px
+} #zgeo-root .min-w-0 { min-width: 0px
+} #zgeo-root .min-w-\[260px\] { min-width: 260px
+} #zgeo-root .min-w-\[780px\] { min-width: 780px
+} #zgeo-root .max-w-\[1440px\] { max-width: 1440px
+} #zgeo-root .max-w-lg { max-width: 32rem
+} #zgeo-root .max-w-md { max-width: 28rem
+} #zgeo-root .flex-1 { flex: 1 1 0%
+} #zgeo-root .flex-shrink-0 { flex-shrink: 0
+} #zgeo-root .transform { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+} @keyframes pulse { 50% { opacity: .5
+    }
+} #zgeo-root .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite
+} @keyframes spin { to { transform: rotate(360deg)
+    }
+} #zgeo-root .animate-spin { animation: spin 1s linear infinite
+} #zgeo-root .cursor-pointer { cursor: pointer
+} #zgeo-root .select-none { user-select: none
+} #zgeo-root .select-all { user-select: all
+} #zgeo-root .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr))
+} #zgeo-root .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr))
+} #zgeo-root .flex-col { flex-direction: column
+} #zgeo-root .flex-wrap { flex-wrap: wrap
+} #zgeo-root .items-start { align-items: flex-start
+} #zgeo-root .items-center { align-items: center
+} #zgeo-root .items-baseline { align-items: baseline
+} #zgeo-root .items-stretch { align-items: stretch
+} #zgeo-root .justify-end { justify-content: flex-end
+} #zgeo-root .justify-center { justify-content: center
+} #zgeo-root .justify-between { justify-content: space-between
+} #zgeo-root .gap-0\.5 { gap: 0.125rem
+} #zgeo-root .gap-1 { gap: 0.25rem
+} #zgeo-root .gap-1\.5 { gap: 0.375rem
+} #zgeo-root .gap-2 { gap: 0.5rem
+} #zgeo-root .gap-2\.5 { gap: 0.625rem
+} #zgeo-root .gap-3 { gap: 0.75rem
+} #zgeo-root .gap-3\.5 { gap: 0.875rem
+} #zgeo-root .gap-4 { gap: 1rem
+} #zgeo-root .gap-5 { gap: 1.25rem
+} #zgeo-root .gap-6 { gap: 1.5rem
+} #zgeo-root .gap-7 { gap: 1.75rem
+} #zgeo-root :is(.space-y-0\.5 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.125rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.125rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-1 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.25rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-1\.5 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.375rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.375rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-2 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.5rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-2\.5 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.625rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.625rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-3 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.75rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-3\.5 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(0.875rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(0.875rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-4 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-5 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(1.25rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1.25rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-6 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1.5rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.space-y-7 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(1.75rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1.75rem * var(--tw-space-y-reverse))
+} #zgeo-root :is(.divide-y > :not([hidden]) ~ :not([hidden])) { --tw-divide-y-reverse: 0; border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse))); border-bottom-width: calc(1px * var(--tw-divide-y-reverse))
+} #zgeo-root :is(.divide-slate-100 > :not([hidden]) ~ :not([hidden])) { --tw-divide-opacity: 1; border-color: rgb(241 245 249 / var(--tw-divide-opacity, 1))
+} #zgeo-root .self-start { align-self: flex-start
+} #zgeo-root .self-stretch { align-self: stretch
+} #zgeo-root .overflow-hidden { overflow: hidden
+} #zgeo-root .overflow-x-auto { overflow-x: auto
+} #zgeo-root .overflow-y-auto { overflow-y: auto
+} #zgeo-root .overflow-x-hidden { overflow-x: hidden
+} #zgeo-root .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap
+} #zgeo-root .whitespace-nowrap { white-space: nowrap
+} #zgeo-root .break-all { word-break: break-all
+} #zgeo-root .rounded { border-radius: 0.25rem
+} #zgeo-root .rounded-2xl { border-radius: 1rem
+} #zgeo-root .rounded-full { border-radius: 9999px
+} #zgeo-root .rounded-lg { border-radius: 0.5rem
+} #zgeo-root .rounded-md { border-radius: 0.375rem
+} #zgeo-root .rounded-xl { border-radius: 0.75rem
+} #zgeo-root .border { border-width: 1px
+} #zgeo-root .border-2 { border-width: 2px
+} #zgeo-root .border-b { border-bottom-width: 1px
+} #zgeo-root .border-l { border-left-width: 1px
+} #zgeo-root .border-l-2 { border-left-width: 2px
+} #zgeo-root .border-t { border-top-width: 1px
+} #zgeo-root .border-amber-100 { --tw-border-opacity: 1; border-color: rgb(254 243 199 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-amber-200 { --tw-border-opacity: 1; border-color: rgb(253 230 138 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-amber-200\/80 { border-color: rgb(253 230 138 / 0.8)
+} #zgeo-root .border-amber-200\/90 { border-color: rgb(253 230 138 / 0.9)
+} #zgeo-root .border-amber-300\/80 { border-color: rgb(252 211 77 / 0.8)
+} #zgeo-root .border-blue-100 { --tw-border-opacity: 1; border-color: rgb(219 234 254 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-blue-200 { --tw-border-opacity: 1; border-color: rgb(191 219 254 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-brand-100 { --tw-border-opacity: 1; border-color: rgb(224 231 255 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-brand-200 { --tw-border-opacity: 1; border-color: rgb(199 210 254 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-brand-200\/60 { border-color: rgb(199 210 254 / 0.6)
+} #zgeo-root .border-brand-200\/70 { border-color: rgb(199 210 254 / 0.7)
+} #zgeo-root .border-brand-200\/80 { border-color: rgb(199 210 254 / 0.8)
+} #zgeo-root .border-brand-200\/90 { border-color: rgb(199 210 254 / 0.9)
+} #zgeo-root .border-brand-500 { --tw-border-opacity: 1; border-color: rgb(99 102 241 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-emerald-100 { --tw-border-opacity: 1; border-color: rgb(209 250 229 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-emerald-200 { --tw-border-opacity: 1; border-color: rgb(167 243 208 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-emerald-200\/70 { border-color: rgb(167 243 208 / 0.7)
+} #zgeo-root .border-emerald-200\/80 { border-color: rgb(167 243 208 / 0.8)
+} #zgeo-root .border-emerald-200\/90 { border-color: rgb(167 243 208 / 0.9)
+} #zgeo-root .border-emerald-300\/80 { border-color: rgb(110 231 183 / 0.8)
+} #zgeo-root .border-indigo-100 { --tw-border-opacity: 1; border-color: rgb(224 231 255 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-indigo-200\/70 { border-color: rgb(199 210 254 / 0.7)
+} #zgeo-root .border-indigo-200\/80 { border-color: rgb(199 210 254 / 0.8)
+} #zgeo-root .border-lime-200 { --tw-border-opacity: 1; border-color: rgb(217 249 157 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-orange-100 { --tw-border-opacity: 1; border-color: rgb(255 237 213 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-purple-100 { --tw-border-opacity: 1; border-color: rgb(243 232 255 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-rose-100 { --tw-border-opacity: 1; border-color: rgb(255 228 230 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-rose-200\/80 { border-color: rgb(254 205 211 / 0.8)
+} #zgeo-root .border-sky-100 { --tw-border-opacity: 1; border-color: rgb(224 242 254 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-slate-100 { --tw-border-opacity: 1; border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-slate-200 { --tw-border-opacity: 1; border-color: rgb(226 232 240 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-slate-200\/50 { border-color: rgb(226 232 240 / 0.5)
+} #zgeo-root .border-slate-200\/60 { border-color: rgb(226 232 240 / 0.6)
+} #zgeo-root .border-slate-200\/70 { border-color: rgb(226 232 240 / 0.7)
+} #zgeo-root .border-slate-200\/80 { border-color: rgb(226 232 240 / 0.8)
+} #zgeo-root .border-slate-200\/90 { border-color: rgb(226 232 240 / 0.9)
+} #zgeo-root .border-slate-300 { --tw-border-opacity: 1; border-color: rgb(203 213 225 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-slate-300\/40 { border-color: rgb(203 213 225 / 0.4)
+} #zgeo-root .border-slate-300\/50 { border-color: rgb(203 213 225 / 0.5)
+} #zgeo-root .border-teal-100 { --tw-border-opacity: 1; border-color: rgb(204 251 241 / var(--tw-border-opacity, 1))
+} #zgeo-root .border-teal-200\/80 { border-color: rgb(153 246 228 / 0.8)
+} #zgeo-root .border-transparent { border-color: transparent
+} #zgeo-root .bg-amber-100 { --tw-bg-opacity: 1; background-color: rgb(254 243 199 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-amber-50 { --tw-bg-opacity: 1; background-color: rgb(255 251 235 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-amber-50\/20 { background-color: rgb(255 251 235 / 0.2)
+} #zgeo-root .bg-amber-50\/80 { background-color: rgb(255 251 235 / 0.8)
+} #zgeo-root .bg-amber-500 { --tw-bg-opacity: 1; background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-blue-50 { --tw-bg-opacity: 1; background-color: rgb(239 246 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-blue-500 { --tw-bg-opacity: 1; background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-brand-50 { --tw-bg-opacity: 1; background-color: rgb(238 242 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-brand-50\/20 { background-color: rgb(238 242 255 / 0.2)
+} #zgeo-root .bg-brand-600 { --tw-bg-opacity: 1; background-color: rgb(79 70 229 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-emerald-100 { --tw-bg-opacity: 1; background-color: rgb(209 250 229 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-emerald-100\/80 { background-color: rgb(209 250 229 / 0.8)
+} #zgeo-root .bg-emerald-50 { --tw-bg-opacity: 1; background-color: rgb(236 253 245 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-emerald-50\/80 { background-color: rgb(236 253 245 / 0.8)
+} #zgeo-root .bg-emerald-500 { --tw-bg-opacity: 1; background-color: rgb(16 185 129 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-emerald-600 { --tw-bg-opacity: 1; background-color: rgb(5 150 105 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-indigo-50 { --tw-bg-opacity: 1; background-color: rgb(238 242 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-indigo-50\/50 { background-color: rgb(238 242 255 / 0.5)
+} #zgeo-root .bg-indigo-50\/70 { background-color: rgb(238 242 255 / 0.7)
+} #zgeo-root .bg-indigo-500 { --tw-bg-opacity: 1; background-color: rgb(99 102 241 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-indigo-600 { --tw-bg-opacity: 1; background-color: rgb(79 70 229 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-lime-50 { --tw-bg-opacity: 1; background-color: rgb(247 254 231 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-orange-50 { --tw-bg-opacity: 1; background-color: rgb(255 247 237 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-orange-500 { --tw-bg-opacity: 1; background-color: rgb(249 115 22 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-purple-50 { --tw-bg-opacity: 1; background-color: rgb(250 245 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-rose-50 { --tw-bg-opacity: 1; background-color: rgb(255 241 242 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-rose-50\/70 { background-color: rgb(255 241 242 / 0.7)
+} #zgeo-root .bg-rose-500 { --tw-bg-opacity: 1; background-color: rgb(244 63 94 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-rose-600 { --tw-bg-opacity: 1; background-color: rgb(225 29 72 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-sky-50 { --tw-bg-opacity: 1; background-color: rgb(240 249 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-sky-500 { --tw-bg-opacity: 1; background-color: rgb(14 165 233 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-slate-100 { --tw-bg-opacity: 1; background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-slate-100\/70 { background-color: rgb(241 245 249 / 0.7)
+} #zgeo-root .bg-slate-100\/90 { background-color: rgb(241 245 249 / 0.9)
+} #zgeo-root .bg-slate-200 { --tw-bg-opacity: 1; background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-slate-200\/60 { background-color: rgb(226 232 240 / 0.6)
+} #zgeo-root .bg-slate-200\/70 { background-color: rgb(226 232 240 / 0.7)
+} #zgeo-root .bg-slate-200\/80 { background-color: rgb(226 232 240 / 0.8)
+} #zgeo-root .bg-slate-300 { --tw-bg-opacity: 1; background-color: rgb(203 213 225 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-slate-50 { --tw-bg-opacity: 1; background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-slate-50\/40 { background-color: rgb(248 250 252 / 0.4)
+} #zgeo-root .bg-slate-50\/50 { background-color: rgb(248 250 252 / 0.5)
+} #zgeo-root .bg-slate-50\/60 { background-color: rgb(248 250 252 / 0.6)
+} #zgeo-root .bg-slate-50\/70 { background-color: rgb(248 250 252 / 0.7)
+} #zgeo-root .bg-slate-50\/80 { background-color: rgb(248 250 252 / 0.8)
+} #zgeo-root .bg-slate-50\/90 { background-color: rgb(248 250 252 / 0.9)
+} #zgeo-root .bg-slate-900\/30 { background-color: rgb(15 23 42 / 0.3)
+} #zgeo-root .bg-slate-900\/40 { background-color: rgb(15 23 42 / 0.4)
+} #zgeo-root .bg-teal-50 { --tw-bg-opacity: 1; background-color: rgb(240 253 250 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-transparent { background-color: transparent
+} #zgeo-root .bg-white { --tw-bg-opacity: 1; background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .bg-white\/90 { background-color: rgb(255 255 255 / 0.9)
+} #zgeo-root .bg-white\/95 { background-color: rgb(255 255 255 / 0.95)
+} #zgeo-root .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops))
+} #zgeo-root .bg-gradient-to-tr { background-image: linear-gradient(to top right, var(--tw-gradient-stops))
+} #zgeo-root .from-brand-50\/30 { --tw-gradient-from: rgb(238 242 255 / 0.3) var(--tw-gradient-from-position); --tw-gradient-to: rgb(238 242 255 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+} #zgeo-root .from-brand-500 { --tw-gradient-from: #6366f1 var(--tw-gradient-from-position); --tw-gradient-to: rgb(99 102 241 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+} #zgeo-root .from-brand-600 { --tw-gradient-from: #4f46e5 var(--tw-gradient-from-position); --tw-gradient-to: rgb(79 70 229 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+} #zgeo-root .via-white { --tw-gradient-to: rgb(255 255 255 / 0)  var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), #fff var(--tw-gradient-via-position), var(--tw-gradient-to)
+} #zgeo-root .to-emerald-50\/20 { --tw-gradient-to: rgb(236 253 245 / 0.2) var(--tw-gradient-to-position)
+} #zgeo-root .to-emerald-500 { --tw-gradient-to: #10b981 var(--tw-gradient-to-position)
+} #zgeo-root .to-indigo-500 { --tw-gradient-to: #6366f1 var(--tw-gradient-to-position)
+} #zgeo-root .to-indigo-600 { --tw-gradient-to: #4f46e5 var(--tw-gradient-to-position)
+} #zgeo-root .fill-current { fill: currentColor
+} #zgeo-root .p-1 { padding: 0.25rem
+} #zgeo-root .p-2 { padding: 0.5rem
+} #zgeo-root .p-2\.5 { padding: 0.625rem
+} #zgeo-root .p-3 { padding: 0.75rem
+} #zgeo-root .p-3\.5 { padding: 0.875rem
+} #zgeo-root .p-4 { padding: 1rem
+} #zgeo-root .p-5 { padding: 1.25rem
+} #zgeo-root .p-6 { padding: 1.5rem
+} #zgeo-root .p-7 { padding: 1.75rem
+} #zgeo-root .px-1 { padding-left: 0.25rem; padding-right: 0.25rem
+} #zgeo-root .px-1\.5 { padding-left: 0.375rem; padding-right: 0.375rem
+} #zgeo-root .px-2 { padding-left: 0.5rem; padding-right: 0.5rem
+} #zgeo-root .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem
+} #zgeo-root .px-3 { padding-left: 0.75rem; padding-right: 0.75rem
+} #zgeo-root .px-3\.5 { padding-left: 0.875rem; padding-right: 0.875rem
+} #zgeo-root .px-4 { padding-left: 1rem; padding-right: 1rem
+} #zgeo-root .px-5 { padding-left: 1.25rem; padding-right: 1.25rem
+} #zgeo-root .px-6 { padding-left: 1.5rem; padding-right: 1.5rem
+} #zgeo-root .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem
+} #zgeo-root .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem
+} #zgeo-root .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem
+} #zgeo-root .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem
+} #zgeo-root .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem
+} #zgeo-root .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem
+} #zgeo-root .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem
+} #zgeo-root .pb-2\.5 { padding-bottom: 0.625rem
+} #zgeo-root .pb-3 { padding-bottom: 0.75rem
+} #zgeo-root .pb-3\.5 { padding-bottom: 0.875rem
+} #zgeo-root .pb-4 { padding-bottom: 1rem
+} #zgeo-root .pb-5 { padding-bottom: 1.25rem
+} #zgeo-root .pl-10 { padding-left: 2.5rem
+} #zgeo-root .pl-11 { padding-left: 2.75rem
+} #zgeo-root .pl-12 { padding-left: 3rem
+} #zgeo-root .pl-3 { padding-left: 0.75rem
+} #zgeo-root .pl-4 { padding-left: 1rem
+} #zgeo-root .pl-8 { padding-left: 2rem
+} #zgeo-root .pl-9 { padding-left: 2.25rem
+} #zgeo-root .pr-0\.5 { padding-right: 0.125rem
+} #zgeo-root .pr-1 { padding-right: 0.25rem
+} #zgeo-root .pr-24 { padding-right: 6rem
+} #zgeo-root .pr-3 { padding-right: 0.75rem
+} #zgeo-root .pr-4 { padding-right: 1rem
+} #zgeo-root .pt-0\.5 { padding-top: 0.125rem
+} #zgeo-root .pt-1 { padding-top: 0.25rem
+} #zgeo-root .pt-2 { padding-top: 0.5rem
+} #zgeo-root .pt-3 { padding-top: 0.75rem
+} #zgeo-root .pt-4 { padding-top: 1rem
+} #zgeo-root .pt-5 { padding-top: 1.25rem
+} #zgeo-root .text-left { text-align: left
+} #zgeo-root .text-center { text-align: center
+} #zgeo-root .text-right { text-align: right
+} #zgeo-root .font-mono { font-family: "JetBrains Mono", monospace
+} #zgeo-root .font-sans { font-family: "Plus Jakarta Sans", sans-serif
+} #zgeo-root .text-2xl { font-size: 1.5rem; line-height: 2rem
+} #zgeo-root .text-3xl { font-size: 1.875rem; line-height: 2.25rem
+} #zgeo-root .text-\[10px\] { font-size: 10px
+} #zgeo-root .text-\[11px\] { font-size: 11px
+} #zgeo-root .text-\[9px\] { font-size: 9px
+} #zgeo-root .text-base { font-size: 1rem; line-height: 1.5rem
+} #zgeo-root .text-lg { font-size: 1.125rem; line-height: 1.75rem
+} #zgeo-root .text-sm { font-size: 0.875rem; line-height: 1.25rem
+} #zgeo-root .text-xs { font-size: 0.75rem; line-height: 1rem
+} #zgeo-root .font-bold { font-weight: 700
+} #zgeo-root .font-extrabold { font-weight: 800
+} #zgeo-root .font-medium { font-weight: 500
+} #zgeo-root .font-normal { font-weight: 400
+} #zgeo-root .font-semibold { font-weight: 600
+} #zgeo-root .uppercase { text-transform: uppercase
+} #zgeo-root .italic { font-style: italic
+} #zgeo-root .leading-relaxed { line-height: 1.625
+} #zgeo-root .tracking-tight { letter-spacing: -0.025em
+} #zgeo-root .tracking-wider { letter-spacing: 0.05em
+} #zgeo-root .tracking-widest { letter-spacing: 0.1em
+} #zgeo-root .text-amber-500 { --tw-text-opacity: 1; color: rgb(245 158 11 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-amber-600 { --tw-text-opacity: 1; color: rgb(217 119 6 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-amber-700 { --tw-text-opacity: 1; color: rgb(180 83 9 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-amber-800 { --tw-text-opacity: 1; color: rgb(146 64 14 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-amber-900 { --tw-text-opacity: 1; color: rgb(120 53 15 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-amber-950 { --tw-text-opacity: 1; color: rgb(69 26 3 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-blue-600 { --tw-text-opacity: 1; color: rgb(37 99 235 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-blue-700 { --tw-text-opacity: 1; color: rgb(29 78 216 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-brand-500 { --tw-text-opacity: 1; color: rgb(99 102 241 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-brand-600 { --tw-text-opacity: 1; color: rgb(79 70 229 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-brand-700 { --tw-text-opacity: 1; color: rgb(67 56 202 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-emerald-600 { --tw-text-opacity: 1; color: rgb(5 150 105 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-emerald-700 { --tw-text-opacity: 1; color: rgb(4 120 87 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-emerald-800 { --tw-text-opacity: 1; color: rgb(6 95 70 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-emerald-900 { --tw-text-opacity: 1; color: rgb(6 78 59 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-emerald-950 { --tw-text-opacity: 1; color: rgb(2 44 34 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-indigo-600 { --tw-text-opacity: 1; color: rgb(79 70 229 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-indigo-700 { --tw-text-opacity: 1; color: rgb(67 56 202 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-indigo-800 { --tw-text-opacity: 1; color: rgb(55 48 163 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-indigo-900 { --tw-text-opacity: 1; color: rgb(49 46 129 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-indigo-950 { --tw-text-opacity: 1; color: rgb(30 27 75 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-lime-700 { --tw-text-opacity: 1; color: rgb(77 124 15 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-orange-600 { --tw-text-opacity: 1; color: rgb(234 88 12 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-orange-700 { --tw-text-opacity: 1; color: rgb(194 65 12 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-purple-600 { --tw-text-opacity: 1; color: rgb(147 51 234 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-purple-700 { --tw-text-opacity: 1; color: rgb(126 34 206 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-rose-500 { --tw-text-opacity: 1; color: rgb(244 63 94 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-rose-600 { --tw-text-opacity: 1; color: rgb(225 29 72 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-rose-900 { --tw-text-opacity: 1; color: rgb(136 19 55 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-sky-600 { --tw-text-opacity: 1; color: rgb(2 132 199 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-sky-700 { --tw-text-opacity: 1; color: rgb(3 105 161 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-300 { --tw-text-opacity: 1; color: rgb(203 213 225 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-400 { --tw-text-opacity: 1; color: rgb(148 163 184 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-500 { --tw-text-opacity: 1; color: rgb(100 116 139 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-600 { --tw-text-opacity: 1; color: rgb(71 85 105 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-700 { --tw-text-opacity: 1; color: rgb(51 65 85 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-800 { --tw-text-opacity: 1; color: rgb(30 41 59 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-slate-900 { --tw-text-opacity: 1; color: rgb(15 23 42 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-teal-600 { --tw-text-opacity: 1; color: rgb(13 148 136 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-teal-700 { --tw-text-opacity: 1; color: rgb(15 118 110 / var(--tw-text-opacity, 1))
+} #zgeo-root .text-white { --tw-text-opacity: 1; color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+} #zgeo-root .underline { text-decoration-line: underline
+} #zgeo-root .antialiased { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale
+} #zgeo-root .placeholder-slate-400::placeholder { --tw-placeholder-opacity: 1; color: rgb(148 163 184 / var(--tw-placeholder-opacity, 1))
+} #zgeo-root .accent-brand-600 { accent-color: #4f46e5
+} #zgeo-root .opacity-0 { opacity: 0
+} #zgeo-root .opacity-100 { opacity: 1
+} #zgeo-root .opacity-80 { opacity: 0.8
+} #zgeo-root .shadow-card { --tw-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02); --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .shadow-float { --tw-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02); --tw-shadow-colored: 0 20px 30px -10px var(--tw-shadow-color), 0 10px 10px -5px var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .shadow-inner { --tw-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05); --tw-shadow-colored: inset 0 2px 4px 0 var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .shadow-md { --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .shadow-sm { --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .shadow-subtle { --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03); --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .shadow-brand-500\/20 { --tw-shadow-color: rgb(99 102 241 / 0.2); --tw-shadow: var(--tw-shadow-colored)
+} #zgeo-root .shadow-brand-500\/25 { --tw-shadow-color: rgb(99 102 241 / 0.25); --tw-shadow: var(--tw-shadow-colored)
+} #zgeo-root .ring-1 { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+} #zgeo-root .ring-2 { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+} #zgeo-root .ring-4 { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+} #zgeo-root .ring-amber-50 { --tw-ring-opacity: 1; --tw-ring-color: rgb(255 251 235 / var(--tw-ring-opacity, 1))
+} #zgeo-root .ring-black\/5 { --tw-ring-color: rgb(0 0 0 / 0.05)
+} #zgeo-root .ring-brand-500\/10 { --tw-ring-color: rgb(99 102 241 / 0.1)
+} #zgeo-root .ring-emerald-100 { --tw-ring-opacity: 1; --tw-ring-color: rgb(209 250 229 / var(--tw-ring-opacity, 1))
+} #zgeo-root .ring-emerald-50 { --tw-ring-opacity: 1; --tw-ring-color: rgb(236 253 245 / var(--tw-ring-opacity, 1))
+} #zgeo-root .ring-rose-50 { --tw-ring-opacity: 1; --tw-ring-color: rgb(255 241 242 / var(--tw-ring-opacity, 1))
+} #zgeo-root .filter { filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+} #zgeo-root .backdrop-blur-md { --tw-backdrop-blur: blur(12px); -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia); backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+} #zgeo-root .backdrop-blur-sm { --tw-backdrop-blur: blur(4px); -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia); backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+} #zgeo-root .transition { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms
+} #zgeo-root .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms
+} #zgeo-root .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms
+} #zgeo-root .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms
+} #zgeo-root .transition-transform { transition-property: transform; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms
+} #zgeo-root .duration-200 { transition-duration: 200ms
+} #zgeo-root .duration-300 { transition-duration: 300ms
+} #zgeo-root .duration-700 { transition-duration: 700ms
+} .container { width: 100%
+} @media (min-width: 640px) { .container { max-width: 640px
+    }
+} @media (min-width: 768px) { .container { max-width: 768px
+    }
+} @media (min-width: 1024px) { .container { max-width: 1024px
+    }
+} @media (min-width: 1280px) { .container { max-width: 1280px
+    }
+} @media (min-width: 1536px) { .container { max-width: 1536px
+    }
+} #zgeo-root :is(.selection\:bg-brand-500 *)::selection { --tw-bg-opacity: 1; background-color: rgb(99 102 241 / var(--tw-bg-opacity, 1))
+} #zgeo-root :is(.selection\:text-white *)::selection { --tw-text-opacity: 1; color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+} #zgeo-root .selection\:bg-brand-500::selection { --tw-bg-opacity: 1; background-color: rgb(99 102 241 / var(--tw-bg-opacity, 1))
+} #zgeo-root .selection\:text-white::selection { --tw-text-opacity: 1; color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+} #zgeo-root .placeholder\:text-slate-400::placeholder { --tw-text-opacity: 1; color: rgb(148 163 184 / var(--tw-text-opacity, 1))
+} #zgeo-root .after\:absolute::after { content: var(--tw-content); position: absolute
+} #zgeo-root .after\:left-\[2px\]::after { content: var(--tw-content); left: 2px
+} #zgeo-root .after\:top-\[2px\]::after { content: var(--tw-content); top: 2px
+} #zgeo-root .after\:h-4::after { content: var(--tw-content); height: 1rem
+} #zgeo-root .after\:h-5::after { content: var(--tw-content); height: 1.25rem
+} #zgeo-root .after\:w-4::after { content: var(--tw-content); width: 1rem
+} #zgeo-root .after\:w-5::after { content: var(--tw-content); width: 1.25rem
+} #zgeo-root .after\:rounded-full::after { content: var(--tw-content); border-radius: 9999px
+} #zgeo-root .after\:border::after { content: var(--tw-content); border-width: 1px
+} #zgeo-root .after\:border-slate-300::after { content: var(--tw-content); --tw-border-opacity: 1; border-color: rgb(203 213 225 / var(--tw-border-opacity, 1))
+} #zgeo-root .after\:bg-white::after { content: var(--tw-content); --tw-bg-opacity: 1; background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .after\:shadow-sm::after { content: var(--tw-content); --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .after\:transition-all::after { content: var(--tw-content); transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms
+} #zgeo-root .after\:content-\[\'\'\]::after { --tw-content: ''; content: var(--tw-content)
+} #zgeo-root .hover\:border-brand-200:hover { --tw-border-opacity: 1; border-color: rgb(199 210 254 / var(--tw-border-opacity, 1))
+} #zgeo-root .hover\:border-slate-300:hover { --tw-border-opacity: 1; border-color: rgb(203 213 225 / var(--tw-border-opacity, 1))
+} #zgeo-root .hover\:bg-amber-50\/40:hover { background-color: rgb(255 251 235 / 0.4)
+} #zgeo-root .hover\:bg-brand-100:hover { --tw-bg-opacity: 1; background-color: rgb(224 231 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-brand-100\/70:hover { background-color: rgb(224 231 255 / 0.7)
+} #zgeo-root .hover\:bg-brand-50:hover { --tw-bg-opacity: 1; background-color: rgb(238 242 255 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-brand-700:hover { --tw-bg-opacity: 1; background-color: rgb(67 56 202 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-rose-700:hover { --tw-bg-opacity: 1; background-color: rgb(190 18 60 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-slate-100:hover { --tw-bg-opacity: 1; background-color: rgb(241 245 249 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-slate-100\/70:hover { background-color: rgb(241 245 249 / 0.7)
+} #zgeo-root .hover\:bg-slate-100\/80:hover { background-color: rgb(241 245 249 / 0.8)
+} #zgeo-root .hover\:bg-slate-200:hover { --tw-bg-opacity: 1; background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-slate-50:hover { --tw-bg-opacity: 1; background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1))
+} #zgeo-root .hover\:bg-slate-50\/50:hover { background-color: rgb(248 250 252 / 0.5)
+} #zgeo-root .hover\:bg-slate-50\/60:hover { background-color: rgb(248 250 252 / 0.6)
+} #zgeo-root .hover\:bg-slate-50\/70:hover { background-color: rgb(248 250 252 / 0.7)
+} #zgeo-root .hover\:bg-slate-50\/80:hover { background-color: rgb(248 250 252 / 0.8)
+} #zgeo-root .hover\:bg-white\/70:hover { background-color: rgb(255 255 255 / 0.7)
+} #zgeo-root .hover\:text-brand-700:hover { --tw-text-opacity: 1; color: rgb(67 56 202 / var(--tw-text-opacity, 1))
+} #zgeo-root .hover\:text-slate-600:hover { --tw-text-opacity: 1; color: rgb(71 85 105 / var(--tw-text-opacity, 1))
+} #zgeo-root .hover\:text-slate-700:hover { --tw-text-opacity: 1; color: rgb(51 65 85 / var(--tw-text-opacity, 1))
+} #zgeo-root .hover\:text-slate-800:hover { --tw-text-opacity: 1; color: rgb(30 41 59 / var(--tw-text-opacity, 1))
+} #zgeo-root .hover\:text-slate-900:hover { --tw-text-opacity: 1; color: rgb(15 23 42 / var(--tw-text-opacity, 1))
+} #zgeo-root .hover\:shadow-card-hover:hover { --tw-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02); --tw-shadow-colored: 0 10px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .hover\:shadow-sm:hover { --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+} #zgeo-root .focus\:border-brand-500:focus { --tw-border-opacity: 1; border-color: rgb(99 102 241 / var(--tw-border-opacity, 1))
+} #zgeo-root .focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px
+} #zgeo-root .focus\:ring-2:focus { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
+} #zgeo-root .focus\:ring-brand-500\/20:focus { --tw-ring-color: rgb(99 102 241 / 0.2)
+} #zgeo-root .active\:scale-95:active { --tw-scale-x: .95; --tw-scale-y: .95; transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+} #zgeo-root .active\:scale-\[0\.98\]:active { --tw-scale-x: 0.98; --tw-scale-y: 0.98; transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+} #zgeo-root .disabled\:opacity-50:disabled { opacity: 0.5
+} #zgeo-root :is(.group:hover .group-hover\:bg-brand-500) { --tw-bg-opacity: 1; background-color: rgb(99 102 241 / var(--tw-bg-opacity, 1))
+} #zgeo-root :is(.group:hover .group-hover\:text-brand-700) { --tw-text-opacity: 1; color: rgb(67 56 202 / var(--tw-text-opacity, 1))
+} #zgeo-root :is(.group:hover .group-hover\:text-slate-600) { --tw-text-opacity: 1; color: rgb(71 85 105 / var(--tw-text-opacity, 1))
+} #zgeo-root :is(.peer:checked ~ .peer-checked\:bg-brand-600) { --tw-bg-opacity: 1; background-color: rgb(79 70 229 / var(--tw-bg-opacity, 1))
+} #zgeo-root :is(.peer:checked ~ .peer-checked\:bg-emerald-600) { --tw-bg-opacity: 1; background-color: rgb(5 150 105 / var(--tw-bg-opacity, 1))
+} #zgeo-root :is(.peer:checked ~ .peer-checked\:after\:translate-x-full)::after { content: var(--tw-content); --tw-translate-x: 100%; transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+} #zgeo-root :is(.peer:checked ~ .peer-checked\:after\:border-transparent)::after { content: var(--tw-content); border-color: transparent
+} #zgeo-root :is(.peer:checked ~ .peer-checked\:after\:border-white)::after { content: var(--tw-content); --tw-border-opacity: 1; border-color: rgb(255 255 255 / var(--tw-border-opacity, 1))
+} #zgeo-root :is(.peer:focus ~ .peer-focus\:outline-none) { outline: 2px solid transparent; outline-offset: 2px
+} #zgeo-root .has-\[\:checked\]\:bg-brand-50\/15:has(:checked) { background-color: rgb(238 242 255 / 0.15)
+} @media (min-width: 640px) { #zgeo-root .sm\:sticky { position: sticky
+    } #zgeo-root .sm\:bottom-6 { bottom: 1.5rem
+    } #zgeo-root .sm\:left-auto { left: auto
+    } #zgeo-root .sm\:right-6 { right: 1.5rem
+    } #zgeo-root .sm\:top-0 { top: 0px
+    } #zgeo-root .sm\:col-span-2 { grid-column: span 2 / span 2
+    } #zgeo-root .sm\:mx-0 { margin-left: 0px; margin-right: 0px
+    } #zgeo-root .sm\:block { display: block
+    } #zgeo-root .sm\:inline { display: inline
+    } #zgeo-root .sm\:flex { display: flex
+    } #zgeo-root .sm\:h-11 { height: 2.75rem
+    } #zgeo-root .sm\:h-12 { height: 3rem
+    } #zgeo-root .sm\:h-4 { height: 1rem
+    } #zgeo-root .sm\:w-11 { width: 2.75rem
+    } #zgeo-root .sm\:w-12 { width: 3rem
+    } #zgeo-root .sm\:w-4 { width: 1rem
+    } #zgeo-root .sm\:w-auto { width: auto
+    } #zgeo-root .sm\:max-w-lg { max-width: 32rem
+    } #zgeo-root .sm\:max-w-md { max-width: 28rem
+    } #zgeo-root .sm\:flex-initial { flex: 0 1 auto
+    } #zgeo-root .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr))
+    } #zgeo-root .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr))
+    } #zgeo-root .sm\:flex-row { flex-direction: row
+    } #zgeo-root .sm\:items-center { align-items: center
+    } #zgeo-root .sm\:justify-start { justify-content: flex-start
+    } #zgeo-root .sm\:justify-end { justify-content: flex-end
+    } #zgeo-root .sm\:gap-2 { gap: 0.5rem
+    } #zgeo-root .sm\:gap-3 { gap: 0.75rem
+    } #zgeo-root .sm\:gap-4 { gap: 1rem
+    } #zgeo-root .sm\:gap-6 { gap: 1.5rem
+    } #zgeo-root :is(.sm\:space-y-6 > :not([hidden]) ~ :not([hidden])) { --tw-space-y-reverse: 0; margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse))); margin-bottom: calc(1.5rem * var(--tw-space-y-reverse))
+    } #zgeo-root .sm\:self-auto { align-self: auto
+    } #zgeo-root .sm\:self-center { align-self: center
+    } #zgeo-root .sm\:p-1\.5 { padding: 0.375rem
+    } #zgeo-root .sm\:p-4 { padding: 1rem
+    } #zgeo-root .sm\:p-5 { padding: 1.25rem
+    } #zgeo-root .sm\:p-6 { padding: 1.5rem
+    } #zgeo-root .sm\:p-7 { padding: 1.75rem
+    } #zgeo-root .sm\:px-0 { padding-left: 0px; padding-right: 0px
+    } #zgeo-root .sm\:px-3 { padding-left: 0.75rem; padding-right: 0.75rem
+    } #zgeo-root .sm\:px-3\.5 { padding-left: 0.875rem; padding-right: 0.875rem
+    } #zgeo-root .sm\:px-4 { padding-left: 1rem; padding-right: 1rem
+    } #zgeo-root .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem
+    } #zgeo-root .sm\:py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem
+    } #zgeo-root .sm\:py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem
+    } #zgeo-root .sm\:py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem
+    } #zgeo-root .sm\:pb-5 { padding-bottom: 1.25rem
+    } #zgeo-root .sm\:pl-4 { padding-left: 1rem
+    } #zgeo-root .sm\:pr-28 { padding-right: 7rem
+    } #zgeo-root .sm\:text-\[10px\] { font-size: 10px
+    } #zgeo-root .sm\:text-\[13px\] { font-size: 13px
+    } #zgeo-root .sm\:text-lg { font-size: 1.125rem; line-height: 1.75rem
+    } #zgeo-root .sm\:text-sm { font-size: 0.875rem; line-height: 1.25rem
+    } #zgeo-root .sm\:text-xs { font-size: 0.75rem; line-height: 1rem
+    }
+} @media (min-width: 768px) { #zgeo-root .md\:block { display: block
+    } #zgeo-root .md\:w-80 { width: 20rem
+    } #zgeo-root .md\:w-auto { width: auto
+    } #zgeo-root .md\:flex-row { flex-direction: row
+    } #zgeo-root .md\:items-center { align-items: center
+    }
+} @media (min-width: 1024px) { #zgeo-root .lg\:col-span-2 { grid-column: span 2 / span 2
+    } #zgeo-root .lg\:col-span-5 { grid-column: span 5 / span 5
+    } #zgeo-root .lg\:col-span-7 { grid-column: span 7 / span 7
+    } #zgeo-root .lg\:w-auto { width: auto
+    } #zgeo-root .lg\:min-w-0 { min-width: 0px
+    } #zgeo-root .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr))
+    } #zgeo-root .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr))
+    } #zgeo-root .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr))
+    } #zgeo-root .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr))
+    } #zgeo-root .lg\:flex-row { flex-direction: row
+    } #zgeo-root .lg\:items-center { align-items: center
+    } #zgeo-root .lg\:gap-1\.5 { gap: 0.375rem
+    } #zgeo-root .lg\:p-7 { padding: 1.75rem
+    } #zgeo-root .lg\:p-8 { padding: 2rem
+    } #zgeo-root .lg\:px-8 { padding-left: 2rem; padding-right: 2rem
+    }
+} @media (min-width: 1280px) { #zgeo-root .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr))
+    }
+}

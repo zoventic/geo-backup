@@ -241,6 +241,14 @@ export const SettingsTab = () => {
     return robots;
   }, [crawlerPermissions]);
 
+  const handleCopyRobots = () => {
+    navigator.clipboard.writeText(robotsTxtContent).then(() => {
+      message.success('Copied robots.txt directives to clipboard!');
+    }).catch(() => {
+      message.error('Failed to copy robots.txt directives to clipboard.');
+    });
+  };
+
   const handleTestKey = async (provider = 'openai') => {
     let key = openAiApiKey;
     let expectedPrefix = /^(sk-proj-|sk-)/;

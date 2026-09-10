@@ -3429,6 +3429,169 @@ button.zgeo-radar-email-cancel-btn:hover {
   cursor: pointer !important;
 }
 
+/* 15. Zoventic GEO Product Diagnostics Drawer Actions */
+.zgeo-drawer .zgeo-drawer-schema-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  margin-bottom: 6px !important;
+}
+
+.zgeo-drawer .zgeo-drawer-schema-title {
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.zgeo-drawer .zgeo-drawer-schema-buttons {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-copy,
+.zgeo-drawer .zgeo-drawer-btn-copy {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 4px 12px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #eef2ff !important;
+  border: 1px solid #c7d2fe !important;
+  color: #4338ca !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-copy:hover,
+.zgeo-drawer .zgeo-drawer-btn-copy:hover {
+  background-color: #e0e7ff !important;
+  border-color: #a5b4fc !important;
+  color: #3730a3 !important;
+}
+
+.zgeo-drawer a.zgeo-drawer-btn-test,
+.zgeo-drawer .zgeo-drawer-btn-test {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  padding: 4px 12px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #065f46 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.zgeo-drawer a.zgeo-drawer-btn-test:hover,
+.zgeo-drawer .zgeo-drawer-btn-test:hover {
+  background-color: #d1fae5 !important;
+  border-color: #6ee7b7 !important;
+  color: #047857 !important;
+}
+
+/* Drawer Footer */
+.zgeo-drawer .zgeo-drawer-footer-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-close,
+.zgeo-drawer .zgeo-drawer-btn-close {
+  flex: 1 !important;
+  height: 42px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-close:hover,
+.zgeo-drawer .zgeo-drawer-btn-close:hover {
+  background-color: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-enrich,
+.zgeo-drawer .zgeo-drawer-btn-enrich {
+  flex: 1 !important;
+  height: 42px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border: 1px solid #4338ca !important;
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-enrich:hover:not(:disabled),
+.zgeo-drawer .zgeo-drawer-btn-enrich:hover:not(:disabled) {
+  background-color: #4338ca !important;
+  border-color: #3730a3 !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4) !important;
+}
+
+.zgeo-drawer button.zgeo-drawer-btn-enrich:disabled,
+.zgeo-drawer .zgeo-drawer-btn-enrich:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  background-color: #6366f1 !important;
+}
+
+.zgeo-drawer .zgeo-drawer-btn-enrich svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
 /* Global Ant Design Feedback / Overlays vs WP Admin Bar */
 .ant-message,
 .ant-notification {

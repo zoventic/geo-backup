@@ -214,16 +214,24 @@ export const GeoHealthTab = () => {
     message.success('Catalog enrichment applied. All products optimized in database & /llms.txt feed refreshed.');
   };
 
-  const handleEnrichSelectedProduct = () => {
-    if (selectedProduct) {
-      optimizeProduct?.(selectedProduct.id);
-      setSelectedProduct({
-        ...selectedProduct,
-        score: Math.min(98, (selectedProduct.score || 80) + 12),
+  const handleEnrichSelectedProduct = async () => {
+    if (!selectedProduct) return;
+    setIsOptimizingSingle(true);
+    try {
+      if (optimizeProduct) {
+        await optimizeProduct(selectedProduct.id);
+      }
+      setSelectedProduct(prev => prev ? ({
+        ...prev,
+        score: Math.min(98, (prev.score || 80) + 12),
         label: 'High AI Readiness',
-        attributes: (selectedProduct.attributes || []).map(a => ({ ...a, status: 'Optimal', ok: true }))
-      });
+        attributes: (prev.attributes || []).map(a => ({ ...a, status: 'Optimal', ok: true }))
+      }) : null);
       message.success(`${selectedProduct.title} enriched with structured AI search specs!`);
+    } catch (e) {
+      message.error('Failed to optimize product.');
+    } finally {
+      setIsOptimizingSingle(false);
     }
   };
 
@@ -536,7 +544,7 @@ export const GeoHealthTab = () => {
           </Flex>
         }
         placement="right"
-        width={540}
+        width={560}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
         zIndex={100001}
@@ -549,22 +557,22 @@ export const GeoHealthTab = () => {
           body: { pointerEvents: 'auto', userSelect: 'text' }
         }}
         footer={
-          <div className="flex gap-3">
+          <div className="zgeo-drawer-footer-actions">
             <button
               type="button"
               onClick={() => setDrawerOpen(false)}
-              className="flex-1 h-11 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-2xs cursor-pointer"
+              className="zgeo-drawer-btn-close"
             >
               Close
             </button>
             <button
               type="button"
               disabled={isOptimizingSingle}
-              onClick={handleOptimizeDrawerProduct}
-              className="flex-1 h-11 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-md shadow-brand-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+              onClick={handleEnrichSelectedProduct}
+              className="zgeo-drawer-btn-enrich"
             >
               {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
-              {isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}
+              <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
             </button>
           </div>
         }
@@ -610,10 +618,10 @@ export const GeoHealthTab = () => {
             </div>
 
             {/* JSON-LD Schema Preview */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Generated Product Schema (JSON-LD):</h4>
-                <Flex align="center" gap="small">
+            <div className="space-y-2">
+              <div className="zgeo-drawer-schema-header">
+                <h4 className="zgeo-drawer-schema-title">Generated Product Schema (JSON-LD):</h4>
+                <div className="zgeo-drawer-schema-buttons">
                   <button
                     type="button"
                     onClick={() => {
@@ -624,23 +632,23 @@ export const GeoHealthTab = () => {
                         message.error('Copy failed. Please select and copy manually.');
                       });
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-50 border border-brand-200/60 text-brand-700 text-[11px] font-bold hover:bg-brand-100 transition-all cursor-pointer"
+                    className="zgeo-drawer-btn-copy"
                   >
                     <Copy size={12} />
-                    Copy JSON-LD
+                    <span>Copy JSON-LD</span>
                   </button>
                   {selectedProduct.permalink && selectedProduct.permalink !== '#' && (
                     <a
                       href={`https://search.google.com/test/rich-results?url=${encodeURIComponent(selectedProduct.permalink)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[11px] font-bold hover:bg-emerald-100 transition-all cursor-pointer"
+                      className="zgeo-drawer-btn-test"
                     >
                       <ExternalLink size={12} />
-                      Test on Google
+                      <span>Test on Google</span>
                     </a>
                   )}
-                </Flex>
+                </div>
               </div>
               <pre className="zgeo-light-pre select-text" style={{ userSelect: 'text', WebkitUserSelect: 'text' }}>
                 {JSON.stringify(selectedProduct.json, null, 2)}

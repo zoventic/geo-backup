@@ -1650,6 +1650,7 @@ body.toplevel_page_zoventic-geo div.updated {
   letter-spacing: 0.05em !important;
   border-bottom: 1px solid #f1f5f9 !important;
   padding: 12px 20px !important;
+  white-space: nowrap !important;
 }
 .zgeo-pure-table .ant-table-tbody > tr > td {
   border-bottom: 1px solid #f8fafc !important;
@@ -1659,6 +1660,22 @@ body.toplevel_page_zoventic-geo div.updated {
 .zgeo-pure-table .ant-table-tbody > tr:hover > td {
   background: rgba(248, 250, 252, 0.7) !important;
 }
+
+/* Crawler Bot Identity Dot Indicator */
+.zgeo-bot-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.zgeo-bot-dot.indigo { background-color: #6366f1; }
+.zgeo-bot-dot.emerald { background-color: #10b981; }
+.zgeo-bot-dot.amber { background-color: #f59e0b; }
+.zgeo-bot-dot.purple { background-color: #a855f7; }
+.zgeo-bot-dot.blue { background-color: #3b82f6; }
+.zgeo-bot-dot.teal { background-color: #14b8a6; }
+.zgeo-bot-dot.rose { background-color: #f43f5e; }
 
 /* 14. Simulator Tab Specifics */
 .zgeo-pro-pill {

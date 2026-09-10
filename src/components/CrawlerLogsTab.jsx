@@ -195,6 +195,7 @@ export const CrawlerLogsTab = () => {
       title: 'CRAWLER IDENTITY',
       dataIndex: 'bot',
       key: 'bot',
+      width: 180,
       render: (text, record) => (
         <Flex align="center" gap="small" className="whitespace-nowrap font-bold text-xs">
           <span className={`zgeo-bot-dot ${record.dotColor}`}></span>
@@ -207,9 +208,9 @@ export const CrawlerLogsTab = () => {
       dataIndex: 'userAgent',
       key: 'userAgent',
       render: (ua, record) => (
-        <div className="font-mono text-[11px] text-slate-500 whitespace-nowrap">
-          <div>{ua}</div>
-          <div className="text-[10px] text-slate-500">IP: {record.ip}</div>
+        <div className="font-mono text-[11px] text-slate-500 max-w-[280px]">
+          <div className="truncate" title={ua}>{ua}</div>
+          <div className="text-[10px] text-slate-400">IP: {record.ip}</div>
         </div>
       )
     },
@@ -217,6 +218,7 @@ export const CrawlerLogsTab = () => {
       title: 'REQUESTED ENDPOINT',
       dataIndex: 'path',
       key: 'path',
+      width: 220,
       render: (path, record) => (
         <div className="font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
           <div>{record.method} {path}</div>
@@ -228,9 +230,10 @@ export const CrawlerLogsTab = () => {
       title: 'RESPONSE STATUS',
       dataIndex: 'status',
       key: 'status',
+      width: 170,
       render: (status, record) => (
-        <div>
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold text-[11px] border ${
+        <div className="whitespace-nowrap inline-flex flex-col items-start">
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold text-[11px] border whitespace-nowrap ${
             status === 200 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
             status === 429 ? 'bg-rose-50 text-rose-700 border-rose-200' :
             status === 403 ? 'bg-amber-50 text-amber-800 border-amber-200' :
@@ -238,7 +241,7 @@ export const CrawlerLogsTab = () => {
           }`}>
             {record.statusLabel}
           </span>
-          <span className="text-[10px] text-slate-500 block font-mono mt-0.5">{record.meta}</span>
+          <span className="text-[10px] text-slate-500 block font-mono mt-1 whitespace-nowrap">{record.meta}</span>
         </div>
       )
     },
@@ -246,6 +249,7 @@ export const CrawlerLogsTab = () => {
       title: 'TIME',
       dataIndex: 'time',
       key: 'time',
+      width: 120,
       render: (time) => (
         <span className="text-slate-500 font-mono text-[11px] whitespace-nowrap">{time}</span>
       )
@@ -366,6 +370,7 @@ export const CrawlerLogsTab = () => {
           rowKey="id"
           pagination={{ pageSize: 8, showSizeChanger: false }}
           className="zgeo-pure-table"
+          scroll={{ x: 860 }}
           locale={{
             emptyText: (
               <div className="py-12 text-center text-slate-400">

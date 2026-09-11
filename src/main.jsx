@@ -70,7 +70,7 @@ if (rootElement) {
     <React.StrictMode>
       <ConfigProvider
         theme={antdTheme}
-        getPopupContainer={() => document.body}
+        getPopupContainer={() => document.getElementById('zgeo-root') || document.body}
       >
         <AntdApp>
           <ErrorBoundary>

@@ -35,7 +35,7 @@ import { api } from '../services/api';
 
 const { Title, Text, Paragraph } = Typography;
 
-const ProductThumbnail = ({ src, alt, className = "w-full h-full object-cover rounded-xl", fallbackClassName = "w-full h-full flex items-center justify-center text-lg" }) => {
+const ProductThumbnail = ({ src, alt, className = "w-full h-full object-cover rounded-xl", style = {}, fallbackClassName = "w-full h-full flex items-center justify-center text-lg" }) => {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -43,7 +43,24 @@ const ProductThumbnail = ({ src, alt, className = "w-full h-full object-cover ro
   }, [src]);
 
   if (!src || hasError) {
-    return <div className={fallbackClassName}>📦</div>;
+    return (
+      <div
+        className={fallbackClassName}
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 18,
+          backgroundColor: '#f1f5f9',
+          borderRadius: 12,
+          ...style
+        }}
+      >
+        📦
+      </div>
+    );
   }
 
   return (
@@ -51,6 +68,16 @@ const ProductThumbnail = ({ src, alt, className = "w-full h-full object-cover ro
       src={src}
       alt={alt || "Product"}
       className={className}
+      style={{
+        width: '100%',
+        height: '100%',
+        maxWidth: '100%',
+        maxHeight: '100%',
+        objectFit: 'cover',
+        display: 'block',
+        borderRadius: 12,
+        ...style
+      }}
       onError={() => setHasError(true)}
     />
   );
@@ -668,12 +695,27 @@ export const GeoHealthTab = () => {
       <Drawer
         title={
           <Flex align="center" gap="middle">
-            <div className="w-11 h-11 rounded-xl border border-slate-200 overflow-hidden flex-shrink-0 bg-slate-100">
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                minWidth: 44,
+                minHeight: 44,
+                maxWidth: 44,
+                maxHeight: 44,
+                borderRadius: 12,
+                overflow: 'hidden',
+                flexShrink: 0,
+                border: '1px solid #e2e8f0',
+                backgroundColor: '#f8fafc',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
               <ProductThumbnail
                 src={selectedProduct?.imageUrl}
                 alt={selectedProduct?.title}
-                className="w-full h-full object-cover"
-                fallbackClassName="w-full h-full flex items-center justify-center text-lg"
               />
             </div>
             <div>
@@ -691,6 +733,7 @@ export const GeoHealthTab = () => {
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
         destroyOnClose={true}
+        getContainer={() => document.getElementById('zgeo-root') || document.body}
         zIndex={100001}
         maskClosable={true}
         className="zgeo-drawer select-text"
@@ -729,75 +772,118 @@ export const GeoHealthTab = () => {
             return (
               <div className="space-y-2">
                 <div className="zgeo-drawer-footer-actions">
-                  <button
+                  <Button
                     key="btn-close"
-                    type="button"
                     onClick={() => setDrawerOpen(false)}
                     className="zgeo-drawer-btn-close"
+                    style={{
+                      flex: '0 0 auto',
+                      height: 42,
+                      minWidth: 80,
+                      padding: '0 16px',
+                      borderRadius: 12,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      borderColor: '#cbd5e1',
+                      color: '#334155',
+                      backgroundColor: '#ffffff'
+                    }}
                   >
                     Close
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     key="btn-recheck"
-                    type="button"
                     disabled={isOptimizingSingle}
                     onClick={handleRecheckSelectedProduct}
+                    icon={<RefreshCw size={14} className={isOptimizingSingle ? 'animate-spin' : ''} />}
                     className="zgeo-drawer-btn-close"
                     style={{
+                      flex: '0 0 auto',
+                      height: 42,
+                      minWidth: 100,
+                      padding: '0 16px',
+                      borderRadius: 12,
+                      fontWeight: 700,
+                      fontSize: 13,
                       borderColor: '#94a3b8',
                       color: '#1e293b',
-                      gap: 6
+                      backgroundColor: '#ffffff'
                     }}
                     title="Re-check score after saving changes in WooCommerce"
                   >
-                    <RefreshCw size={14} className={isOptimizingSingle ? 'animate-spin' : ''} />
-                    <span>Re-check</span>
-                  </button>
+                    Re-check
+                  </Button>
 
                   {isHundredPercent ? (
-                    <button
+                    <Button
                       key="btn-fully-enriched"
-                      type="button"
+                      type="primary"
                       disabled={isOptimizingSingle}
                       onClick={handleEnrichSelectedProduct}
+                      icon={isOptimizingSingle ? <RefreshCw className="animate-spin" size={15} /> : <CheckCircle2 size={15} />}
                       className="zgeo-drawer-btn-enrich"
                       style={{
+                        flex: '1 1 auto',
+                        height: 42,
+                        borderRadius: 12,
+                        fontWeight: 700,
+                        fontSize: 13,
                         borderColor: '#10b981',
                         backgroundColor: '#ecfdf5',
                         color: '#047857',
-                        fontWeight: 700
+                        boxShadow: 'none'
                       }}
                       title="Product is 100% optimal. Click to force re-generate AI structured specs if needed."
                     >
-                      {isOptimizingSingle ? (
-                        <RefreshCw className="animate-spin" size={15} />
-                      ) : (
-                        <CheckCircle2 size={15} className="text-emerald-600" />
-                      )}
-                      <span>{isOptimizingSingle ? 'Regenerating...' : '✓ Fully Enriched (Re-run)'}</span>
-                    </button>
+                      {isOptimizingSingle ? 'Regenerating...' : '✓ Fully Enriched (Re-run)'}
+                    </Button>
                   ) : isEnrichedPartial ? (
-                    <button
+                    <Button
                       key="btn-wc-complete"
-                      type="button"
+                      type="primary"
                       onClick={() => window.open(`post.php?post=${selectedProduct.id}&action=edit`, '_blank')}
+                      icon={<ExternalLink size={14} />}
                       className="zgeo-drawer-btn-enrich"
+                      style={{
+                        flex: '1 1 auto',
+                        height: 42,
+                        borderRadius: 12,
+                        fontWeight: 700,
+                        fontSize: 13,
+                        backgroundColor: '#4f46e5',
+                        borderColor: '#4338ca',
+                        color: '#ffffff',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'row-reverse',
+                        gap: 6
+                      }}
                     >
-                      <span>Complete in WooCommerce</span>
-                      <ExternalLink size={14} />
-                    </button>
+                      Complete in WooCommerce
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       key="btn-enrich"
-                      type="button"
+                      type="primary"
                       disabled={isOptimizingSingle}
                       onClick={handleEnrichSelectedProduct}
+                      icon={isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
                       className="zgeo-drawer-btn-enrich"
+                      style={{
+                        flex: '1 1 auto',
+                        height: 42,
+                        borderRadius: 12,
+                        fontWeight: 700,
+                        fontSize: 13,
+                        backgroundColor: '#4f46e5',
+                        borderColor: '#4338ca',
+                        color: '#ffffff'
+                      }}
                     >
-                      {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
-                      <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
-                    </button>
+                      {isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}
+                    </Button>
                   )}
                 </div>
 

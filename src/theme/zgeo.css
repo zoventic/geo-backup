@@ -3368,25 +3368,48 @@ button.zgeo-radar-email-cancel-btn:hover {
 
 /* Product Inspection Drawer Improvements */
 .zgeo-drawer.ant-drawer,
-.ant-drawer {
+.ant-drawer.zgeo-drawer {
   z-index: 100001 !important;
   top: var(--wp-admin--admin-bar--height, 32px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
   height: calc(100vh - var(--wp-admin--admin-bar--height, 32px)) !important;
+  position: fixed !important;
 }
 
-.ant-drawer-mask {
+.zgeo-drawer .ant-drawer-mask {
   z-index: 1 !important;
 }
 
-.ant-drawer-content-wrapper,
 .zgeo-drawer .ant-drawer-content-wrapper {
   z-index: 2 !important;
   pointer-events: auto !important;
 }
 
+.zgeo-drawer.ant-drawer-right .ant-drawer-content-wrapper {
+  right: 0 !important;
+  left: auto !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  position: absolute !important;
+}
+
+/* Guard: Header thumbnail can NEVER exceed 44x44 */
+.zgeo-drawer .ant-drawer-header img {
+  width: 44px !important;
+  height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+  display: block !important;
+}
+
 @media screen and (max-width: 782px) {
   .zgeo-drawer.ant-drawer,
-  .ant-drawer {
+  .ant-drawer.zgeo-drawer {
     top: 46px !important;
     height: calc(100vh - 46px) !important;
   }
@@ -3531,6 +3554,7 @@ button.zgeo-radar-email-cancel-btn:hover {
 }
 
 .zgeo-drawer button.zgeo-drawer-btn-close,
+.zgeo-drawer .ant-btn.zgeo-drawer-btn-close,
 .zgeo-drawer .zgeo-drawer-btn-close {
   flex: 0 0 auto !important;
   min-width: 80px !important;
@@ -3553,6 +3577,7 @@ button.zgeo-radar-email-cancel-btn:hover {
 }
 
 .zgeo-drawer button.zgeo-drawer-btn-close:hover,
+.zgeo-drawer .ant-btn.zgeo-drawer-btn-close:hover,
 .zgeo-drawer .zgeo-drawer-btn-close:hover {
   background-color: #f8fafc !important;
   border-color: #94a3b8 !important;
@@ -3560,6 +3585,7 @@ button.zgeo-radar-email-cancel-btn:hover {
 }
 
 .zgeo-drawer button.zgeo-drawer-btn-enrich,
+.zgeo-drawer .ant-btn.zgeo-drawer-btn-enrich,
 .zgeo-drawer .zgeo-drawer-btn-enrich {
   flex: 1 1 auto !important;
   min-width: 170px !important;

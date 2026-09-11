@@ -443,7 +443,7 @@ class RestController {
         global $wpdb;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $logs = $wpdb->get_results( "SELECT id, bot_name, bot_vendor, ip_address, user_agent, endpoint, status_code, latency_ms, is_cached, created_at FROM {$wpdb->prefix}zgeo_crawler_logs ORDER BY created_at DESC LIMIT 50", ARRAY_A );
+        $logs = $wpdb->get_results( "SELECT id, bot_name, bot_vendor, ip_address, user_agent, endpoint, status_code, latency_ms, is_cached, created_at FROM {$wpdb->prefix}zgeo_crawler_logs ORDER BY created_at DESC LIMIT 200", ARRAY_A );
         return rest_ensure_response( $logs ?: [] );
     }
 

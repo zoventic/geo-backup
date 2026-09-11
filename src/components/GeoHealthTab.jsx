@@ -675,7 +675,7 @@ export const GeoHealthTab = () => {
           columns={columns}
           dataSource={filteredProducts}
           rowKey="id"
-          pagination={{ pageSize: 8, showSizeChanger: false }}
+          pagination={{ pageSize: 20, showSizeChanger: false }}
           className="zgeo-pure-table"
           locale={{
             emptyText: (

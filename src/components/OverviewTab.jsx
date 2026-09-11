@@ -96,7 +96,7 @@ export const OverviewTab = () => {
     const d30Claude = [0, 0, 0, 0, 0, 0, 0];
 
     logs.forEach(log => {
-      const time = log.created_at ? new Date(log.created_at).getTime() : 0;
+      const time = log.created_at ? new Date(String(log.created_at).replace(' ', 'T')).getTime() : 0;
       if (!time) return;
       const diffHours = Math.max(0, (now - time) / (1000 * 3600));
       const diffDays = diffHours / 24;
@@ -241,11 +241,16 @@ export const OverviewTab = () => {
     return () => {
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
+        chartInstanceRef.current = null;
       }
     };
-  }, [timeRange, totalCrawls, gptHits, perpHits, claudeHits]);
+  }, [timeRange, crawlerLogs, chartDataPresets, totalCrawls, gptHits, perpHits, claudeHits]);
+
+  const [isManualRefreshing, setIsManualRefreshing] = useState(false);
 
   const handleRefresh = async () => {
+    if (isManualRefreshing) return;
+    setIsManualRefreshing(true);
     try {
       await Promise.all([
         loadInitialData?.(),
@@ -257,6 +262,8 @@ export const OverviewTab = () => {
       message.success('Synced overview metrics, orders & feed with live WordPress database.');
     } catch (e) {
       message.error('Failed to sync with database.');
+    } finally {
+      setIsManualRefreshing(false);
     }
   };
 
@@ -288,7 +295,9 @@ export const OverviewTab = () => {
   const liveQueries = trackedQueries || [];
   const liveHits = (crawlerLogs || []).slice(0, 5);
 
-  if (isLoadingData) {
+  const isInitialLoading = isLoadingData && (!crawlerLogs || crawlerLogs.length === 0) && totalProducts === 0;
+
+  if (isInitialLoading) {
     return <OverviewSkeleton />;
   }
 
@@ -326,7 +335,8 @@ export const OverviewTab = () => {
           </Button>
 
           <Button
-            icon={<RotateCw size={15} className={isRefreshing ? 'animate-spin' : ''} />}
+            icon={<RotateCw size={15} className={isManualRefreshing || isRefreshing ? 'animate-spin' : ''} />}
+            loading={isManualRefreshing}
             onClick={handleRefresh}
             title="Refresh Data"
             className="zgeo-refresh-sq-btn"

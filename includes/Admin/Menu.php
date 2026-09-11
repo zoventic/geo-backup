@@ -9,6 +9,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Menu {
     public static function init() {
         add_action( 'admin_menu', [ __CLASS__, 'register_menu' ] );
+        add_action( 'admin_init', [ __CLASS__, 'redirect_legacy_slugs' ] );
+    }
+
+    /**
+     * Gracefully redirect legacy menu slugs (?page=zoventic-geo-crawlers) to the SPA hash URL (?page=zoventic-geo#crawlers)
+     */
+    public static function redirect_legacy_slugs() {
+        if ( ! is_admin() || ! isset( $_GET['page'] ) ) {
+            return;
+        }
+        $page = sanitize_key( wp_unslash( $_GET['page'] ) );
+        $legacy_map = [
+            'zoventic-geo-health'    => 'health',
+            'zoventic-geo-radar'     => 'radar',
+            'zoventic-geo-crawlers'  => 'crawlers',
+            'zoventic-geo-llms'      => 'llms',
+            'zoventic-geo-simulator' => 'simulator',
+            'zoventic-geo-settings'  => 'settings',
+        ];
+
+        if ( isset( $legacy_map[ $page ] ) ) {
+            wp_safe_redirect( admin_url( 'admin.php?page=zoventic-geo#' . $legacy_map[ $page ] ) );
+            exit;
+        }
     }
 
     public static function register_menu() {
@@ -32,64 +56,64 @@ class Menu {
             [ __CLASS__, 'render_app' ]
         );
 
-        // 2. GEO Health
+        // 2. GEO Health (SPA Tab #health)
         add_submenu_page(
             'zoventic-geo',
             __( 'GEO Health – Zoventic GEO', 'zoventic-geo' ),
             __( 'GEO Health', 'zoventic-geo' ),
             'manage_woocommerce',
-            'zoventic-geo-health',
-            [ __CLASS__, 'render_app' ]
+            'admin.php?page=zoventic-geo#health',
+            ''
         );
 
-        // 3. Rank Tracker
+        // 3. Rank Tracker (SPA Tab #radar)
         add_submenu_page(
             'zoventic-geo',
             __( 'Rank Tracker – Zoventic GEO', 'zoventic-geo' ),
             __( 'Rank Tracker', 'zoventic-geo' ),
             'manage_woocommerce',
-            'zoventic-geo-radar',
-            [ __CLASS__, 'render_app' ]
+            'admin.php?page=zoventic-geo#radar',
+            ''
         );
 
-        // 4. Crawler Logs
+        // 4. Crawler Logs (SPA Tab #crawlers)
         add_submenu_page(
             'zoventic-geo',
             __( 'Crawler Logs – Zoventic GEO', 'zoventic-geo' ),
             __( 'Crawler Logs', 'zoventic-geo' ),
             'manage_woocommerce',
-            'zoventic-geo-crawlers',
-            [ __CLASS__, 'render_app' ]
+            'admin.php?page=zoventic-geo#crawlers',
+            ''
         );
 
-        // 5. llms.txt Feed
+        // 5. llms.txt Feed (SPA Tab #llms)
         add_submenu_page(
             'zoventic-geo',
             __( 'llms.txt Feed – Zoventic GEO', 'zoventic-geo' ),
             __( 'llms.txt Feed', 'zoventic-geo' ),
             'manage_woocommerce',
-            'zoventic-geo-llms',
-            [ __CLASS__, 'render_app' ]
+            'admin.php?page=zoventic-geo#llms',
+            ''
         );
 
-        // 6. Search Test
+        // 6. Search Test (SPA Tab #simulator)
         add_submenu_page(
             'zoventic-geo',
             __( 'Search Test – Zoventic GEO', 'zoventic-geo' ),
             __( 'Search Test', 'zoventic-geo' ),
             'manage_woocommerce',
-            'zoventic-geo-simulator',
-            [ __CLASS__, 'render_app' ]
+            'admin.php?page=zoventic-geo#simulator',
+            ''
         );
 
-        // 7. Settings
+        // 7. Settings (SPA Tab #settings)
         add_submenu_page(
             'zoventic-geo',
             __( 'Settings – Zoventic GEO', 'zoventic-geo' ),
             __( 'Settings', 'zoventic-geo' ),
             'manage_woocommerce',
-            'zoventic-geo-settings',
-            [ __CLASS__, 'render_app' ]
+            'admin.php?page=zoventic-geo#settings',
+            ''
         );
     }
 

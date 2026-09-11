@@ -514,7 +514,12 @@ export const RankRadarTab = () => {
               pagination={false}
               className="zgeo-pure-table"
               locale={{
-                emptyText: (
+                emptyText: isRadarLoading ? (
+                  <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
+                    <Spin size="large" />
+                    <span className="text-xs font-semibold text-slate-500">Loading tracked search prompts & AI rankings...</span>
+                  </div>
+                ) : (
                   <div className="py-12 text-center text-slate-400">
                     <Radar size={32} className="mx-auto text-slate-300 mb-2" />
                     <div className="font-semibold text-slate-700 text-sm">No search queries tracked yet</div>

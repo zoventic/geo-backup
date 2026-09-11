@@ -61,27 +61,20 @@ export const App = () => {
   useEffect(() => {
     // Keep WordPress admin left sidebar active submenu in sync with activeTab
     try {
-      const menuLinks = document.querySelectorAll('#adminmenu a[href*="page=zoventic-geo"]');
-      menuLinks.forEach((link) => {
-        const href = link.getAttribute('href') || '';
-        const parentLi = link.closest('li');
+      const toplevelLi = document.getElementById('toplevel_page_zoventic-geo');
+      if (toplevelLi) {
+        toplevelLi.classList.add('wp-has-current-submenu', 'wp-menu-open');
+        toplevelLi.classList.remove('wp-not-current-submenu');
+      }
 
-        // Rewrite href to direct hash link for seamless hover preview & bookmarks
-        if (href.includes('page=zoventic-geo-health')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#health');
-        } else if (href.includes('page=zoventic-geo-radar')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#radar');
-        } else if (href.includes('page=zoventic-geo-crawlers')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#crawlers');
-        } else if (href.includes('page=zoventic-geo-llms')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#llms');
-        } else if (href.includes('page=zoventic-geo-simulator')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#simulator');
-        } else if (href.includes('page=zoventic-geo-settings')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#settings');
-        } else if (href.includes('page=zoventic-geo') && !href.includes('-')) {
-          link.setAttribute('href', 'admin.php?page=zoventic-geo#overview');
-        }
+      const submenuWrap = toplevelLi?.querySelector('.wp-submenu') || document.querySelector('#toplevel_page_zoventic-geo .wp-submenu');
+      const submenuLinks = submenuWrap
+        ? submenuWrap.querySelectorAll('li:not(.wp-submenu-head) a')
+        : document.querySelectorAll('#adminmenu .wp-submenu a[href*="page=zoventic-geo"]');
+
+      submenuLinks.forEach((link) => {
+        const parentLi = link.closest('li');
+        if (!parentLi || parentLi.classList.contains('wp-submenu-head')) return;
 
         const currentHref = link.getAttribute('href') || '';
         const isMatch = (activeTab === 'overview')
@@ -89,23 +82,20 @@ export const App = () => {
           : (currentHref.includes(`#${activeTab}`) || currentHref.includes(`page=zoventic-geo-${activeTab}`));
 
         if (isMatch) {
-          parentLi?.classList.add('current');
+          parentLi.classList.add('current');
           link.classList.add('current');
           link.setAttribute('aria-current', 'page');
         } else {
-          // Only remove current from zoventic sub-items
-          if (currentHref.includes('page=zoventic-geo')) {
-            parentLi?.classList.remove('current');
-            link.classList.remove('current');
-            link.removeAttribute('aria-current');
-          }
+          parentLi.classList.remove('current');
+          link.classList.remove('current');
+          link.removeAttribute('aria-current');
         }
       });
     } catch (e) {}
   }, [activeTab]);
 
   useEffect(() => {
-    // Intercept clicks on WordPress left sidebar menu items for zoventic-geo for instant tab switching
+    // Intercept clicks on WordPress left sidebar menu items for zoventic-geo for instant SPA tab switching
     const handleMenuClick = (e) => {
       const targetLink = e.target.closest('a');
       if (!targetLink) return;
@@ -128,6 +118,7 @@ export const App = () => {
       }
 
       if (targetTab) {
+        // If currently on the Zoventic GEO admin page, switch tabs in-place without page reload
         if (window.location.search.includes('page=zoventic-geo')) {
           e.preventDefault();
           setActiveTab(targetTab);

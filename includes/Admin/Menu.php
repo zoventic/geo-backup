@@ -30,6 +30,6 @@ class Menu {
         }
 
         // Mount point for React 19 + Ant Design application
-        echo '<div id="zgeo-root" class="zgeo-admin-container notranslate" translate="no"></div>';
+        echo '<div id="zgeo-root" class="zgeo-admin-container"></div>';
     }
 }

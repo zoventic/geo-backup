@@ -733,7 +733,6 @@ export const GeoHealthTab = () => {
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
         destroyOnClose={true}
-        getContainer={() => document.getElementById('zgeo-root') || document.body}
         zIndex={100001}
         maskClosable={true}
         className="zgeo-drawer select-text"

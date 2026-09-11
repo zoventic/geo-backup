@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Card,
   Table,
@@ -34,6 +34,27 @@ import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
 
 const { Title, Text, Paragraph } = Typography;
+
+const ProductThumbnail = ({ src, alt, className = "w-full h-full object-cover rounded-xl", fallbackClassName = "w-full h-full flex items-center justify-center text-lg" }) => {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
+
+  if (!src || hasError) {
+    return <div className={fallbackClassName}>📦</div>;
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt || "Product"}
+      className={className}
+      onError={() => setHasError(true)}
+    />
+  );
+};
 
 export const GeoHealthTab = () => {
   const {
@@ -367,21 +388,11 @@ export const GeoHealthTab = () => {
       render: (text, record) => (
         <Flex align="center" gap="middle" className="min-w-[250px]">
           <div className="zgeo-prod-icon-box overflow-hidden flex-shrink-0">
-            {record.imageUrl ? (
-              <img
-                src={record.imageUrl}
-                alt={text}
-                className="w-full h-full object-cover rounded-xl"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  if (e.currentTarget.parentElement) {
-                    e.currentTarget.parentElement.innerText = '📦';
-                  }
-                }}
-              />
-            ) : (
-              <span>📦</span>
-            )}
+            <ProductThumbnail
+              src={record.imageUrl}
+              alt={text}
+              className="w-full h-full object-cover rounded-xl"
+            />
           </div>
           <div>
             <div className="flex items-center gap-1.5 flex-wrap">
@@ -657,17 +668,14 @@ export const GeoHealthTab = () => {
       <Drawer
         title={
           <Flex align="center" gap="middle">
-            {selectedProduct?.imageUrl ? (
-              <img
-                src={selectedProduct.imageUrl}
-                alt={selectedProduct.title}
-                className="w-11 h-11 object-cover rounded-xl border border-slate-200 flex-shrink-0"
+            <div className="w-11 h-11 rounded-xl border border-slate-200 overflow-hidden flex-shrink-0 bg-slate-100">
+              <ProductThumbnail
+                src={selectedProduct?.imageUrl}
+                alt={selectedProduct?.title}
+                className="w-full h-full object-cover"
+                fallbackClassName="w-full h-full flex items-center justify-center text-lg"
               />
-            ) : (
-              <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center text-lg flex-shrink-0">
-                📦
-              </div>
-            )}
+            </div>
             <div>
               <span className="text-[10px] font-extrabold text-brand-700 uppercase tracking-widest block">
                 Product GEO Diagnostics
@@ -682,6 +690,7 @@ export const GeoHealthTab = () => {
         width={560}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
+        destroyOnClose={true}
         zIndex={100001}
         maskClosable={true}
         className="zgeo-drawer select-text"
@@ -761,6 +770,7 @@ export const GeoHealthTab = () => {
                 {/* 2. Footer Actions Button State Machine */}
                 <div className="zgeo-drawer-footer-actions">
                   <button
+                    key="btn-close"
                     type="button"
                     onClick={() => setDrawerOpen(false)}
                     className="zgeo-drawer-btn-close"
@@ -769,6 +779,7 @@ export const GeoHealthTab = () => {
                   </button>
 
                   <button
+                    key="btn-recheck"
                     type="button"
                     disabled={isOptimizingSingle}
                     onClick={handleRecheckSelectedProduct}
@@ -786,6 +797,7 @@ export const GeoHealthTab = () => {
 
                   {isHundredPercent ? (
                     <button
+                      key="btn-fully-enriched"
                       type="button"
                       disabled={isOptimizingSingle}
                       onClick={handleEnrichSelectedProduct}
@@ -808,13 +820,12 @@ export const GeoHealthTab = () => {
                       <span>{isOptimizingSingle ? 'Regenerating...' : '✓ Fully Enriched (Re-run)'}</span>
                     </button>
                   ) : isEnrichedPartial ? (
-                    <a
-                      href={`post.php?post=${selectedProduct.id}&action=edit`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      key="btn-wc-complete"
+                      type="button"
+                      onClick={() => window.open(`post.php?post=${selectedProduct.id}&action=edit`, '_blank')}
                       className="zgeo-drawer-btn-enrich"
                       style={{
-                        textDecoration: 'none',
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -823,9 +834,10 @@ export const GeoHealthTab = () => {
                     >
                       <span>Complete in WooCommerce</span>
                       <ExternalLink size={14} />
-                    </a>
+                    </button>
                   ) : (
                     <button
+                      key="btn-enrich"
                       type="button"
                       disabled={isOptimizingSingle}
                       onClick={handleEnrichSelectedProduct}

@@ -82,7 +82,8 @@ class PromptSanitizer {
         // 4. Defang instruction override attempts (replace with safe defanged text)
         foreach ( self::INSTRUCTION_OVERRIDE_PATTERNS as $pattern ) {
             $text = preg_replace_callback( $pattern, function( $matches ) {
-                return '[Neutralized AI Prompt Injection: ' . substr( sanitize_text_field( $matches[0] ), 0, 40 ) . ']';
+                $clean = function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $matches[0] ) : strip_tags( $matches[0] );
+                return '[Neutralized AI Prompt Injection: ' . substr( $clean, 0, 40 ) . ']';
             }, $text );
         }
 

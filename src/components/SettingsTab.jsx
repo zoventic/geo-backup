@@ -43,6 +43,7 @@ import {
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
+import { GenericTabSkeleton } from './Skeletons';
 
 const { Title, Text } = Typography;
 
@@ -66,7 +67,8 @@ export const SettingsTab = () => {
     licenseInfo,
     activateLicense,
     deactivateLicense,
-    rotateIndexNowKey
+    rotateIndexNowKey,
+    isLoadingData
   } = useGeoStore();
 
   const realStoreName = siteInfo?.siteName || 'WooCommerce Store';
@@ -534,6 +536,10 @@ export const SettingsTab = () => {
       active: crawlerPermissions?.cohere ?? true
     }
   ];
+
+  if (isLoadingData) {
+    return <GenericTabSkeleton title="Engine Settings & Preferences" />;
+  }
 
   return (
     <div className="zgeo-settings-tab space-y-7">

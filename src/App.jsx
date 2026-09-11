@@ -22,7 +22,7 @@ import { useGeoStore } from './store/useGeoStore';
 const { Content } = Layout;
 
 export const App = () => {
-  const { activeTab, setActiveTab, metrics, crawlerLogs, loadInitialData } = useGeoStore();
+  const { activeTab, setActiveTab, metrics, crawlerLogs, loadInitialData, isLoadingData } = useGeoStore();
 
   useEffect(() => {
     if (loadInitialData) {
@@ -95,7 +95,8 @@ export const App = () => {
   ];
 
   return (
-    <Layout className="zgeo-admin-container">
+    <Layout className="zgeo-admin-container relative">
+      {isLoadingData && <div className="zgeo-top-loading-bar" />}
       {/* Top Banner & Store Header */}
       <Header />
 

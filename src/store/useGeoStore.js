@@ -56,7 +56,7 @@ export const useGeoStore = create((set, get) => ({
 
   // Real Data Status
   isRealData: false,
-  isLoadingData: false,
+  isLoadingData: true,
   dataLoadError: null,
   siteInfo: {
     siteName: (typeof window !== 'undefined' && window.zgeoConfig?.siteName) || 'WooCommerce Store',

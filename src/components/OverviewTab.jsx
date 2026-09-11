@@ -31,6 +31,7 @@ import {
 import { Chart, registerables } from 'chart.js';
 import { useGeoStore, decodeCurrencySymbol } from '../store/useGeoStore';
 import { api } from '../services/api';
+import { OverviewSkeleton } from './Skeletons';
 
 Chart.register(...registerables);
 
@@ -49,7 +50,8 @@ export const OverviewTab = () => {
     fetchAiRevenue,
     settings,
     abilitiesManifest,
-    loadInitialData
+    loadInitialData,
+    isLoadingData
   } = useGeoStore();
 
   const [timeRange, setTimeRange] = useState('30d');
@@ -285,6 +287,10 @@ export const OverviewTab = () => {
 
   const liveQueries = trackedQueries || [];
   const liveHits = (crawlerLogs || []).slice(0, 5);
+
+  if (isLoadingData) {
+    return <OverviewSkeleton />;
+  }
 
   return (
     <div className="zgeo-overview-tab space-y-7">

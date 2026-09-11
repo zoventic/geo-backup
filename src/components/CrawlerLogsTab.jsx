@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
+import { CrawlerLogsSkeleton } from './Skeletons';
 
 const { Title, Text } = Typography;
 
@@ -376,6 +377,10 @@ export const CrawlerLogsTab = () => {
     }
   ];
 
+  if (isLoadingData && (!activeLogsSource || activeLogsSource.length === 0)) {
+    return <CrawlerLogsSkeleton />;
+  }
+
   return (
     <div className="zgeo-logs-tab space-y-7">
       {/* 1. Page Header */}
@@ -491,6 +496,7 @@ export const CrawlerLogsTab = () => {
           columns={columns}
           dataSource={filteredLogs}
           rowKey="id"
+          loading={isLoadingData}
           pagination={{
             current: safePage,
             pageSize: 20,

@@ -28,6 +28,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
+import { GenericTabSkeleton } from './Skeletons';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -44,7 +45,8 @@ export const SimulatorTab = () => {
     metrics,
     simulatorTestQuery,
     setSimulatorTestQuery,
-    resetThreats
+    resetThreats,
+    isLoadingData
   } = useGeoStore();
   const storeLabel = siteInfo?.siteName || 'Your Store';
 
@@ -157,6 +159,10 @@ export const SimulatorTab = () => {
   }, [simulatorTestQuery]);
 
   const currentActive = activeSimulation || presets[0] || null;
+
+  if (isLoadingData && (!products || products.length === 0)) {
+    return <GenericTabSkeleton title="AI Search Query Benchmark" />;
+  }
 
   return (
     <div className="zgeo-simulator-tab space-y-7">

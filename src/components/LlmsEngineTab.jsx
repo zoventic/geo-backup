@@ -18,6 +18,7 @@ import {
   FileText
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
+import { GenericTabSkeleton } from './Skeletons';
 
 const { Title, Text } = Typography;
 
@@ -30,7 +31,8 @@ export const LlmsEngineTab = () => {
     llmsTxtFullUrl,
     settings,
     updateSettings,
-    regenerateLlmsTxt
+    regenerateLlmsTxt,
+    isLoadingData
   } = useGeoStore();
 
   const [rules, setRules] = useState({
@@ -146,6 +148,10 @@ export const LlmsEngineTab = () => {
   const handleOpenLive = () => {
     window.open(liveUrl, '_blank');
   };
+
+  if (isLoadingData) {
+    return <GenericTabSkeleton title="llms.txt Catalog Feed Studio" />;
+  }
 
   return (
     <div className="zgeo-llmstxt-tab space-y-7">

@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
+import { GeoHealthSkeleton } from './Skeletons';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -621,6 +622,10 @@ export const GeoHealthTab = () => {
       )
     }
   ];
+
+  if (isLoadingData && (!products || products.length === 0)) {
+    return <GeoHealthSkeleton />;
+  }
 
   return (
     <div className="zgeo-products-tab space-y-7">

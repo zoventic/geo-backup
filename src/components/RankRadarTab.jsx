@@ -25,6 +25,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
+import { GenericTabSkeleton } from './Skeletons';
 
 const { Title, Text } = Typography;
 
@@ -39,7 +40,8 @@ export const RankRadarTab = () => {
     updateSettings,
     runTrackedQueriesAudit,
     products,
-    setSimulatorTestQuery
+    setSimulatorTestQuery,
+    isLoadingData
   } = useGeoStore();
 
   const domainName = siteInfo?.siteUrl ? siteInfo.siteUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '') : 'mystore.com';
@@ -283,6 +285,10 @@ export const RankRadarTab = () => {
     }
   ];
 
+  if (isLoadingData && activeQueries.length === 0) {
+    return <GenericTabSkeleton title="Daily Automated AI Rank Tracker" />;
+  }
+
   return (
     <div className="zgeo-radar-tab space-y-7">
       {/* 1. Page Header */}
@@ -504,6 +510,7 @@ export const RankRadarTab = () => {
             <Table
               columns={columns}
               dataSource={activeQueries}
+              loading={isLoadingData}
             locale={{
               emptyText: (
                 <div className="py-12 text-center text-slate-400">

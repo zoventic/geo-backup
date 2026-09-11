@@ -694,7 +694,15 @@ export const GeoHealthTab = () => {
         footer={
           <div>
             <div className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 mb-3 leading-relaxed">
-              💡 <strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.
+              {Number(selectedProduct?.score || selectedProduct?.contentScore || 0) >= 100 && !selectedProduct?.isStale ? (
+                <span>
+                  🟢 <strong>Catalog schema is 100% optimal:</strong> All 16 objective signals are satisfied. Use <strong>Re-check</strong> if you edited product details in WooCommerce, or <strong>Re-run Specs</strong> to regenerate AI summaries.
+                </span>
+              ) : (
+                <span>
+                  💡 <strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.
+                </span>
+              )}
             </div>
             <div className="zgeo-drawer-footer-actions">
               <button
@@ -718,15 +726,40 @@ export const GeoHealthTab = () => {
                 <RefreshCw size={14} className={isOptimizingSingle ? 'animate-spin' : ''} />
                 <span>Re-check</span>
               </button>
-              <button
-                type="button"
-                disabled={isOptimizingSingle}
-                onClick={handleEnrichSelectedProduct}
-                className="zgeo-drawer-btn-enrich"
-              >
-                {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
-                <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
-              </button>
+              {Number(selectedProduct?.score || selectedProduct?.contentScore || 0) >= 100 && !selectedProduct?.isStale ? (
+                <button
+                  type="button"
+                  disabled={isOptimizingSingle}
+                  onClick={handleEnrichSelectedProduct}
+                  className="zgeo-drawer-btn-close"
+                  style={{
+                    flex: 1.3,
+                    borderColor: '#10b981',
+                    backgroundColor: '#ecfdf5',
+                    color: '#047857',
+                    gap: 6,
+                    fontWeight: 700
+                  }}
+                  title="Product is 100% optimal. Click to force re-generate AI structured specs if needed."
+                >
+                  {isOptimizingSingle ? (
+                    <RefreshCw className="animate-spin" size={15} />
+                  ) : (
+                    <CheckCircle2 size={15} className="text-emerald-600" />
+                  )}
+                  <span>{isOptimizingSingle ? 'Regenerating...' : '✓ Fully Enriched (Re-run)'}</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={isOptimizingSingle}
+                  onClick={handleEnrichSelectedProduct}
+                  className="zgeo-drawer-btn-enrich"
+                >
+                  {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
+                  <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
+                </button>
+              )}
             </div>
           </div>
         }

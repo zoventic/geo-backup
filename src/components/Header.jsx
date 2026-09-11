@@ -33,7 +33,8 @@ import {
   KeyRound,
   Hash,
   Crown,
-  Trash2
+  Trash2,
+  Bot
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
@@ -41,7 +42,7 @@ import { api } from '../services/api';
 const { Text, Title, Paragraph } = Typography;
 
 export const Header = () => {
-  const { metrics, isRefreshing, regenerateLlmsTxt, siteInfo, products, settings, updateSettings, licenseInfo } = useGeoStore();
+  const { metrics, isRefreshing, regenerateLlmsTxt, siteInfo, products, settings, updateSettings, licenseInfo, crawlerLogs, setActiveTab } = useGeoStore();
   const [storeModalOpen, setStoreModalOpen] = useState(false);
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [reindexModalOpen, setReindexModalOpen] = useState(false);
@@ -52,6 +53,7 @@ export const Header = () => {
   const optimizedProducts = metrics?.optimizedProducts ?? 0;
   const healthPercent = totalProducts > 0 ? ((optimizedProducts / totalProducts) * 100).toFixed(1) : '0.0';
   const needsReview = Math.max(0, totalProducts - optimizedProducts);
+  const botHitsCount = (crawlerLogs && crawlerLogs.length > 0) ? crawlerLogs.length : (metrics?.botHitsLast24h ?? 0);
 
   const [currentStore, setCurrentStore] = useState(null);
   const [currentProductCount, setCurrentProductCount] = useState(null);
@@ -187,17 +189,28 @@ export const Header = () => {
       <header className="zgeo-top-banner">
         <div className="zgeo-container-inner zgeo-top-banner-inner">
           <Flex align="center" gap="small" className="zgeo-banner-left">
-            <span className="zgeo-budget-pill">
+            <div
+              className="zgeo-crawler-pill"
+              onClick={() => {
+                if (setActiveTab) {
+                  setActiveTab('crawlers');
+                  window.location.hash = 'crawlers';
+                }
+              }}
+              title="Click to view AI Crawler Traffic Logs"
+            >
               <span className="zgeo-badge-dot"></span>
-              BUDGET GUARD ACTIVE
-            </span>
+              <Bot size={13} className="text-indigo-600" />
+              <span>AI CRAWLERS ACTIVE</span>
+              <span className="zgeo-crawler-count-badge">{botHitsCount} HITS</span>
+            </div>
             {(typeof window !== 'undefined' && window.zgeoConfig?.isMultisite) && (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
                 WPMU NETWORK
               </span>
             )}
             <Text className="zgeo-banner-text">
-              <Text strong className="zgeo-text-dark">Budget Guard:</Text> Smart Catalog Optimizer Active. Avg. cost is &lt; $0.0001.
+              <Text strong className="zgeo-text-dark">AI Traffic (24h):</Text> {botHitsCount} crawler visit{botHitsCount === 1 ? '' : 's'} recorded from GPTBot, Perplexity &amp; ClaudeBot.
             </Text>
           </Flex>
 

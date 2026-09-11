@@ -1136,6 +1136,7 @@ export const GeoHealthTab = () => {
           </div>
         }
         open={bulkModalOpen}
+        destroyOnClose={true}
         onCancel={() => !isBulkEnriching && setBulkModalOpen(false)}
         footer={null}
         width={540}

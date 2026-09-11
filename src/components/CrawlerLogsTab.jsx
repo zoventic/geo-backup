@@ -114,9 +114,20 @@ export const CrawlerLogsTab = () => {
       statusLabel = `${statusCode} Accepted`;
     }
 
+    const rawBot = String(log.bot || log.bot_name || 'AI Crawler');
+    let cleanBotName = rawBot;
+    let cleanVendor = '';
+    const match = rawBot.match(/^([^(]+)\s*\((.+)\)$/);
+    if (match) {
+      cleanBotName = match[1].trim();
+      cleanVendor = match[2].replace(/[()]/g, '').trim();
+    }
+
     return {
       id: String(log.id),
-      bot: log.bot || `${botName}${botVendor}`,
+      bot: rawBot,
+      cleanBotName,
+      cleanVendor,
       dotColor: log.dotColor || dotColor,
       textColor: log.textColor || textColor,
       userAgent: log.userAgent || log.user_agent || 'Mozilla/5.0 (compatible; AI Bot/1.0)',
@@ -195,10 +206,19 @@ export const CrawlerLogsTab = () => {
       title: 'CRAWLER IDENTITY',
       dataIndex: 'bot',
       key: 'bot',
-      render: (text, record) => (
-        <Flex align="center" gap="small" className="whitespace-nowrap font-bold text-xs">
-          <span className={`zgeo-bot-dot ${record.dotColor}`}></span>
-          <span className={record.textColor}>{text}</span>
+      render: (_, record) => (
+        <Flex align="start" gap="small">
+          <span className={`zgeo-bot-dot ${record.dotColor} mt-1 flex-shrink-0`}></span>
+          <div className="min-w-0">
+            <div className={`font-bold text-xs ${record.textColor} whitespace-nowrap`}>
+              {record.cleanBotName || record.bot}
+            </div>
+            {record.cleanVendor && (
+              <div className="text-[10px] text-slate-400 font-sans font-normal truncate max-w-[160px]" title={record.cleanVendor}>
+                {record.cleanVendor}
+              </div>
+            )}
+          </div>
         </Flex>
       )
     },
@@ -207,8 +227,8 @@ export const CrawlerLogsTab = () => {
       dataIndex: 'userAgent',
       key: 'userAgent',
       render: (ua, record) => (
-        <div className="font-mono text-[11px] text-slate-500 max-w-[260px]">
-          <div className="truncate" title={ua}>{ua}</div>
+        <div className="font-mono text-[11px] text-slate-500 min-w-0">
+          <div className="truncate max-w-[200px]" title={ua}>{ua}</div>
           <div className="text-[10px] text-slate-400">IP: {record.ip}</div>
         </div>
       )
@@ -218,9 +238,12 @@ export const CrawlerLogsTab = () => {
       dataIndex: 'path',
       key: 'path',
       render: (path, record) => (
-        <div className="font-mono font-bold text-slate-900 text-xs">
-          <div className="truncate max-w-[220px]" title={`${record.method} ${path}`}>{record.method} {path}</div>
-          <div className="text-[10px] text-slate-500 font-normal truncate max-w-[220px]">{record.accept}</div>
+        <div className="font-mono text-xs min-w-0">
+          <div className="font-bold text-slate-900 truncate max-w-[200px]" title={`${record.method} ${path}`}>
+            <span className="text-[10px] font-bold text-slate-500 mr-1.5">{record.method}</span>
+            <span>{path}</span>
+          </div>
+          <div className="text-[10px] text-slate-500 font-normal truncate max-w-[200px]">{record.accept}</div>
         </div>
       )
     },
@@ -229,7 +252,7 @@ export const CrawlerLogsTab = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status, record) => (
-        <div className="whitespace-nowrap inline-flex flex-col items-start">
+        <div className="whitespace-nowrap inline-flex flex-col items-start min-w-[130px]">
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold text-[11px] border whitespace-nowrap ${
             status === 200 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
             status === 429 ? 'bg-rose-50 text-rose-700 border-rose-200' :
@@ -238,7 +261,7 @@ export const CrawlerLogsTab = () => {
           }`}>
             {record.statusLabel}
           </span>
-          <span className="text-[10px] text-slate-500 block font-mono mt-1 whitespace-nowrap">{record.meta}</span>
+          <span className="text-[10px] text-slate-500 block font-mono mt-0.5 whitespace-nowrap">{record.meta}</span>
         </div>
       )
     },
@@ -248,7 +271,7 @@ export const CrawlerLogsTab = () => {
       key: 'time',
       align: 'right',
       render: (time) => (
-        <span className="text-slate-500 font-mono text-[11px] whitespace-nowrap">{time}</span>
+        <span className="text-slate-500 font-mono text-[11px] whitespace-nowrap pl-2 block text-right">{time}</span>
       )
     }
   ];

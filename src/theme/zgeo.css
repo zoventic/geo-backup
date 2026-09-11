@@ -1649,12 +1649,12 @@ body.toplevel_page_zoventic-geo div.updated {
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   border-bottom: 1px solid #f1f5f9 !important;
-  padding: 12px 20px !important;
+  padding: 12px 14px !important;
   white-space: nowrap !important;
 }
 .zgeo-pure-table .ant-table-tbody > tr > td {
   border-bottom: 1px solid #f8fafc !important;
-  padding: 14px 20px !important;
+  padding: 12px 14px !important;
   font-size: 12px !important;
 }
 .zgeo-pure-table .ant-table-tbody > tr:hover > td {

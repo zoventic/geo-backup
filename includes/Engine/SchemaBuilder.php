@@ -55,6 +55,32 @@ class SchemaBuilder {
 
             $markup['offers']['priceValidUntil'] = gmdate( 'Y-12-31' );
             $markup['offers']['seller']          = $seller;
+
+            // Add Merchant Return Policy schema for AI search engines
+            $markup['offers']['hasMerchantReturnPolicy'] = [
+                '@type'                => 'MerchantReturnPolicy',
+                'applicableCountry'    => 'US',
+                'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow',
+                'merchantReturnDays'   => 30,
+                'returnMethod'         => 'https://schema.org/ReturnByMail',
+                'returnFees'           => 'https://schema.org/FreeReturn',
+            ];
+        }
+
+        // Add GEO Semantic Specs as additionalProperty
+        $specs = get_post_meta( $product->get_id(), '_zgeo_specs', true );
+        if ( ! empty( $specs ) && is_array( $specs ) ) {
+            $properties = [];
+            foreach ( $specs as $spec_name => $spec_value ) {
+                $properties[] = [
+                    '@type' => 'PropertyValue',
+                    'name'  => PromptSanitizer::sanitize( (string) $spec_name ),
+                    'value' => PromptSanitizer::sanitize( (string) $spec_value ),
+                ];
+            }
+            if ( ! empty( $properties ) ) {
+                $markup['additionalProperty'] = $properties;
+            }
         }
 
         return $markup;

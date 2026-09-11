@@ -237,9 +237,18 @@ class RestController {
             )
         );
 
-        $health_score = $total_products > 0
-            ? (int) round( ( $optimized_products / $total_products ) * 100 )
-            : 0;
+        // Average score across scored products
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        $avg_score = (float) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT AVG(CAST(meta_value AS UNSIGNED)) FROM {$wpdb->postmeta} WHERE meta_key = %s",
+                '_zgeo_score'
+            )
+        );
+
+        $health_score = $avg_score > 0
+            ? (int) round( $avg_score )
+            : ( $total_products > 0 ? (int) round( ( $optimized_products / $total_products ) * 100 ) : 0 );
 
         $revenue_summary = \Zoventic\Geo\Engine\OrderAttributionTracker::get_ai_revenue_summary( 30 );
         $threats = (int) get_option( 'zgeo_threats_neutralized', 0 );
@@ -299,12 +308,8 @@ class RestController {
             $cats = wp_get_post_terms( $p->get_id(), 'product_cat', [ 'fields' => 'names' ] );
             $cat_name = ! empty( $cats ) && ! is_wp_error( $cats ) ? $cats[0] : 'General';
 
-            $score = 80;
-            if ( $p->get_sku() ) $score += 5;
-            if ( $p->get_description() || $p->get_short_description() ) $score += 5;
-            if ( $p->get_rating_count() > 0 ) $score += 5;
-            if ( $image_url ) $score += 5;
-            $score = min( 98, $score );
+            // Calculate objective multi-signal GEO score and diagnostic signals
+            $calc = \Zoventic\Geo\Engine\BulkActionScheduler::calculate_product_geo_score( $p );
 
             $data[] = [
                 'id'           => $p->get_id(),
@@ -314,15 +319,20 @@ class RestController {
                 'price'        => $price_formatted,
                 'priceRaw'     => $price_raw,
                 'stock'        => (int) $p->get_stock_quantity(),
-                'stockStatus'  => $p->is_in_stock() ? 'In Stock' : 'Out of Stock',
-                'geoScore'     => $score,
-                'score'        => $score,
+                'stockStatus'  => $calc['stockStatus'],
+                'isInStock'    => $calc['isInStock'],
+                'geoScore'     => $calc['score'],
+                'score'        => $calc['score'],
+                'contentScore' => $calc['contentScore'],
+                'isOptimized'  => $calc['isOptimized'],
+                'isStale'      => $calc['isStale'],
+                'signals'      => $calc['signals'],
                 'imageUrl'     => $image_url,
                 'permalink'    => $p->get_permalink(),
-                'schemaStatus' => 'Valid Product & Offer',
-                'llmsStatus'   => $p->is_in_stock() ? 'Indexed' : 'Excluded',
+                'schemaStatus' => $calc['isOptimized'] ? 'Valid Product, Offers & MerchantReturnPolicy' : 'Basic Product Schema Only',
+                'llmsStatus'   => $p->is_in_stock() ? 'Indexed' : 'Excluded (Stock 0)',
                 'citations'    => (int) get_post_meta( $p->get_id(), '_zgeo_citation_count', true ) ?: 0,
-                'issues'       => $p->is_in_stock() ? [] : [ 'Out of Stock - excluded from llms.txt' ],
+                'issues'       => $calc['issues'],
             ];
         }
 
@@ -371,23 +381,24 @@ class RestController {
     }
 
     public function optimize_product( $request ) {
-        $id = absint( $request['id'] );
-        update_post_meta( $id, '_zgeo_optimized_at', current_time( 'mysql' ) );
+        $id   = absint( $request['id'] );
+        $calc = null;
 
         if ( function_exists( 'wc_get_product' ) ) {
             $product = wc_get_product( $id );
             if ( $product ) {
-                \Zoventic\Geo\Engine\BulkActionScheduler::enrich_product( $product );
+                $calc = \Zoventic\Geo\Engine\BulkActionScheduler::enrich_product( $product );
             }
         }
         \Zoventic\Geo\Engine\LlmsTxtGenerator::purge_cache();
 
-        $score = (int) get_post_meta( $id, '_zgeo_score', true ) ?: 95;
+        $score = $calc && isset( $calc['score'] ) ? $calc['score'] : ( (int) get_post_meta( $id, '_zgeo_score', true ) ?: 95 );
 
         return rest_ensure_response( [
             'success' => true,
             'score'   => $score,
-            'message' => 'Product enriched with structured AI search specs and /llms.txt feed refreshed.',
+            'calc'    => $calc,
+            'message' => 'Product enriched with structured AI search specs, buyer FAQs, and return policy schema.',
         ] );
     }
 

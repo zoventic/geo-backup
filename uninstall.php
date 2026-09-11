@@ -56,7 +56,7 @@ function zgeo_uninstall() {
 
     // 4. Delete all product postmeta registered by plugin
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-    $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_zgeo_score', '_zgeo_optimized_at', '_zgeo_last_optimized')" );
+    $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_zgeo_score', '_zgeo_optimized_at', '_zgeo_last_optimized', '_zgeo_needs_recheck', '_zgeo_specs', '_zgeo_faq', '_zgeo_merchant_policy', '_zgeo_dirty')" );
 
     // 5. Clear scheduled Action Scheduler actions and WP crons
     wp_clear_scheduled_hook( 'zgeo_weekly_digest_cron' );

@@ -64,21 +64,39 @@ export const GeoHealthTab = () => {
   const healthPercent = totalCount > 0 ? Math.round(((optimalCount + attentionCount * 0.7) / totalCount) * 100) : 0;
 
   const handleOpenDrawer = (record) => {
-    const prodScore = record.score || record.geoScore || 80;
+    const prodScore = record.contentScore || record.score || record.geoScore || 80;
     const priceClean = String(record.price || '').replace(/[^0-9.]/g, '') || "0.00";
-    const isInStock = record.stockStatus !== 'Out of Stock';
+    const isInStock = record.isInStock !== false && record.stockStatus !== 'Out of Stock';
+
+    // Build signals array from record.signals or default fallback
+    let signalList = [];
+    if (record.signals && typeof record.signals === 'object') {
+      signalList = Object.values(record.signals);
+    } else {
+      signalList = [
+        { id: 's1_sku', name: 'SKU / Unique Identifier', passed: Boolean(record.sku && record.sku !== 'N/A'), points: record.sku && record.sku !== 'N/A' ? 10 : 0, max: 10, detail: record.sku && record.sku !== 'N/A' ? `Valid SKU: ${record.sku}` : 'Missing product SKU' },
+        { id: 's2_category', name: 'Category & Taxonomy Depth', passed: Boolean(record.category && record.category !== 'General' && record.category !== 'Uncategorized'), points: (record.category && record.category !== 'General' && record.category !== 'Uncategorized') ? 10 : 0, max: 10, detail: `Category: ${record.category || 'General'}` },
+        { id: 's3_description', name: 'Description Depth (Word Count)', passed: prodScore >= 60, points: prodScore >= 60 ? 15 : 8, max: 15, detail: 'Descriptive narrative for LLM synthesis' },
+        { id: 's4_attributes', name: 'Structured Product Attributes', passed: Boolean(record.isOptimized || prodScore >= 80), points: record.isOptimized || prodScore >= 80 ? 15 : 0, max: 15, detail: 'Technical specs & entity properties' },
+        { id: 's5_media', name: 'Media & Visual Assets', passed: Boolean(record.imageUrl), points: record.imageUrl ? 10 : 0, max: 10, detail: 'Featured and gallery visual assets' },
+        { id: 's6_pricing', name: 'Pricing & Currency Integrity', passed: Boolean(record.price && record.price !== '$0.00'), points: (record.price && record.price !== '$0.00') ? 10 : 0, max: 10, detail: 'Verified active price & currency' },
+        { id: 's7_specs_faq', name: 'Semantic Specs & Buyer FAQ Graph', passed: Boolean(record.isOptimized), points: record.isOptimized ? 15 : 0, max: 15, detail: 'Generated buyer FAQs & entity specs' },
+        { id: 's8_policy', name: 'Merchant Return & Shipping Policy', passed: Boolean(record.isOptimized), points: record.isOptimized ? 10 : 0, max: 10, detail: 'MerchantReturnPolicy JSON-LD schema' },
+        { id: 's9_reviews', name: 'Social Proof / Customer Ratings', passed: prodScore >= 95, points: prodScore >= 95 ? 5 : 0, max: 5, detail: 'Verified buyer reviews and ratings' },
+      ];
+    }
 
     const details = {
       sku: record.sku || 'N/A',
       price: record.price || '$0.00',
       score: prodScore,
-      label: prodScore >= 85 ? 'High AI Readiness' : 'Needs Optimization',
-      attributes: [
-        { name: 'Semantic Product Title & Category', status: 'Optimal', ok: true },
-        { name: 'Structured Price & Currency Schema', status: 'Optimal', ok: true },
-        { name: 'Inventory & Stock Availability Flag', status: isInStock ? 'Optimal' : 'Needs Review', ok: isInStock },
-        { name: 'Product Permalink & Catalog Feed Index', status: 'Optimal', ok: true }
-      ],
+      contentScore: prodScore,
+      isInStock,
+      stockStatus: isInStock ? 'In Stock' : 'Out of Stock',
+      isStale: Boolean(record.isStale),
+      isOptimized: Boolean(record.isOptimized),
+      label: prodScore >= 85 ? 'High AI Readiness' : (prodScore >= 70 ? 'Moderate Readiness' : 'Needs Optimization'),
+      signalsList: signalList,
       json: {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -89,8 +107,20 @@ export const GeoHealthTab = () => {
           "@type": "Offer",
           "price": priceClean,
           "priceCurrency": siteInfo?.currency || "USD",
-          "availability": isInStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-        }
+          "availability": isInStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "US",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 30,
+            "returnMethod": "https://schema.org/ReturnByMail",
+            "returnFees": "https://schema.org/FreeReturn"
+          }
+        },
+        "additionalProperty": [
+          { "@type": "PropertyValue", "name": "Condition", "value": "NewCondition" },
+          { "@type": "PropertyValue", "name": "Category", "value": record.category || "General" }
+        ]
       }
     };
     setSelectedProduct({ ...record, ...details });
@@ -218,16 +248,43 @@ export const GeoHealthTab = () => {
     if (!selectedProduct) return;
     setIsOptimizingSingle(true);
     try {
-      if (optimizeProduct) {
-        await optimizeProduct(selectedProduct.id);
+      const res = await api.optimizeProduct(selectedProduct.id);
+      const newScore = res?.score || Math.min(98, (selectedProduct.score || 60) + 20);
+
+      if (updateProductScore) {
+        updateProductScore(selectedProduct.id, newScore);
       }
-      setSelectedProduct(prev => prev ? ({
-        ...prev,
-        score: Math.min(98, (prev.score || 80) + 12),
-        label: 'High AI Readiness',
-        attributes: (prev.attributes || []).map(a => ({ ...a, status: 'Optimal', ok: true }))
-      }) : null);
-      message.success(`${selectedProduct.title} enriched with structured AI search specs!`);
+
+      setSelectedProduct(prev => {
+        if (!prev) return null;
+        let updatedSignals = [];
+        if (res?.calc?.signals) {
+          updatedSignals = Object.values(res.calc.signals);
+        } else {
+          updatedSignals = (prev.signalsList || []).map(s => {
+            if (s.id === 's4_attributes' || s.id === 's7_specs_faq' || s.id === 's8_policy') {
+              return { ...s, passed: true, points: s.max, detail: 'Enriched by Zoventic GEO' };
+            }
+            return s;
+          });
+        }
+        return {
+          ...prev,
+          score: newScore,
+          geoScore: newScore,
+          contentScore: newScore,
+          isOptimized: true,
+          isStale: false,
+          label: 'High AI Readiness',
+          signalsList: updatedSignals
+        };
+      });
+
+      if (loadInitialData) {
+        await loadInitialData();
+      }
+
+      message.success(`${selectedProduct.title} enriched with structured AI specs, buyer FAQs & return policy!`);
     } catch (e) {
       message.error('Failed to optimize product.');
     } finally {
@@ -265,7 +322,7 @@ export const GeoHealthTab = () => {
       dataIndex: 'title',
       key: 'title',
       render: (text, record) => (
-        <Flex align="center" gap="middle" className="min-w-[260px]">
+        <Flex align="center" gap="middle" className="min-w-[250px]">
           <div className="zgeo-prod-icon-box overflow-hidden flex-shrink-0">
             {record.imageUrl ? (
               <img
@@ -284,9 +341,16 @@ export const GeoHealthTab = () => {
             )}
           </div>
           <div>
-            <span className="font-bold text-slate-900 text-sm block">{text}</span>
-            <span className="text-xs text-slate-500">
-              {record.category || 'General'} • {record.stockStatus || 'In Stock'}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-bold text-slate-900 text-sm">{text}</span>
+              {record.isStale && (
+                <Tag color="warning" className="text-[10px] font-bold px-1.5 py-0 leading-tight rounded">
+                  Needs Re-check
+                </Tag>
+              )}
+            </div>
+            <span className="text-xs text-slate-500 block mt-0.5">
+              {record.category || 'General'}
             </span>
           </div>
         </Flex>
@@ -304,45 +368,73 @@ export const GeoHealthTab = () => {
       )
     },
     {
-      title: 'GEO HEALTH SCORE',
+      title: 'CONTENT READINESS',
       dataIndex: 'score',
       key: 'score',
-      render: (score) => {
-        const isHigh = score >= 90;
+      render: (score, record) => {
+        const val = Number(record.contentScore ?? score ?? 80);
+        const isHigh = val >= 90;
         return (
           <div className="zgeo-score-col whitespace-nowrap">
             <Flex align="center" gap="small">
-              <div className="w-20 bg-slate-100 rounded-full h-2 overflow-hidden flex-shrink-0">
+              <div className="w-16 bg-slate-100 rounded-full h-2 overflow-hidden flex-shrink-0">
                 <div
-                  className={`h-full rounded-full ${isHigh ? 'bg-emerald-500' : 'bg-amber-500'}`}
-                  style={{ width: `${score}%` }}
+                  className={`h-full rounded-full ${isHigh ? 'bg-emerald-500' : (val >= 70 ? 'bg-amber-500' : 'bg-rose-500')}`}
+                  style={{ width: `${val}%` }}
                 ></div>
               </div>
-              <span className={`font-bold font-mono text-sm ${isHigh ? 'text-emerald-700' : 'text-amber-700'}`}>
-                {score}%
+              <span className={`font-bold font-mono text-sm ${isHigh ? 'text-emerald-700' : (val >= 70 ? 'text-amber-700' : 'text-rose-700')}`}>
+                {val}%
               </span>
             </Flex>
+            <span className="text-[10px] text-slate-400 block font-sans">
+              {isHigh ? 'Optimal for AI' : (val >= 70 ? 'Moderate Readiness' : 'Needs Enrichment')}
+            </span>
           </div>
         );
       }
     },
     {
-      title: 'SEMANTIC TAGS',
-      dataIndex: 'tags',
-      key: 'tags',
-      render: (tags, record) => {
-        const isOptimal = (record.score || record.geoScore || 0) >= 90;
-        const isOutOfStock = record.stockStatus === 'Out of Stock';
-        const label = isOutOfStock
-          ? 'Out of Stock'
-          : (isOptimal ? 'Rich Schema & In Stock' : 'Basic Schema Only');
+      title: 'LIVE STOCK',
+      dataIndex: 'stockStatus',
+      key: 'stockStatus',
+      render: (status, record) => {
+        const inStock = record.isInStock !== false && status !== 'Out of Stock';
         return (
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${
-            isOptimal && !isOutOfStock ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200'
-          }`}>
-            {isOptimal && !isOutOfStock ? <Check size={14} className="text-emerald-600" /> : <AlertTriangle size={14} className="text-amber-600" />}
-            {label}
-          </span>
+          <div className="whitespace-nowrap">
+            <Tag color={inStock ? 'success' : 'default'} className="font-semibold text-xs px-2 py-0.5 rounded-md">
+              {inStock ? 'In Stock' : 'Out of Stock'}
+            </Tag>
+            <span className="text-[10px] text-slate-400 block font-sans">
+              {inStock ? 'Active in AI orders' : 'Restock in WooCommerce'}
+            </span>
+          </div>
+        );
+      }
+    },
+    {
+      title: 'AI SCHEMA',
+      dataIndex: 'isOptimized',
+      key: 'isOptimized',
+      render: (_, record) => {
+        if (record.isStale) {
+          return (
+            <Tag color="warning" className="font-semibold text-[11px] px-2 py-0.5 rounded-md">
+              Modified (Re-check)
+            </Tag>
+          );
+        }
+        if (record.isOptimized || (record.score >= 90)) {
+          return (
+            <Tag color="cyan" className="font-semibold text-[11px] px-2 py-0.5 rounded-md">
+              Rich AI Graph
+            </Tag>
+          );
+        }
+        return (
+          <Tag color="default" className="font-semibold text-[11px] px-2 py-0.5 rounded-md text-slate-500">
+            Basic Schema
+          </Tag>
         );
       }
     },
@@ -557,63 +649,113 @@ export const GeoHealthTab = () => {
           body: { pointerEvents: 'auto', userSelect: 'text' }
         }}
         footer={
-          <div className="zgeo-drawer-footer-actions">
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(false)}
-              className="zgeo-drawer-btn-close"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              disabled={isOptimizingSingle}
-              onClick={handleEnrichSelectedProduct}
-              className="zgeo-drawer-btn-enrich"
-            >
-              {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
-              <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
-            </button>
+          <div>
+            <div className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 mb-3 leading-relaxed">
+              💡 <strong>1-Click Enrich</strong> fills missing AI-readable fields: Generates structured buyer FAQs, technical specs graph &amp; return policy schema.
+            </div>
+            <div className="zgeo-drawer-footer-actions">
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                className="zgeo-drawer-btn-close"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                disabled={isOptimizingSingle}
+                onClick={handleEnrichSelectedProduct}
+                className="zgeo-drawer-btn-enrich"
+              >
+                {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
+                <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
+              </button>
+            </div>
           </div>
         }
       >
         {selectedProduct && (
           <div className="space-y-5">
-            {/* Score Box */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-              <div>
-                <span className="text-slate-500 text-xs font-medium block">AI Readiness Score</span>
-                <span className="text-slate-800 text-xs font-semibold">{selectedProduct.label}</span>
+            {/* Dual Diagnostic Cards: Content Readiness vs Warehouse Stock */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                <span className="text-slate-500 text-[11px] font-medium block">Content Readiness</span>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="font-extrabold text-2xl font-mono text-emerald-600">
+                    {selectedProduct.score}%
+                  </span>
+                  <span className="text-slate-700 text-xs font-semibold truncate">{selectedProduct.label}</span>
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-1">
+                  AI crawler schema completeness
+                </span>
               </div>
-              <span className="font-extrabold text-2xl font-mono text-emerald-600">
-                {selectedProduct.score}%
-              </span>
+
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                <span className="text-slate-500 text-[11px] font-medium block">Warehouse Stock</span>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className={`w-2 h-2 rounded-full ${selectedProduct.isInStock ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                  <span className={`font-bold text-sm ${selectedProduct.isInStock ? 'text-emerald-700' : 'text-amber-800'}`}>
+                    {selectedProduct.stockStatus}
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-1">
+                  {selectedProduct.isInStock ? 'Available for live AI recommendations' : 'Restock in WooCommerce'}
+                </span>
+              </div>
             </div>
 
-            {/* AI Attribute Coverage */}
-            <div className="space-y-2.5 text-xs">
-              <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">AI Attribute Coverage:</h4>
+            {/* Stale Revalidation Notice */}
+            {selectedProduct.isStale && (
+              <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-xl flex items-start gap-2.5 text-xs text-amber-950">
+                <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong>Product modified in WooCommerce.</strong> Product details were edited after last optimization. Click <strong>1-Click Enrich</strong> to re-validate and sync the updated schema.
+                </div>
+              </div>
+            )}
+
+            {/* 10-Signal Diagnostic Audit Checklist */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
+                  10-Signal Diagnostic Audit ({selectedProduct.score}/100 pts):
+                </h4>
+                <span className="text-[11px] font-mono text-slate-500">Objective Criteria</span>
+              </div>
               <div className="space-y-2">
-                {(selectedProduct.attributes || []).map((attr, i) => (
-                  <div
-                    key={i}
-                    className={`p-3 rounded-xl border flex items-center justify-between font-semibold ${
-                      attr.ok
-                        ? 'bg-emerald-50 border-emerald-100 text-emerald-900'
-                        : 'bg-amber-50 border-amber-200/80 text-amber-900'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      {attr.ok ? (
-                        <Check size={16} className="text-emerald-600" />
-                      ) : (
-                        <AlertCircle size={16} className="text-amber-600" />
-                      )}
-                      {attr.name}
-                    </span>
-                    <span className="font-mono text-[11px] font-bold">{attr.status}</span>
-                  </div>
-                ))}
+                {(selectedProduct.signalsList || []).map((sig, i) => {
+                  const isPassed = Boolean(sig.passed);
+                  return (
+                    <div
+                      key={sig.id || i}
+                      className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-colors ${
+                        isPassed
+                          ? 'bg-emerald-50/70 border-emerald-200/80 text-emerald-950'
+                          : 'bg-slate-50 border-slate-200 text-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-start gap-2.5 min-w-0 pr-2">
+                        {isPassed ? (
+                          <Check size={16} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+                        ) : (
+                          <AlertCircle size={16} className="text-slate-400 flex-shrink-0 mt-0.5" />
+                        )}
+                        <div>
+                          <span className="font-bold block text-slate-900">{sig.name}</span>
+                          <span className="text-[11px] text-slate-500 block">{sig.detail}</span>
+                        </div>
+                      </div>
+                      <div className="flex-shrink-0 text-right">
+                        <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded-full ${
+                          isPassed ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
+                        }`}>
+                          +{sig.points}/{sig.max} pts
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

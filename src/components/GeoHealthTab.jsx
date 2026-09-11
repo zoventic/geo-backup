@@ -96,7 +96,40 @@ export const GeoHealthTab = () => {
     loadInitialData
   } = useGeoStore();
   const [searchQuery, setSearchQuery] = useState('');
-  const [citabilityFilter, setCitabilityFilter] = useState('all');
+  const [citabilityFilter, setCitabilityFilter] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const filterParam = params.get('score_filter');
+        if (filterParam && ['all', 'needs_attention', 'high_score'].includes(filterParam)) {
+          return filterParam;
+        }
+        const saved = sessionStorage.getItem('zgeo_score_filter');
+        if (saved && ['all', 'needs_attention', 'high_score'].includes(saved)) {
+          return saved;
+        }
+      } catch (e) {}
+    }
+    return 'all';
+  });
+
+  const handleFilterChange = (val) => {
+    setCitabilityFilter(val);
+    setCurrentPage(1);
+    try {
+      sessionStorage.setItem('zgeo_score_filter', val);
+      sessionStorage.setItem('zgeo_health_page', '1');
+      const url = new URL(window.location.href);
+      if (val && val !== 'all') {
+        url.searchParams.set('score_filter', val);
+      } else {
+        url.searchParams.delete('score_filter');
+      }
+      url.searchParams.delete('health_p');
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  };
+
   const [currentPage, setCurrentPage] = useState(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -700,10 +733,7 @@ export const GeoHealthTab = () => {
             <Select
               id="product-score-filter"
               value={citabilityFilter}
-              onChange={(val) => {
-                setCitabilityFilter(val);
-                handlePageChange(1);
-              }}
+              onChange={handleFilterChange}
               className="zgeo-antd-select zgeo-slate-bg"
               style={{ width: 195 }}
               popupMatchSelectWidth={false}

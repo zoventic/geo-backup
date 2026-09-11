@@ -27,8 +27,66 @@ export const CrawlerLogsTab = () => {
   const { crawlerLogs, clearCrawlerLogs, simulateCrawlerHit, isLoadingData } = useGeoStore();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [botFilter, setBotFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [botFilter, setBotFilter] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const b = params.get('crawler_bot');
+        if (b) return b;
+        const saved = sessionStorage.getItem('zgeo_crawler_bot');
+        if (saved) return saved;
+      } catch (e) {}
+    }
+    return 'all';
+  });
+
+  const [statusFilter, setStatusFilter] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const s = params.get('crawler_status');
+        if (s) return s;
+        const saved = sessionStorage.getItem('zgeo_crawler_status');
+        if (saved) return saved;
+      } catch (e) {}
+    }
+    return 'all';
+  });
+
+  const handleBotFilterChange = (val) => {
+    setBotFilter(val);
+    setCurrentPage(1);
+    try {
+      sessionStorage.setItem('zgeo_crawler_bot', val);
+      sessionStorage.setItem('zgeo_crawlers_page', '1');
+      const url = new URL(window.location.href);
+      if (val && val !== 'all') {
+        url.searchParams.set('crawler_bot', val);
+      } else {
+        url.searchParams.delete('crawler_bot');
+      }
+      url.searchParams.delete('crawlers_p');
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  };
+
+  const handleStatusFilterChange = (val) => {
+    setStatusFilter(val);
+    setCurrentPage(1);
+    try {
+      sessionStorage.setItem('zgeo_crawler_status', val);
+      sessionStorage.setItem('zgeo_crawlers_page', '1');
+      const url = new URL(window.location.href);
+      if (val && val !== 'all') {
+        url.searchParams.set('crawler_status', val);
+      } else {
+        url.searchParams.delete('crawler_status');
+      }
+      url.searchParams.delete('crawlers_p');
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  };
+
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
@@ -390,10 +448,7 @@ export const CrawlerLogsTab = () => {
               <Select
                 id="log-bot-filter"
                 value={botFilter}
-                onChange={(val) => {
-                  setBotFilter(val);
-                  handlePageChange(1);
-                }}
+                onChange={handleBotFilterChange}
                 className="zgeo-antd-select"
                 style={{ width: 175 }}
                 popupMatchSelectWidth={false}
@@ -415,10 +470,7 @@ export const CrawlerLogsTab = () => {
               <Select
                 id="log-status-filter"
                 value={statusFilter}
-                onChange={(val) => {
-                  setStatusFilter(val);
-                  handlePageChange(1);
-                }}
+                onChange={handleStatusFilterChange}
                 className="zgeo-antd-select"
                 style={{ width: 140 }}
                 popupMatchSelectWidth={false}

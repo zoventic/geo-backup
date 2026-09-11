@@ -173,6 +173,11 @@ export const GeoHealthTab = () => {
   const pollIntervalRef = useRef(null);
 
   const totalCount = products?.length || 0;
+  const unenrichedProducts = (products || []).filter(p => !p.isOptimized);
+  const unenrichedCount = unenrichedProducts.length;
+  const allEnriched = totalCount > 0 && unenrichedCount === 0;
+  const needsMerchantDataCount = (products || []).filter(p => (p.score || p.geoScore || 0) < 90).length;
+
   const optimalCount = (products || []).filter(p => (p.score || p.geoScore || 0) >= 90).length;
   const attentionCount = (products || []).filter(p => {
     const s = p.score || p.geoScore || 0;
@@ -295,6 +300,7 @@ export const GeoHealthTab = () => {
               if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
               setBulkProgress(100);
               setIsBulkEnriching(false);
+              if (loadInitialData) await loadInitialData();
               message.success('Bulk optimization complete. Products enriched and /llms.txt feed refreshed.');
             }
           } else {
@@ -303,6 +309,7 @@ export const GeoHealthTab = () => {
               if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
               setBulkProgress(100);
               setIsBulkEnriching(false);
+              if (loadInitialData) await loadInitialData();
               message.success('Bulk optimization complete. Products enriched and /llms.txt feed refreshed.');
             }
           }
@@ -311,6 +318,7 @@ export const GeoHealthTab = () => {
             if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
             setBulkProgress(100);
             setIsBulkEnriching(false);
+            if (loadInitialData) await loadInitialData();
             message.success('Bulk optimization complete. Products enriched and /llms.txt feed refreshed.');
           }
         }
@@ -651,8 +659,8 @@ export const GeoHealthTab = () => {
         </div>
       </Flex>
 
-      {/* 2. DYNAMIC GEO HEALTH STATE WARNING BANNER */}
-      {(attentionCount + criticalCount > 0) && (
+      {/* 2. DYNAMIC GEO HEALTH STATE WARNING / CONFIRMATION BANNER */}
+      {unenrichedCount > 0 ? (
         <div className="zgeo-amber-banner">
           <Flex align="center" gap="middle" className="zgeo-amber-banner-left">
             <div className="zgeo-amber-icon-box">
@@ -661,12 +669,12 @@ export const GeoHealthTab = () => {
             <div>
               <div className="zgeo-amber-heading">
                 <span className="font-bold text-amber-950 text-xs sm:text-sm">
-                  Catalog Notice: {attentionCount + criticalCount} Product{attentionCount + criticalCount === 1 ? '' : 's'} Need Optimization
+                  Catalog Notice: {unenrichedCount} Product{unenrichedCount === 1 ? '' : 's'} Need AI Enrichment
                 </span>
                 <span className="zgeo-amber-pill">AI Readiness: {healthPercent}%</span>
               </div>
               <p className="zgeo-amber-desc">
-                {attentionCount + criticalCount} product{attentionCount + criticalCount === 1 ? '' : 's'} can be improved with enriched structured schema and verified stock availability to maximize AI answer engine citations.
+                {unenrichedCount} product{unenrichedCount === 1 ? '' : 's'} can be improved with enriched structured schema and verified stock availability to maximize AI answer engine citations.
               </p>
             </div>
           </Flex>
@@ -677,10 +685,38 @@ export const GeoHealthTab = () => {
             onClick={() => setBulkModalOpen(true)}
             className="zgeo-auto-enrich-banner-btn"
           >
-            1-Click Auto-Enrich All ({attentionCount + criticalCount})
+            1-Click Auto-Enrich ({unenrichedCount})
           </Button>
         </div>
-      )}
+      ) : totalCount > 0 ? (
+        <div className="zgeo-emerald-banner">
+          <Flex align="center" gap="middle" className="zgeo-emerald-banner-left">
+            <div className="zgeo-emerald-icon-box">
+              <CheckCircle2 size={18} className="text-emerald-700" />
+            </div>
+            <div>
+              <div className="zgeo-emerald-heading">
+                <span className="font-bold text-emerald-950 text-xs sm:text-sm">
+                  All {totalCount} Products Enriched with AI Schema &amp; FAQs
+                </span>
+                <span className="zgeo-emerald-pill">AI Schema: 100% Active</span>
+              </div>
+              <p className="zgeo-emerald-desc">
+                All {totalCount} products have grounded JSON-LD schemas and buyer FAQs attached. {needsMerchantDataCount > 0 ? 'To reach 90%+ Optimal GEO Health, complete remaining merchant catalog data (SKUs, Featured Images, Prices) in WooCommerce.' : 'All products have reached optimal AI readiness.'}
+              </p>
+            </div>
+          </Flex>
+
+          <Button
+            type="default"
+            icon={<Sparkles size={14} className="text-brand-600" />}
+            onClick={() => setBulkModalOpen(true)}
+            className="zgeo-btn-white text-xs font-semibold"
+          >
+            View AI Schema Status
+          </Button>
+        </div>
+      ) : null}
 
       {/* 3. HEALTH SCORE LEGEND & CITABILITY TIERS */}
       <div className="zgeo-health-legend-grid">
@@ -1318,8 +1354,14 @@ export const GeoHealthTab = () => {
                 <Sparkles size={18} className="text-brand-600" />
               </div>
               <div>
-                <h3 className="zgeo-modal-title">Bulk AI Catalog Enrichment</h3>
-                <p className="zgeo-modal-subtitle">Automatically extracts product pros/cons, buyer FAQs, and structured search tags.</p>
+                <h3 className="zgeo-modal-title">
+                  {allEnriched ? 'Catalog AI Enrichment Status' : 'Bulk AI Catalog Enrichment'}
+                </h3>
+                <p className="zgeo-modal-subtitle">
+                  {allEnriched
+                    ? 'All WooCommerce products are enriched with structured AI schemas, specs, and buyer FAQs.'
+                    : 'Automatically extracts product pros/cons, buyer FAQs, and structured search tags.'}
+                </p>
               </div>
             </div>
           </div>
@@ -1338,19 +1380,27 @@ export const GeoHealthTab = () => {
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               WooCommerce Action Scheduler Active
             </span>
-            <span className="font-mono text-indigo-700 text-[11px]">Async Safe Batch: 25 items</span>
+            <span className="font-mono text-indigo-700 text-[11px]">
+              {allEnriched ? `All ${totalCount} items synchronized` : 'Async Safe Batch: 25 items'}
+            </span>
           </div>
 
           {/* Live Progress Bar */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-slate-800">
-                {isBulkEnriching ? `Processing products... (${bulkProgress}%)` : `Ready to enrich ${attentionCount + criticalCount} flagged products`}
+                {isBulkEnriching
+                  ? `Processing products... (${bulkProgress}%)`
+                  : allEnriched
+                  ? `Catalog AI Enrichment: 100% Complete (${totalCount} of ${totalCount} products enriched)`
+                  : `Ready to enrich ${unenrichedCount} new products`}
               </span>
-              <span className="font-mono font-bold text-brand-700">{bulkProgress}% Complete</span>
+              <span className="font-mono font-bold text-brand-700">
+                {allEnriched && !isBulkEnriching ? 100 : bulkProgress}% Complete
+              </span>
             </div>
             <Progress
-              percent={bulkProgress}
+              percent={allEnriched && !isBulkEnriching ? 100 : bulkProgress}
               status={isBulkEnriching ? 'active' : 'normal'}
               strokeColor={{
                 '0%': '#4f46e5',
@@ -1365,6 +1415,7 @@ export const GeoHealthTab = () => {
             {(products && products.length > 0) ? (
               products.slice(0, 4).map((p, idx) => {
                 const threshold = (idx + 1) * 25;
+                const isItemEnriched = p.isOptimized || allEnriched || bulkProgress >= threshold;
                 return (
                   <div key={p.id || idx} className="zgeo-enrich-row">
                     <span className="flex items-center gap-2 truncate">
@@ -1372,7 +1423,7 @@ export const GeoHealthTab = () => {
                       <span className="truncate">{p.title}: Structured Schema &amp; Stock Matrix</span>
                     </span>
                     <span className="text-emerald-700 font-mono text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200/80 flex-shrink-0">
-                      {bulkProgress >= threshold ? 'Enriched' : 'Pending'}
+                      {isItemEnriched ? 'Enriched' : 'Pending'}
                     </span>
                   </div>
                 );
@@ -1401,42 +1452,65 @@ export const GeoHealthTab = () => {
           </div>
 
           <div className="zgeo-modal-footer flex items-center justify-end gap-2 pt-2">
-            <Button
-              onClick={() => {
-                if (isBulkEnriching) {
-                  handleCancelBulkEnrichment();
-                } else {
-                  setBulkModalOpen(false);
-                }
-              }}
-              disabled={isApplying}
-              className="zgeo-btn-white"
-            >
-              {isBulkEnriching ? 'Stop / Cancel' : 'Cancel'}
-            </Button>
-
-            {bulkProgress < 100 ? (
-              <Button
-                type="primary"
-                loading={isBulkEnriching}
-                disabled={isBulkEnriching}
-                onClick={handleStartBulkEnrichment}
-                icon={!isBulkEnriching && <Sparkles size={14} />}
-                className="zgeo-btn-brand"
-              >
-                {isBulkEnriching ? 'Enriching Catalog...' : 'Start Catalog Enrichment'}
-              </Button>
+            {allEnriched && !isBulkEnriching ? (
+              <>
+                <Button
+                  onClick={handleStartBulkEnrichment}
+                  loading={isBulkEnriching}
+                  icon={<RefreshCw size={14} className="text-slate-500" />}
+                  className="zgeo-btn-white"
+                >
+                  Re-Run AI Enrichment
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={() => setBulkModalOpen(false)}
+                  icon={<Check size={14} />}
+                  className="zgeo-btn-brand"
+                >
+                  Done (Close)
+                </Button>
+              </>
             ) : (
-              <Button
-                type="primary"
-                loading={isApplying}
-                disabled={isApplying}
-                onClick={handleApplyFullEnrichment}
-                icon={!isApplying && <Check size={14} />}
-                className="zgeo-btn-brand"
-              >
-                {isApplying ? 'Applying Schema...' : 'Apply & Mark 100% Healthy'}
-              </Button>
+              <>
+                <Button
+                  onClick={() => {
+                    if (isBulkEnriching) {
+                      handleCancelBulkEnrichment();
+                    } else {
+                      setBulkModalOpen(false);
+                    }
+                  }}
+                  disabled={isApplying}
+                  className="zgeo-btn-white"
+                >
+                  {isBulkEnriching ? 'Stop / Cancel' : 'Cancel'}
+                </Button>
+
+                {bulkProgress < 100 ? (
+                  <Button
+                    type="primary"
+                    loading={isBulkEnriching}
+                    disabled={isBulkEnriching}
+                    onClick={handleStartBulkEnrichment}
+                    icon={!isBulkEnriching && <Sparkles size={14} />}
+                    className="zgeo-btn-brand"
+                  >
+                    {isBulkEnriching ? 'Enriching Catalog...' : `Start Catalog Enrichment (${unenrichedCount})`}
+                  </Button>
+                ) : (
+                  <Button
+                    type="primary"
+                    loading={isApplying}
+                    disabled={isApplying}
+                    onClick={handleApplyFullEnrichment}
+                    icon={!isApplying && <Check size={14} />}
+                    className="zgeo-btn-brand"
+                  >
+                    {isApplying ? 'Applying Schema...' : 'Apply & Mark 100% Healthy'}
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </div>

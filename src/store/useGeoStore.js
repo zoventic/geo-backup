@@ -287,7 +287,7 @@ export const useGeoStore = create((set, get) => ({
         updates.metrics = {
           ...(updates.metrics || get().metrics),
           totalProducts: count,
-          optimizedProducts: productsRes.value.filter(p => (p.score || p.geoScore || 0) >= 85).length,
+          optimizedProducts: productsRes.value.filter(p => p.isOptimized).length,
           geoHealthScore: avgScore
         };
       }
@@ -630,6 +630,8 @@ export const useGeoStore = create((set, get) => ({
       set((state) => {
         const enriched = (state.products || []).map((p) => ({
           ...p,
+          isOptimized: true,
+          isStale: false,
           geoScore: Math.min(98, Math.max(90, (p.geoScore || p.score || 80) + 12)),
           score: Math.min(98, Math.max(90, (p.score || p.geoScore || 80) + 12)),
           schemaStatus: 'Valid Product, Offer & AggregateRating'

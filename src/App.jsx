@@ -22,7 +22,7 @@ import { useGeoStore } from './store/useGeoStore';
 const { Content } = Layout;
 
 export const App = () => {
-  const { activeTab, setActiveTab, metrics, crawlerLogs, loadInitialData, isLoadingData } = useGeoStore();
+  const { activeTab, setActiveTab, metrics, crawlerLogs, products, loadInitialData, isLoadingData } = useGeoStore();
 
   useEffect(() => {
     if (loadInitialData) {
@@ -134,8 +134,10 @@ export const App = () => {
     }
   }, [setActiveTab]);
 
-  const totalProducts = metrics?.totalProducts ?? 0;
-  const optimizedProducts = metrics?.optimizedProducts ?? 0;
+  const totalProducts = (products && products.length > 0) ? products.length : (metrics?.totalProducts ?? 0);
+  const optimizedProducts = (products && products.length > 0)
+    ? products.filter(p => p.isOptimized).length
+    : (metrics?.optimizedProducts ?? 0);
   const totalLogs = (crawlerLogs && crawlerLogs.length > 0) ? crawlerLogs.length : (metrics?.botHitsLast24h ?? 0);
 
   const navItems = [

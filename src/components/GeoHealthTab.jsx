@@ -25,7 +25,10 @@ import {
   Sparkles,
   RefreshCw,
   ExternalLink,
-  Copy
+  Copy,
+  MinusCircle,
+  XCircle,
+  Info
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
@@ -64,25 +67,33 @@ export const GeoHealthTab = () => {
   const healthPercent = totalCount > 0 ? Math.round(((optimalCount + attentionCount * 0.7) / totalCount) * 100) : 0;
 
   const handleOpenDrawer = (record) => {
-    const prodScore = record.contentScore || record.score || record.geoScore || 80;
+    const prodScore = Number(record.contentScore ?? record.score ?? record.geoScore ?? 80);
     const priceClean = String(record.price || '').replace(/[^0-9.]/g, '') || "0.00";
     const isInStock = record.isInStock !== false && record.stockStatus !== 'Out of Stock';
 
-    // Build signals array from record.signals or default fallback
+    // Build signals array from record.signals or standard 16-signal fallback
     let signalList = [];
-    if (record.signals && typeof record.signals === 'object') {
+    if (record.signals && typeof record.signals === 'object' && Object.keys(record.signals).length > 0) {
       signalList = Object.values(record.signals);
     } else {
       signalList = [
-        { id: 's1_sku', name: 'SKU / Unique Identifier', passed: Boolean(record.sku && record.sku !== 'N/A'), points: record.sku && record.sku !== 'N/A' ? 10 : 0, max: 10, detail: record.sku && record.sku !== 'N/A' ? `Valid SKU: ${record.sku}` : 'Missing product SKU' },
-        { id: 's2_category', name: 'Category & Taxonomy Depth', passed: Boolean(record.category && record.category !== 'General' && record.category !== 'Uncategorized'), points: (record.category && record.category !== 'General' && record.category !== 'Uncategorized') ? 10 : 0, max: 10, detail: `Category: ${record.category || 'General'}` },
-        { id: 's3_description', name: 'Description Depth (Word Count)', passed: prodScore >= 60, points: prodScore >= 60 ? 15 : 8, max: 15, detail: 'Descriptive narrative for LLM synthesis' },
-        { id: 's4_attributes', name: 'Structured Product Attributes', passed: Boolean(record.isOptimized || prodScore >= 80), points: record.isOptimized || prodScore >= 80 ? 15 : 0, max: 15, detail: 'Technical specs & entity properties' },
-        { id: 's5_media', name: 'Media & Visual Assets', passed: Boolean(record.imageUrl), points: record.imageUrl ? 10 : 0, max: 10, detail: 'Featured and gallery visual assets' },
-        { id: 's6_pricing', name: 'Pricing & Currency Integrity', passed: Boolean(record.price && record.price !== '$0.00'), points: (record.price && record.price !== '$0.00') ? 10 : 0, max: 10, detail: 'Verified active price & currency' },
-        { id: 's7_specs_faq', name: 'Semantic Specs & Buyer FAQ Graph', passed: Boolean(record.isOptimized), points: record.isOptimized ? 15 : 0, max: 15, detail: 'Generated buyer FAQs & entity specs' },
-        { id: 's8_policy', name: 'Merchant Return & Shipping Policy', passed: Boolean(record.isOptimized), points: record.isOptimized ? 10 : 0, max: 10, detail: 'MerchantReturnPolicy JSON-LD schema' },
-        { id: 's9_reviews', name: 'Social Proof / Customer Ratings', passed: prodScore >= 95, points: prodScore >= 95 ? 5 : 0, max: 5, detail: 'Verified buyer reviews and ratings' },
+        { key: 'title_quality', name: 'Title Quality & Specificity', category: 'A', category_name: 'Identity & Classification', weight: 5, type: 'binary', status: record.title && record.title.length >= 10 ? 'PASS' : 'FAIL', earned: record.title && record.title.length >= 10 ? 5 : 0, applicable: true, diagnostic: record.title && record.title.length >= 10 ? `Descriptive title: ${record.title}` : 'Title is missing or too short' },
+        { key: 'sku_presence', name: 'SKU / Unique Identifier', category: 'A', category_name: 'Identity & Classification', weight: 5, type: 'binary', status: Boolean(record.sku && record.sku !== 'N/A') ? 'PASS' : 'FAIL', earned: record.sku && record.sku !== 'N/A' ? 5 : 0, applicable: true, diagnostic: record.sku && record.sku !== 'N/A' ? `Valid SKU: ${record.sku}` : 'Missing product SKU' },
+        { key: 'brand_manufacturer', name: 'Brand / Manufacturer', category: 'A', category_name: 'Identity & Classification', weight: 5, type: 'binary', status: 'N/A', earned: 0, applicable: false, diagnostic: 'Brand taxonomy not configured (excluded from score)' },
+        { key: 'description_depth', name: 'Detailed Description Depth', category: 'B', category_name: 'Semantic Description & Content', weight: 10, type: 'partial', status: prodScore >= 60 ? 'PASS' : 'PARTIAL', earned: prodScore >= 60 ? 10 : 5, applicable: true, diagnostic: 'Descriptive narrative for LLM synthesis' },
+        { key: 'short_description', name: 'Concise Summary / Pitch', category: 'B', category_name: 'Semantic Description & Content', weight: 5, type: 'binary', status: prodScore >= 50 ? 'PASS' : 'FAIL', earned: prodScore >= 50 ? 5 : 0, applicable: true, diagnostic: 'Quick excerpt for conversational responses' },
+        { key: 'content_differentiation', name: 'Description Differentiation', category: 'B', category_name: 'Semantic Description & Content', weight: 5, type: 'binary', status: 'PASS', earned: 5, applicable: true, diagnostic: 'Description provides distinct information' },
+        { key: 'featured_image', name: 'Featured Product Image', category: 'C', category_name: 'Media & Rich Assets', weight: 5, type: 'binary', status: Boolean(record.imageUrl) ? 'PASS' : 'FAIL', earned: record.imageUrl ? 5 : 0, applicable: true, diagnostic: record.imageUrl ? 'Primary hero image present' : 'No featured image set' },
+        { key: 'image_gallery_depth', name: 'Gallery Visual Depth', category: 'C', category_name: 'Media & Rich Assets', weight: 3, type: 'partial', status: record.imageUrl ? 'PARTIAL' : 'FAIL', earned: record.imageUrl ? 1.5 : 0, applicable: true, diagnostic: 'Visual gallery depth' },
+        { key: 'image_alt_coverage', name: 'Image Accessibility & Alt Text', category: 'C', category_name: 'Media & Rich Assets', weight: 2, type: 'partial', status: 'FAIL', earned: 0, applicable: true, diagnostic: 'Accessibility alt text' },
+        { key: 'price_validity', name: 'Valid Pricing & Currency', category: 'D', category_name: 'Commercial Transparency', weight: 5, type: 'binary', status: Boolean(record.price && record.price !== '$0.00') ? 'PASS' : 'FAIL', earned: (record.price && record.price !== '$0.00') ? 5 : 0, applicable: true, diagnostic: 'Verified active price & currency' },
+        { key: 'structured_attributes', name: 'Structured Product Attributes', category: 'D', category_name: 'Commercial Transparency', weight: 5, type: 'binary', status: Boolean(record.isOptimized || prodScore >= 80) ? 'PASS' : 'FAIL', earned: (record.isOptimized || prodScore >= 80) ? 5 : 0, applicable: true, diagnostic: 'Technical specs & entity properties' },
+        { key: 'variation_coverage', name: 'Variation Machine Readability', category: 'D', category_name: 'Commercial Transparency', weight: 10, type: 'partial', status: 'N/A', earned: 0, applicable: false, diagnostic: 'Simple product — variations not applicable (excluded from score)' },
+        { key: 'social_proof_reviews', name: 'Customer Ratings & Reviews', category: 'E', category_name: 'Trust & Authority', weight: 5, type: 'partial', status: prodScore >= 95 ? 'PASS' : 'FAIL', earned: prodScore >= 95 ? 5 : 0, applicable: true, diagnostic: 'Social proof signals' },
+        { key: 'return_policy', name: 'Clear Merchant Return Policy', category: 'E', category_name: 'Trust & Authority', weight: 5, type: 'binary', status: Boolean(record.isOptimized) ? 'PASS' : 'FAIL', earned: record.isOptimized ? 5 : 0, applicable: true, diagnostic: record.isOptimized ? 'Return policy schema attached' : 'No return policy schema' },
+        { key: 'shipping_details', name: 'Shipping Transparency Schema', category: 'E', category_name: 'Trust & Authority', weight: 5, type: 'binary', status: Boolean(record.isOptimized) ? 'PASS' : 'FAIL', earned: record.isOptimized ? 5 : 0, applicable: true, diagnostic: record.isOptimized ? 'Shipping policy details defined' : 'No shipping details defined' },
+        { key: 'structured_specs_faq', name: 'Structured AI Specs & FAQ Graph', category: 'F', category_name: 'Machine Readability & Schema', weight: 15, type: 'partial', status: Boolean(record.isOptimized) ? 'PASS' : 'FAIL', earned: record.isOptimized ? 15 : 0, applicable: true, diagnostic: record.isOptimized ? 'Grounded buyer FAQs & entity specs generated' : 'Missing AI-readable specs graph' },
+        { key: 'jsonld_integrity', name: 'JSON-LD Product Graph Integrity', category: 'F', category_name: 'Machine Readability & Schema', weight: 5, type: 'binary', status: 'PASS', earned: 5, applicable: true, diagnostic: 'Valid schema.org Product graph' },
       ];
     }
 
@@ -91,6 +102,8 @@ export const GeoHealthTab = () => {
       price: record.price || '$0.00',
       score: prodScore,
       contentScore: prodScore,
+      applicableWeight: record.applicableWeight ?? 100,
+      earnedPoints: record.earnedPoints ?? prodScore,
       isInStock,
       stockStatus: isInStock ? 'In Stock' : 'Out of Stock',
       isStale: Boolean(record.isStale),
@@ -244,6 +257,34 @@ export const GeoHealthTab = () => {
     message.success('Catalog enrichment applied. All products optimized in database & /llms.txt feed refreshed.');
   };
 
+  const handleRecheckSelectedProduct = async () => {
+    if (!selectedProduct?.id) return;
+    setIsOptimizingSingle(true);
+    try {
+      const res = await api.recheckProduct(selectedProduct.id);
+      if (res?.success && res.product) {
+        const prod = res.product;
+        setSelectedProduct(prev => ({
+          ...prev,
+          ...prod,
+          score: prod.score,
+          contentScore: prod.contentScore,
+          isStale: false,
+          isOptimized: prod.isOptimized,
+          signalsList: prod.signals ? Object.values(prod.signals) : (prev?.signalsList || []),
+        }));
+        if (loadInitialData) {
+          await loadInitialData();
+        }
+        message.success(`Re-check complete: ${selectedProduct.title} score recalculated (${prod.score}%) and stale status cleared.`);
+      }
+    } catch (e) {
+      message.error('Failed to re-check product.');
+    } finally {
+      setIsOptimizingSingle(false);
+    }
+  };
+
   const handleEnrichSelectedProduct = async () => {
     if (!selectedProduct) return;
     setIsOptimizingSingle(true);
@@ -260,10 +301,12 @@ export const GeoHealthTab = () => {
         let updatedSignals = [];
         if (res?.calc?.signals) {
           updatedSignals = Object.values(res.calc.signals);
+        } else if (res?.productData?.signals) {
+          updatedSignals = Object.values(res.productData.signals);
         } else {
           updatedSignals = (prev.signalsList || []).map(s => {
-            if (s.id === 's4_attributes' || s.id === 's7_specs_faq' || s.id === 's8_policy') {
-              return { ...s, passed: true, points: s.max, detail: 'Enriched by Zoventic GEO' };
+            if (s.key === 'structured_attributes' || s.key === 'use_case_context' || s.key === 'return_info') {
+              return { ...s, status: 'PASS', earned: s.weight, diagnostic: { reason: 'Enriched from existing merchant product text.' } };
             }
             return s;
           });
@@ -275,7 +318,7 @@ export const GeoHealthTab = () => {
           contentScore: newScore,
           isOptimized: true,
           isStale: false,
-          label: 'High AI Readiness',
+          label: newScore >= 85 ? 'High AI Readiness' : (newScore >= 70 ? 'Moderate Readiness' : 'Needs Optimization'),
           signalsList: updatedSignals
         };
       });
@@ -651,7 +694,7 @@ export const GeoHealthTab = () => {
         footer={
           <div>
             <div className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 mb-3 leading-relaxed">
-              💡 <strong>1-Click Enrich</strong> fills missing AI-readable fields: Generates structured buyer FAQs, technical specs graph &amp; return policy schema.
+              💡 <strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.
             </div>
             <div className="zgeo-drawer-footer-actions">
               <button
@@ -660,6 +703,20 @@ export const GeoHealthTab = () => {
                 className="zgeo-drawer-btn-close"
               >
                 Close
+              </button>
+              <button
+                type="button"
+                disabled={isOptimizingSingle}
+                onClick={handleRecheckSelectedProduct}
+                className="zgeo-drawer-btn-close"
+                style={{
+                  borderColor: '#94a3b8',
+                  color: '#1e293b',
+                  gap: 6
+                }}
+              >
+                <RefreshCw size={14} className={isOptimizingSingle ? 'animate-spin' : ''} />
+                <span>Re-check</span>
               </button>
               <button
                 type="button"
@@ -687,7 +744,7 @@ export const GeoHealthTab = () => {
                   <span className="text-slate-700 text-xs font-semibold truncate">{selectedProduct.label}</span>
                 </div>
                 <span className="text-[10px] text-slate-400 block mt-1">
-                  AI crawler schema completeness
+                  Earned {selectedProduct.earnedPoints ?? selectedProduct.score} / {selectedProduct.applicableWeight ?? 100} applicable points
                 </span>
               </div>
 
@@ -700,63 +757,159 @@ export const GeoHealthTab = () => {
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400 block mt-1">
-                  {selectedProduct.isInStock ? 'Available for live AI recommendations' : 'Restock in WooCommerce'}
+                  {selectedProduct.isInStock ? 'Active in AI orders' : 'Restock in WooCommerce'}
                 </span>
               </div>
             </div>
 
             {/* Stale Revalidation Notice */}
             {selectedProduct.isStale && (
-              <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-xl flex items-start gap-2.5 text-xs text-amber-950">
-                <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <strong>Product modified in WooCommerce.</strong> Product details were edited after last optimization. Click <strong>1-Click Enrich</strong> to re-validate and sync the updated schema.
+              <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-950">
+                <div className="flex items-start gap-2 min-w-0">
+                  <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <strong>Product modified in WooCommerce.</strong> Schema needs re-evaluation.
+                  </div>
                 </div>
+                <Button
+                  size="small"
+                  icon={<RefreshCw size={12} className={isOptimizingSingle ? 'animate-spin' : ''} />}
+                  onClick={handleRecheckSelectedProduct}
+                  disabled={isOptimizingSingle}
+                  className="border-amber-400 text-amber-900 bg-white font-semibold flex-shrink-0 text-xs"
+                >
+                  Re-check Now
+                </Button>
               </div>
             )}
 
-            {/* 10-Signal Diagnostic Audit Checklist */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
-                  10-Signal Diagnostic Audit ({selectedProduct.score}/100 pts):
-                </h4>
-                <span className="text-[11px] font-mono text-slate-500">Objective Criteria</span>
+            {/* 16-Signal Diagnostic Audit Checklist Grouped by Category */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
+                    16-Signal Diagnostic Audit ({selectedProduct.score}%):
+                  </h4>
+                  <span className="text-[11px] text-slate-500">
+                    Formula: (Earned Applicable Points / Applicable Weights) &times; 100
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-slate-500">
+                  {selectedProduct.earnedPoints ?? selectedProduct.score} / {selectedProduct.applicableWeight ?? 100} pts
+                </span>
               </div>
-              <div className="space-y-2">
-                {(selectedProduct.signalsList || []).map((sig, i) => {
-                  const isPassed = Boolean(sig.passed);
+
+              {(() => {
+                const categoryOrder = ['A', 'B', 'C', 'D', 'E', 'F'];
+                const categoryNames = {
+                  'A': 'Category A: Identity & Classification (15 pts)',
+                  'B': 'Category B: Semantic Description & Content (20 pts)',
+                  'C': 'Category C: Media & Rich Assets (10 pts)',
+                  'D': 'Category D: Commercial Transparency (20 pts)',
+                  'E': 'Category E: Trust & Authority (15 pts)',
+                  'F': 'Category F: Machine Readability & Schema (20 pts)',
+                };
+
+                const grouped = {};
+                (selectedProduct.signalsList || []).forEach(sig => {
+                  const cat = sig.category || 'A';
+                  if (!grouped[cat]) {
+                    grouped[cat] = {
+                      name: categoryNames[cat] || `Category ${cat}`,
+                      signals: [],
+                      earned: 0,
+                      applicableWeight: 0,
+                      totalWeight: 0
+                    };
+                  }
+                  grouped[cat].signals.push(sig);
+                  const w = Number(sig.weight || 0);
+                  grouped[cat].totalWeight += w;
+                  if (sig.applicable !== false && sig.status !== 'N/A') {
+                    grouped[cat].applicableWeight += w;
+                    grouped[cat].earned += Number(sig.earned || 0);
+                  }
+                });
+
+                return categoryOrder.map(catKey => {
+                  const catData = grouped[catKey];
+                  if (!catData || catData.signals.length === 0) return null;
+
                   return (
-                    <div
-                      key={sig.id || i}
-                      className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-colors ${
-                        isPassed
-                          ? 'bg-emerald-50/70 border-emerald-200/80 text-emerald-950'
-                          : 'bg-slate-50 border-slate-200 text-slate-800'
-                      }`}
-                    >
-                      <div className="flex items-start gap-2.5 min-w-0 pr-2">
-                        {isPassed ? (
-                          <Check size={16} className="text-emerald-600 flex-shrink-0 mt-0.5" />
-                        ) : (
-                          <AlertCircle size={16} className="text-slate-400 flex-shrink-0 mt-0.5" />
-                        )}
-                        <div>
-                          <span className="font-bold block text-slate-900">{sig.name}</span>
-                          <span className="text-[11px] text-slate-500 block">{sig.detail}</span>
-                        </div>
-                      </div>
-                      <div className="flex-shrink-0 text-right">
-                        <span className={`font-mono font-bold text-xs px-2 py-0.5 rounded-full ${
-                          isPassed ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
-                        }`}>
-                          +{sig.points}/{sig.max} pts
+                    <div key={catKey} className="rounded-xl border border-slate-200 overflow-hidden bg-white">
+                      <div className="bg-slate-50/80 px-3.5 py-2.5 border-b border-slate-200 flex items-center justify-between">
+                        <span className="font-bold text-xs text-slate-800">{catData.name}</span>
+                        <span className="font-mono font-semibold text-[11px] text-slate-600">
+                          {Math.round(catData.earned * 10) / 10} / {catData.applicableWeight} pts
                         </span>
+                      </div>
+                      <div className="divide-y divide-slate-100 p-1.5 space-y-1">
+                        {catData.signals.map((sig, i) => {
+                          const status = sig.status || (sig.passed ? 'PASS' : 'FAIL');
+                          const isPass = status === 'PASS';
+                          const isPartial = status === 'PARTIAL';
+                          const isNA = status === 'N/A';
+                          const isFail = status === 'FAIL';
+
+                          return (
+                            <div
+                              key={sig.key || sig.id || i}
+                              className={`p-2.5 rounded-lg flex items-center justify-between text-xs transition-colors ${
+                                isPass
+                                  ? 'bg-emerald-50/50 text-emerald-950'
+                                  : isPartial
+                                  ? 'bg-amber-50/50 text-amber-950'
+                                  : isNA
+                                  ? 'bg-slate-50/60 text-slate-500'
+                                  : 'bg-rose-50/30 text-slate-800'
+                              }`}
+                            >
+                              <div className="flex items-start gap-2 min-w-0 pr-2">
+                                {isPass && <Check size={15} className="text-emerald-600 flex-shrink-0 mt-0.5" />}
+                                {isPartial && <AlertCircle size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />}
+                                {isNA && <MinusCircle size={15} className="text-slate-400 flex-shrink-0 mt-0.5" />}
+                                {isFail && <XCircle size={15} className="text-rose-500 flex-shrink-0 mt-0.5" />}
+
+                                <div>
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="font-bold text-slate-900">{sig.name}</span>
+                                    <span className="text-[10px] text-slate-400 uppercase">
+                                      ({sig.type || 'binary'})
+                                    </span>
+                                  </div>
+                                  <span className="text-[11px] text-slate-500 block mt-0.5">
+                                    {sig.diagnostic || sig.detail || 'Evaluated against catalog data'}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="flex-shrink-0 text-right">
+                                {isNA ? (
+                                  <span className="font-mono text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                                    N/A (Excluded)
+                                  </span>
+                                ) : (
+                                  <span
+                                    className={`font-mono font-bold text-xs px-2 py-0.5 rounded-md ${
+                                      isPass
+                                        ? 'bg-emerald-100 text-emerald-800'
+                                        : isPartial
+                                        ? 'bg-amber-100 text-amber-800'
+                                        : 'bg-slate-200 text-slate-600'
+                                    }`}
+                                  >
+                                    +{Math.round(Number(sig.earned || 0) * 10) / 10}/{sig.weight} pts
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   );
-                })}
-              </div>
+                });
+              })()}
             </div>
 
             {/* JSON-LD Schema Preview */}

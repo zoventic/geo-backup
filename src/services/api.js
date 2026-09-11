@@ -52,6 +52,8 @@ export const api = {
 
   optimizeProduct: (id) => request("products/" + id + "/optimize", { method: "POST" }),
 
+  recheckProduct: (id) => request("products/" + id + "/recheck", { method: "POST" }),
+
   getCrawlers: () => request("crawlers"),
 
   clearCrawlers: () => request("crawlers", { method: "DELETE" }),

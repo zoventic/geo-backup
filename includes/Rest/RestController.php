@@ -31,6 +31,13 @@ class RestController {
             'permission_callback' => [ $this, 'check_permissions' ],
         ] );
 
+        // Atomic re-check single product endpoint
+        register_rest_route( self::NAMESPACE, '/products/(?P<id>\d+)/recheck', [
+            'methods'             => \WP_REST_Server::CREATABLE,
+            'callback'            => [ $this, 'recheck_product' ],
+            'permission_callback' => [ $this, 'check_permissions' ],
+        ] );
+
         // Crawler logs endpoint
         register_rest_route( self::NAMESPACE, '/crawlers', [
             [
@@ -312,27 +319,33 @@ class RestController {
             $calc = \Zoventic\Geo\Engine\BulkActionScheduler::calculate_product_geo_score( $p );
 
             $data[] = [
-                'id'           => $p->get_id(),
-                'title'        => $p->get_name(),
-                'sku'          => $p->get_sku() ?: 'N/A',
-                'category'     => $cat_name,
-                'price'        => $price_formatted,
-                'priceRaw'     => $price_raw,
-                'stock'        => (int) $p->get_stock_quantity(),
-                'stockStatus'  => $calc['stockStatus'],
-                'isInStock'    => $calc['isInStock'],
-                'geoScore'     => $calc['score'],
-                'score'        => $calc['score'],
-                'contentScore' => $calc['contentScore'],
-                'isOptimized'  => $calc['isOptimized'],
-                'isStale'      => $calc['isStale'],
-                'signals'      => $calc['signals'],
-                'imageUrl'     => $image_url,
-                'permalink'    => $p->get_permalink(),
-                'schemaStatus' => $calc['isOptimized'] ? 'Valid Product, Offers & MerchantReturnPolicy' : 'Basic Product Schema Only',
-                'llmsStatus'   => $p->is_in_stock() ? 'Indexed' : 'Excluded (Stock 0)',
-                'citations'    => (int) get_post_meta( $p->get_id(), '_zgeo_citation_count', true ) ?: 0,
-                'issues'       => $calc['issues'],
+                'id'               => $p->get_id(),
+                'title'            => $p->get_name(),
+                'sku'              => $p->get_sku() ?: 'N/A',
+                'category'         => $cat_name,
+                'price'            => $price_formatted,
+                'priceRaw'         => $price_raw,
+                'stock'            => (int) $p->get_stock_quantity(),
+                'stockStatus'      => $calc['stockStatus'],
+                'isInStock'        => $calc['isInStock'],
+                'geoScore'         => $calc['score'],
+                'score'            => $calc['score'],
+                'contentScore'     => $calc['contentScore'],
+                'rawScore'         => isset( $calc['rawScore'] ) ? $calc['rawScore'] : $calc['score'],
+                'earnedPoints'     => isset( $calc['earnedPoints'] ) ? $calc['earnedPoints'] : $calc['score'],
+                'applicableWeight' => isset( $calc['applicableWeight'] ) ? $calc['applicableWeight'] : 100,
+                'status'           => isset( $calc['status'] ) ? $calc['status'] : 'needs_attention',
+                'isOptimized'      => $calc['isOptimized'],
+                'isStale'          => $calc['isStale'],
+                'lastScoredAt'     => isset( $calc['lastScoredAt'] ) ? $calc['lastScoredAt'] : null,
+                'lastOptimizedAt'  => isset( $calc['lastOptimizedAt'] ) ? $calc['lastOptimizedAt'] : null,
+                'signals'          => $calc['signals'],
+                'imageUrl'         => $image_url,
+                'permalink'        => $p->get_permalink(),
+                'schemaStatus'     => $calc['isOptimized'] ? 'Valid Product, Offers & MerchantReturnPolicy' : 'Basic Product Schema Only',
+                'llmsStatus'       => $p->is_in_stock() ? 'Indexed' : 'Excluded (Stock 0)',
+                'citations'        => (int) get_post_meta( $p->get_id(), '_zgeo_citation_count', true ) ?: 0,
+                'issues'           => $calc['issues'],
             ];
         }
 
@@ -399,6 +412,30 @@ class RestController {
             'score'   => $score,
             'calc'    => $calc,
             'message' => 'Product enriched with structured AI search specs, buyer FAQs, and return policy schema.',
+        ] );
+    }
+
+    public function recheck_product( $request ) {
+        $id = absint( $request['id'] );
+        if ( ! function_exists( 'wc_get_product' ) ) {
+            return rest_ensure_response( [ 'success' => false, 'message' => 'WooCommerce not available.' ] );
+        }
+
+        $product = wc_get_product( $id );
+        if ( ! $product ) {
+            return new \WP_Error( 'not_found', 'Product not found', [ 'status' => 404 ] );
+        }
+
+        $signals = \Zoventic\Geo\Engine\GeoSignalEvaluator::evaluate( $product );
+        $calc    = \Zoventic\Geo\Engine\GeoScoreCalculator::calculate( $signals );
+
+        \Zoventic\Geo\Engine\GeoScorePersistence::save_score( $id, $calc, false );
+        $data = \Zoventic\Geo\Engine\BulkActionScheduler::calculate_product_geo_score( $product );
+
+        return rest_ensure_response( [
+            'success' => true,
+            'product' => $data,
+            'message' => 'Product GEO signals re-checked and score recalculated.',
         ] );
     }
 

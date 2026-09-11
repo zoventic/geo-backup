@@ -21,9 +21,24 @@ export const getInitialTab = () => {
     if (VALID_TABS.includes(hash)) {
       return hash;
     }
-    // 2. Check URL search param (e.g. ?page=zoventic-geo&tab=health)
+    // 2. Check WordPress page query param (e.g. ?page=zoventic-geo-crawlers or ?page=zoventic-geo)
     try {
       const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page')?.toLowerCase();
+      if (pageParam) {
+        if (pageParam.startsWith('zoventic-geo-')) {
+          const subTab = pageParam.replace('zoventic-geo-', '');
+          if (VALID_TABS.includes(subTab)) {
+            return subTab;
+          }
+        } else if (pageParam === 'zoventic-geo') {
+          const tabParam = params.get('tab')?.toLowerCase();
+          if (VALID_TABS.includes(tabParam)) {
+            return tabParam;
+          }
+          return 'overview';
+        }
+      }
       const tabParam = params.get('tab')?.toLowerCase();
       if (VALID_TABS.includes(tabParam)) {
         return tabParam;

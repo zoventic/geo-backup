@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
-import { CrawlerLogsSkeleton } from './Skeletons';
 
 const { Title, Text } = Typography;
 
@@ -380,10 +379,6 @@ export const CrawlerLogsTab = () => {
 
   const isLogsLoading = !isRealData || isLoadingData || isReloading;
 
-  if (isLogsLoading && (!activeLogsSource || activeLogsSource.length === 0)) {
-    return <CrawlerLogsSkeleton />;
-  }
-
   return (
     <div className="zgeo-logs-tab space-y-7">
       {/* 1. Page Header */}
@@ -495,35 +490,48 @@ export const CrawlerLogsTab = () => {
           </div>
         </div>
 
-        <Table
-          columns={columns}
-          dataSource={filteredLogs}
-          rowKey="id"
-          loading={isLogsLoading}
-          pagination={{
-            current: safePage,
-            pageSize: 20,
-            showSizeChanger: false,
-            onChange: handlePageChange
-          }}
-          className="zgeo-pure-table"
-          locale={{
-            emptyText: isLogsLoading ? (
-              <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
-                <Spin size="large" />
-                <span className="text-xs font-semibold text-slate-500">Loading AI crawler access logs...</span>
-              </div>
-            ) : (
-              <div className="py-12 text-center text-slate-400">
-                <Bot size={32} className="mx-auto text-slate-300 mb-2" />
-                <div className="font-semibold text-slate-700 text-sm">No crawler activity recorded yet</div>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
-                  AI bots (GPTBot, PerplexityBot, ClaudeBot, etc.) will appear here automatically when they index your products or /llms.txt feed.
-                </p>
-              </div>
-            )
-          }}
-        />
+        {isLogsLoading && (!activeLogsSource || activeLogsSource.length === 0) ? (
+          <div className="py-24 flex flex-col items-center justify-center gap-3 bg-white">
+            <Spin size="large" />
+            <span className="text-sm font-semibold text-slate-700 mt-2">Loading AI Crawler Access Logs...</span>
+            <span className="text-xs text-slate-400">Fetching live visits from GPTBot, PerplexityBot, and ClaudeBot</span>
+          </div>
+        ) : (
+          <Table
+            columns={columns}
+            dataSource={filteredLogs}
+            rowKey="id"
+            loading={{
+              spinning: isLogsLoading,
+              tip: 'Loading AI crawler access logs...',
+              size: 'large'
+            }}
+            pagination={{
+              current: safePage,
+              pageSize: 20,
+              showSizeChanger: false,
+              onChange: handlePageChange
+            }}
+            className="zgeo-pure-table"
+            locale={{
+              emptyText: (
+                <div className="py-12 text-center text-slate-400">
+                  <Bot size={32} className="mx-auto text-slate-300 mb-2" />
+                  <div className="font-semibold text-slate-700 text-sm">
+                    {searchQuery || botFilter !== 'all' || statusFilter !== 'all'
+                      ? 'No matching crawler logs found'
+                      : 'No crawler activity recorded yet'}
+                  </div>
+                  <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+                    {searchQuery || botFilter !== 'all' || statusFilter !== 'all'
+                      ? 'Try adjusting your search query or filter settings.'
+                      : 'AI bots (GPTBot, PerplexityBot, ClaudeBot, etc.) will appear here automatically when they index your products or /llms.txt feed.'}
+                  </p>
+                </div>
+              )
+            }}
+          />
+        )}
       </div>
 
       {/* Clear Logs Confirmation Modal */}

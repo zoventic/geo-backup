@@ -41,6 +41,35 @@ export const App = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [setActiveTab]);
 
+  useEffect(() => {
+    // Keep WordPress admin left sidebar active submenu in sync with activeTab
+    try {
+      const targetSlug = activeTab === 'overview' ? 'page=zoventic-geo' : `page=zoventic-geo-${activeTab}`;
+      const menuLinks = document.querySelectorAll('#adminmenu a[href*="page=zoventic-geo"]');
+      menuLinks.forEach((link) => {
+        const href = link.getAttribute('href') || '';
+        const parentLi = link.closest('li');
+        // Match exact slug (either page=zoventic-geo followed by & or end of string, or specific slug)
+        const isMatch = activeTab === 'overview'
+          ? (href.includes('page=zoventic-geo') && !href.includes('page=zoventic-geo-'))
+          : href.includes(targetSlug);
+
+        if (isMatch) {
+          parentLi?.classList.add('current');
+          link.classList.add('current');
+          link.setAttribute('aria-current', 'page');
+        } else {
+          // Only remove current from zoventic sub-items
+          if (href.includes('page=zoventic-geo')) {
+            parentLi?.classList.remove('current');
+            link.classList.remove('current');
+            link.removeAttribute('aria-current');
+          }
+        }
+      });
+    } catch (e) {}
+  }, [activeTab]);
+
   const totalProducts = metrics?.totalProducts ?? 0;
   const optimizedProducts = metrics?.optimizedProducts ?? 0;
   const totalLogs = (crawlerLogs && crawlerLogs.length > 0) ? crawlerLogs.length : (metrics?.botHitsLast24h ?? 0);

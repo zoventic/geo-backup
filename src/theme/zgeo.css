@@ -12,46 +12,46 @@
 
 
 /* 1. WordPress Admin Full-Width Integration */
-html:has(body.toplevel_page_zoventic-geo),
-body.toplevel_page_zoventic-geo {
+html:has(body[class*="page_zoventic-geo"]),
+body[class*="page_zoventic-geo"] {
   background: #f8fafc !important;
   overflow-y: scroll !important;
   scrollbar-gutter: stable;
 }
 
-body.toplevel_page_zoventic-geo #wpcontent {
+body[class*="page_zoventic-geo"] #wpcontent {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
 
-body.toplevel_page_zoventic-geo #wpbody-content {
+body[class*="page_zoventic-geo"] #wpbody-content {
   padding-bottom: 0 !important;
   float: none !important;
   width: 100% !important;
 }
 
-body.toplevel_page_zoventic-geo #wpbody {
+body[class*="page_zoventic-geo"] #wpbody {
   padding-top: 0 !important;
 }
 
 @media screen and (max-width: 782px) {
-  body.toplevel_page_zoventic-geo #wpbody {
+  body[class*="page_zoventic-geo"] #wpbody {
     padding-top: 46px !important;
   }
 }
 
-body.toplevel_page_zoventic-geo .wrap {
+body[class*="page_zoventic-geo"] .wrap {
   margin: 0 !important;
   max-width: 100% !important;
 }
 
-body.toplevel_page_zoventic-geo #wpfooter {
+body[class*="page_zoventic-geo"] #wpfooter {
   display: none !important;
 }
 
-body.toplevel_page_zoventic-geo .notice,
-body.toplevel_page_zoventic-geo div.error,
-body.toplevel_page_zoventic-geo div.updated {
+body[class*="page_zoventic-geo"] .notice,
+body[class*="page_zoventic-geo"] div.error,
+body[class*="page_zoventic-geo"] div.updated {
   margin: 12px 24px !important;
 }
 

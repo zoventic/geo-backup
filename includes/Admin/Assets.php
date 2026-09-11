@@ -20,8 +20,8 @@ class Assets {
     }
 
     public static function enqueue_assets( $hook ) {
-        // Strict Conditional Loading: Only load on Zoventic GEO admin screen
-        if ( $hook !== 'toplevel_page_zoventic-geo' ) {
+        // Strict Conditional Loading: Only load on Zoventic GEO admin screens (top-level and submenus)
+        if ( false === strpos( $hook, 'page_zoventic-geo' ) ) {
             return;
         }
 

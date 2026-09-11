@@ -21,6 +21,76 @@ class Menu {
             'dashicons-compass',
             56
         );
+
+        // 1. Overview (Default submenu link)
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'Overview – Zoventic GEO', 'zoventic-geo' ),
+            __( 'Overview', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo',
+            [ __CLASS__, 'render_app' ]
+        );
+
+        // 2. GEO Health
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'GEO Health – Zoventic GEO', 'zoventic-geo' ),
+            __( 'GEO Health', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo-health',
+            [ __CLASS__, 'render_app' ]
+        );
+
+        // 3. Rank Tracker
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'Rank Tracker – Zoventic GEO', 'zoventic-geo' ),
+            __( 'Rank Tracker', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo-radar',
+            [ __CLASS__, 'render_app' ]
+        );
+
+        // 4. Crawler Logs
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'Crawler Logs – Zoventic GEO', 'zoventic-geo' ),
+            __( 'Crawler Logs', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo-crawlers',
+            [ __CLASS__, 'render_app' ]
+        );
+
+        // 5. llms.txt Feed
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'llms.txt Feed – Zoventic GEO', 'zoventic-geo' ),
+            __( 'llms.txt Feed', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo-llms',
+            [ __CLASS__, 'render_app' ]
+        );
+
+        // 6. Search Test
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'Search Test – Zoventic GEO', 'zoventic-geo' ),
+            __( 'Search Test', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo-simulator',
+            [ __CLASS__, 'render_app' ]
+        );
+
+        // 7. Settings
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'Settings – Zoventic GEO', 'zoventic-geo' ),
+            __( 'Settings', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'zoventic-geo-settings',
+            [ __CLASS__, 'render_app' ]
+        );
     }
 
     public static function render_app() {

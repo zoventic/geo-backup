@@ -504,9 +504,8 @@ export const CrawlerLogsTab = () => {
           className="zgeo-pure-table"
           locale={{
             emptyText: isLogsLoading ? (
-              <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
-                <Spin size="large" />
-                <span className="text-xs font-semibold text-slate-500">Loading AI crawler access logs...</span>
+              <div className="py-20 text-center flex flex-col items-center justify-center gap-2">
+                <span className="text-xs font-semibold text-slate-400 pt-8">Loading AI crawler access logs...</span>
               </div>
             ) : (
               <div className="py-12 text-center text-slate-400">

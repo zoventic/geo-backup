@@ -56,23 +56,23 @@ class Menu {
             [ __CLASS__, 'render_app' ]
         );
 
-        // 2. GEO Health (SPA Tab #health)
-        add_submenu_page(
-            'zoventic-geo',
-            __( 'GEO Health – Zoventic GEO', 'zoventic-geo' ),
-            __( 'GEO Health', 'zoventic-geo' ),
-            'manage_woocommerce',
-            'admin.php?page=zoventic-geo#health',
-            ''
-        );
-
-        // 3. Rank Tracker (SPA Tab #radar)
+        // 2. Rank Tracker (SPA Tab #radar)
         add_submenu_page(
             'zoventic-geo',
             __( 'Rank Tracker – Zoventic GEO', 'zoventic-geo' ),
             __( 'Rank Tracker', 'zoventic-geo' ),
             'manage_woocommerce',
             'admin.php?page=zoventic-geo#radar',
+            ''
+        );
+
+        // 3. GEO Health (SPA Tab #health)
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'GEO Health – Zoventic GEO', 'zoventic-geo' ),
+            __( 'GEO Health', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'admin.php?page=zoventic-geo#health',
             ''
         );
 
@@ -86,23 +86,23 @@ class Menu {
             ''
         );
 
-        // 5. llms.txt Feed (SPA Tab #llms)
-        add_submenu_page(
-            'zoventic-geo',
-            __( 'llms.txt Feed – Zoventic GEO', 'zoventic-geo' ),
-            __( 'llms.txt Feed', 'zoventic-geo' ),
-            'manage_woocommerce',
-            'admin.php?page=zoventic-geo#llms',
-            ''
-        );
-
-        // 6. Search Test (SPA Tab #simulator)
+        // 5. Search Test (SPA Tab #simulator)
         add_submenu_page(
             'zoventic-geo',
             __( 'Search Test – Zoventic GEO', 'zoventic-geo' ),
             __( 'Search Test', 'zoventic-geo' ),
             'manage_woocommerce',
             'admin.php?page=zoventic-geo#simulator',
+            ''
+        );
+
+        // 6. llms.txt Feed (SPA Tab #llms)
+        add_submenu_page(
+            'zoventic-geo',
+            __( 'llms.txt Feed – Zoventic GEO', 'zoventic-geo' ),
+            __( 'llms.txt Feed', 'zoventic-geo' ),
+            'manage_woocommerce',
+            'admin.php?page=zoventic-geo#llms',
             ''
         );
 

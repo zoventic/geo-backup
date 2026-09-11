@@ -49,10 +49,25 @@ export const Header = () => {
 
   const realStoreName = siteInfo?.siteName || 'WooCommerce Store';
   const realStoreUrl = siteInfo?.siteUrl ? siteInfo.siteUrl.replace(/^https?:\/\//, '') : 'Live Store';
-  const totalProducts = metrics?.totalProducts ?? (products?.length || 0);
-  const optimizedProducts = metrics?.optimizedProducts ?? 0;
-  const healthPercent = totalProducts > 0 ? ((optimizedProducts / totalProducts) * 100).toFixed(1) : '0.0';
-  const needsReview = Math.max(0, totalProducts - optimizedProducts);
+  const prods = (products && products.length > 0) ? products : [];
+  const totalProducts = prods.length || (metrics?.totalProducts ?? 0);
+  const optimizedProducts = prods.length > 0
+    ? prods.filter(p => p.isOptimized).length
+    : (metrics?.optimizedProducts ?? 0);
+
+  const attentionCount = prods.filter(p => {
+    const s = p.score || p.geoScore || 0;
+    return s >= 70 && s < 90;
+  }).length;
+  const criticalCount = prods.filter(p => (p.score || p.geoScore || 0) < 70).length;
+  const optimalCount = prods.filter(p => (p.score || p.geoScore || 0) >= 90).length;
+
+  const avgHealthScore = prods.length > 0
+    ? Math.round(prods.reduce((acc, p) => acc + (p.score || p.geoScore || 0), 0) / prods.length)
+    : (metrics?.geoHealthScore ?? 0);
+
+  const healthPercent = avgHealthScore;
+  const needsReview = attentionCount;
   const botHitsCount = (crawlerLogs && crawlerLogs.length > 0) ? crawlerLogs.length : (metrics?.botHitsLast24h ?? 0);
 
   const [currentStore, setCurrentStore] = useState(null);
@@ -266,11 +281,24 @@ export const Header = () => {
           </Flex>
 
           {/* AI Context Health Meter */}
-          <Flex align="center" gap="middle" className="zgeo-health-meter-box">
+          <Flex
+            align="center"
+            gap="middle"
+            className="zgeo-health-meter-box cursor-pointer"
+            onClick={() => {
+              if (setActiveTab) {
+                setActiveTab('health');
+                window.location.hash = 'health';
+              }
+            }}
+            title="Click to view Products GEO Health Breakdown"
+          >
             <div className="zgeo-health-text">
               <div>
                 <Text type="secondary">Catalog AI Health: </Text>
-                <Text strong className="zgeo-text-emerald zgeo-mono">{healthPercent}%</Text>
+                <Text strong className={`zgeo-mono ${avgHealthScore >= 90 ? 'zgeo-text-emerald' : avgHealthScore >= 70 ? 'text-amber-600' : 'text-rose-600'}`}>
+                  {avgHealthScore}%
+                </Text>
               </div>
               <Text type="secondary" className="zgeo-health-subtext">
                 {optimizedProducts} of {totalProducts} AI-Ready • <span className="zgeo-text-amber">{needsReview} need review</span>
@@ -278,12 +306,12 @@ export const Header = () => {
             </div>
             <div className="zgeo-health-progress-wrap">
               <Progress
-                percent={parseFloat(healthPercent) || 0}
+                percent={avgHealthScore}
                 showInfo={false}
                 size="small"
                 strokeColor={{
                   '0%': '#4f46e5',
-                  '100%': '#10b981',
+                  '100%': avgHealthScore >= 80 ? '#10b981' : (avgHealthScore >= 60 ? '#f59e0b' : '#ef4444'),
                 }}
               />
             </div>

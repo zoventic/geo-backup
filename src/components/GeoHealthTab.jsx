@@ -184,7 +184,10 @@ export const GeoHealthTab = () => {
     return s >= 70 && s < 90;
   }).length;
   const criticalCount = (products || []).filter(p => (p.score || p.geoScore || 0) < 70).length;
-  const healthPercent = totalCount > 0 ? Math.round(((optimalCount + attentionCount * 0.7) / totalCount) * 100) : 0;
+  const avgHealthScore = totalCount > 0
+    ? Math.round((products || []).reduce((acc, p) => acc + (p.score || p.geoScore || 0), 0) / totalCount)
+    : 0;
+  const healthPercent = avgHealthScore;
 
   const handleOpenDrawer = (record) => {
     const prodScore = Number(record.contentScore ?? record.score ?? record.geoScore ?? 80);

@@ -191,16 +191,6 @@ export const Header = () => {
               <span className="zgeo-badge-dot"></span>
               BUDGET GUARD ACTIVE
             </span>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide flex items-center gap-1 border shadow-2xs ${
-              licenseInfo?.isAgency
-                ? 'bg-purple-50 text-purple-700 border-purple-200'
-                : licenseInfo?.isPro
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                : 'bg-slate-100 text-slate-600 border-slate-200'
-            }`}>
-              <Crown size={11} />
-              {licenseInfo?.isAgency ? 'AGENCY PRO' : licenseInfo?.isPro ? 'PRO ACTIVE' : 'FREE EDITION'}
-            </span>
             {(typeof window !== 'undefined' && window.zgeoConfig?.isMultisite) && (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
                 WPMU NETWORK

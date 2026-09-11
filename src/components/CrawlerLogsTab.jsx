@@ -195,7 +195,6 @@ export const CrawlerLogsTab = () => {
       title: 'CRAWLER IDENTITY',
       dataIndex: 'bot',
       key: 'bot',
-      width: 180,
       render: (text, record) => (
         <Flex align="center" gap="small" className="whitespace-nowrap font-bold text-xs">
           <span className={`zgeo-bot-dot ${record.dotColor}`}></span>
@@ -208,7 +207,7 @@ export const CrawlerLogsTab = () => {
       dataIndex: 'userAgent',
       key: 'userAgent',
       render: (ua, record) => (
-        <div className="font-mono text-[11px] text-slate-500 max-w-[280px]">
+        <div className="font-mono text-[11px] text-slate-500 max-w-[260px]">
           <div className="truncate" title={ua}>{ua}</div>
           <div className="text-[10px] text-slate-400">IP: {record.ip}</div>
         </div>
@@ -218,11 +217,10 @@ export const CrawlerLogsTab = () => {
       title: 'REQUESTED ENDPOINT',
       dataIndex: 'path',
       key: 'path',
-      width: 220,
       render: (path, record) => (
-        <div className="font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
-          <div>{record.method} {path}</div>
-          <div className="text-[10px] text-slate-500 font-normal">{record.accept}</div>
+        <div className="font-mono font-bold text-slate-900 text-xs">
+          <div className="truncate max-w-[220px]" title={`${record.method} ${path}`}>{record.method} {path}</div>
+          <div className="text-[10px] text-slate-500 font-normal truncate max-w-[220px]">{record.accept}</div>
         </div>
       )
     },
@@ -230,7 +228,6 @@ export const CrawlerLogsTab = () => {
       title: 'RESPONSE STATUS',
       dataIndex: 'status',
       key: 'status',
-      width: 170,
       render: (status, record) => (
         <div className="whitespace-nowrap inline-flex flex-col items-start">
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg font-bold text-[11px] border whitespace-nowrap ${
@@ -249,7 +246,7 @@ export const CrawlerLogsTab = () => {
       title: 'TIME',
       dataIndex: 'time',
       key: 'time',
-      width: 120,
+      align: 'right',
       render: (time) => (
         <span className="text-slate-500 font-mono text-[11px] whitespace-nowrap">{time}</span>
       )
@@ -370,7 +367,6 @@ export const CrawlerLogsTab = () => {
           rowKey="id"
           pagination={{ pageSize: 8, showSizeChanger: false }}
           className="zgeo-pure-table"
-          scroll={{ x: 860 }}
           locale={{
             emptyText: (
               <div className="py-12 text-center text-slate-400">

@@ -802,17 +802,29 @@ export const GeoHealthTab = () => {
               {(() => {
                 const categoryOrder = ['A', 'B', 'C', 'D', 'E', 'F'];
                 const categoryNames = {
-                  'A': 'Category A: Identity & Classification (15 pts)',
-                  'B': 'Category B: Semantic Description & Content (20 pts)',
-                  'C': 'Category C: Media & Rich Assets (10 pts)',
-                  'D': 'Category D: Commercial Transparency (20 pts)',
-                  'E': 'Category E: Trust & Authority (15 pts)',
-                  'F': 'Category F: Machine Readability & Schema (20 pts)',
+                  'A': 'Category A: Identity & Core Data (20 pts)',
+                  'B': 'Category B: Product Semantics (25 pts)',
+                  'C': 'Category C: Media Assets (10 pts)',
+                  'D': 'Category D: Commerce Data (20 pts)',
+                  'E': 'Category E: Trust & Supporting Info (15 pts)',
+                  'F': 'Category F: Discoverability & Schema Structure (10 pts)',
+                };
+
+                const mapCategory = (rawCat) => {
+                  if (!rawCat) return 'A';
+                  const c = String(rawCat).toLowerCase();
+                  if (c === 'a' || c.includes('identity')) return 'A';
+                  if (c === 'b' || c.includes('semantic')) return 'B';
+                  if (c === 'c' || c.includes('media')) return 'C';
+                  if (c === 'd' || c.includes('commerce')) return 'D';
+                  if (c === 'e' || c.includes('trust')) return 'E';
+                  if (c === 'f' || c.includes('schema') || c.includes('discoverability')) return 'F';
+                  return 'A';
                 };
 
                 const grouped = {};
                 (selectedProduct.signalsList || []).forEach(sig => {
-                  const cat = sig.category || 'A';
+                  const cat = mapCategory(sig.category);
                   if (!grouped[cat]) {
                     grouped[cat] = {
                       name: categoryNames[cat] || `Category ${cat}`,
@@ -851,6 +863,10 @@ export const GeoHealthTab = () => {
                           const isNA = status === 'N/A';
                           const isFail = status === 'FAIL';
 
+                          const diagnosticText = (typeof sig.diagnostic === 'object' && sig.diagnostic !== null)
+                            ? (sig.diagnostic.reason || sig.diagnostic.detail || JSON.stringify(sig.diagnostic))
+                            : (sig.diagnostic || sig.detail || 'Evaluated against catalog data');
+
                           return (
                             <div
                               key={sig.key || sig.id || i}
@@ -878,7 +894,7 @@ export const GeoHealthTab = () => {
                                     </span>
                                   </div>
                                   <span className="text-[11px] text-slate-500 block mt-0.5">
-                                    {sig.diagnostic || sig.detail || 'Evaluated against catalog data'}
+                                    {diagnosticText}
                                   </span>
                                 </div>
                               </div>

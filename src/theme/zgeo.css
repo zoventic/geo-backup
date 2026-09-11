@@ -3395,13 +3395,28 @@ button.zgeo-radar-email-cancel-btn:hover {
 
 /* Bulk Enrich Modal Elements */
 .zgeo-enrich-list-box {
-  background: rgba(248, 250, 252, 0.8);
+  background: rgba(248, 250, 252, 0.85);
   border: 1px solid rgba(226, 232, 240, 0.85);
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.zgeo-enrich-list-box::-webkit-scrollbar {
+  width: 5px;
+}
+.zgeo-enrich-list-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+.zgeo-enrich-list-box::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.zgeo-enrich-list-box::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 .zgeo-enrich-row {
   display: flex;
@@ -3410,6 +3425,12 @@ button.zgeo-radar-email-cancel-btn:hover {
   font-size: 12px;
   font-weight: 600;
   color: #1e293b;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
+.zgeo-enrich-row:hover {
+  background: rgba(241, 245, 249, 0.9);
 }
 .zgeo-enrich-token-callout {
   padding: 12px 14px;

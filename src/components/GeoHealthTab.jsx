@@ -1410,45 +1410,56 @@ export const GeoHealthTab = () => {
             />
           </div>
 
-          {/* Checklist of Enriched Items */}
-          <div className="zgeo-enrich-list-box">
-            {(products && products.length > 0) ? (
-              products.slice(0, 4).map((p, idx) => {
-                const threshold = (idx + 1) * 25;
-                const isItemEnriched = p.isOptimized || allEnriched || bulkProgress >= threshold;
-                return (
-                  <div key={p.id || idx} className="zgeo-enrich-row">
-                    <span className="flex items-center gap-2 truncate">
-                      <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
-                      <span className="truncate">{p.title}: Structured Schema &amp; Stock Matrix</span>
-                    </span>
-                    <span className="text-emerald-700 font-mono text-[10px] bg-emerald-50 px-1.5 py-0.5 rounded font-bold border border-emerald-200/80 flex-shrink-0">
-                      {isItemEnriched ? 'Enriched' : 'Pending'}
-                    </span>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="py-4 text-center text-slate-400 text-xs">
-                No products available to enrich yet.
-              </div>
-            )}
-          </div>
+          {/* Scrollable Checklist of Products */}
+          <div className="space-y-1.5">
+            <div className="zgeo-enrich-list-box">
+              {(products && products.length > 0) ? (
+                products.map((p, idx) => {
+                  const threshold = Math.round(((idx + 1) / products.length) * 100);
+                  const isItemEnriched = p.isOptimized || allEnriched || bulkProgress >= threshold;
+                  return (
+                    <div key={p.id || idx} className="zgeo-enrich-row">
+                      <span className="flex items-center gap-2.5 truncate min-w-0 pr-2">
+                        <CheckCircle2
+                          size={15}
+                          className={isItemEnriched ? "text-emerald-600 flex-shrink-0" : "text-slate-400 flex-shrink-0"}
+                        />
+                        <span className="truncate font-semibold text-slate-800 text-xs">
+                          {p.title}
+                        </span>
+                        {p.category && (
+                          <span className="text-[10px] text-slate-400 font-normal truncate hidden sm:inline">
+                            • {p.category}
+                          </span>
+                        )}
+                      </span>
+                      <span className={`font-mono text-[10px] px-2 py-0.5 rounded font-bold border flex-shrink-0 ${
+                        isItemEnriched
+                          ? 'text-emerald-700 bg-emerald-50 border-emerald-200/80'
+                          : 'text-amber-700 bg-amber-50 border-amber-200/80'
+                      }`}>
+                        {isItemEnriched ? '✓ Enriched' : 'Pending'}
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="py-6 text-center text-slate-400 text-xs">
+                  No products available to enrich yet.
+                </div>
+              )}
+            </div>
 
-          {/* Local Semantic Engine Telemetry (Zero API Tokens / Free) */}
-          <div className="p-3.5 bg-emerald-50/80 border border-emerald-200/80 rounded-xl space-y-1.5">
-            <div className="flex items-center justify-between text-xs font-semibold text-emerald-950">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck size={15} className="text-emerald-600" />
-                Local Semantic Engine (100% On-Device &amp; Private)
+            {/* List Footer Count & Sync Status */}
+            <div className="flex items-center justify-between text-[11px] text-slate-500 px-1 pt-0.5">
+              <span className="font-medium">
+                Catalog: {products?.length || 0} Products
               </span>
-              <span className="font-mono text-[11px] text-emerald-700 font-bold bg-emerald-100/90 px-2 py-0.5 rounded border border-emerald-300/60">
-                0 API Tokens • Free
+              <span className="text-emerald-700 font-semibold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Active in /llms.txt feed &amp; schema graph
               </span>
             </div>
-            <p className="text-[11px] text-emerald-800 leading-relaxed m-0">
-              Extracts structured specs, buyer FAQs, and Stock Matrix directly from existing WooCommerce product data on your server. Zero external LLM token spend or third-party API dependencies.
-            </p>
           </div>
 
           <div className="zgeo-modal-footer flex items-center justify-end gap-2 pt-2">

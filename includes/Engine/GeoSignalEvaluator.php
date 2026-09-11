@@ -528,7 +528,32 @@ class GeoSignalEvaluator {
     }
 
     private static function eval_brand_manufacturer( \WC_Product $product ) {
-        // Check if store supports brands
+        // 1. Check native WooCommerce product attributes (pa_brand, brand, manufacturer)
+        $attr_brand = $product->get_attribute( 'pa_brand' );
+        if ( empty( $attr_brand ) ) {
+            $attr_brand = $product->get_attribute( 'brand' );
+        }
+        if ( empty( $attr_brand ) ) {
+            $attr_brand = $product->get_attribute( 'manufacturer' );
+        }
+
+        if ( ! empty( $attr_brand ) ) {
+            return [
+                'key'        => 'brand_manufacturer',
+                'name'       => 'Brand / Manufacturer Present',
+                'category'   => 'trust_supporting',
+                'weight'     => 5,
+                'type'       => 'binary',
+                'status'     => 'PASS',
+                'earned'     => 5,
+                'applicable' => true,
+                'diagnostic' => [
+                    'reason' => sprintf( 'Brand attribute assigned: "%s".', $attr_brand ),
+                ],
+            ];
+        }
+
+        // 2. Check if store has a dedicated brand taxonomy plugin installed
         $taxonomies = get_taxonomies( [], 'names' );
         $brand_tax = null;
         foreach ( [ 'product_brand', 'brand', 'pwb-brand', 'yith_product_brand' ] as $t ) {
@@ -539,7 +564,7 @@ class GeoSignalEvaluator {
         }
 
         if ( ! $brand_tax ) {
-            // Store has no brand taxonomy at all -> N/A
+            // Store has no brand taxonomy or attribute configured -> N/A (excluded from score)
             return [
                 'key'        => 'brand_manufacturer',
                 'name'       => 'Brand / Manufacturer Present',
@@ -550,7 +575,7 @@ class GeoSignalEvaluator {
                 'earned'     => 0,
                 'applicable' => false,
                 'diagnostic' => [
-                    'reason' => 'Store has no brand taxonomy plugin installed (excluded from denominator).',
+                    'reason' => 'Store has no brand taxonomy or brand attribute configured (excluded from denominator).',
                 ],
             ];
         }

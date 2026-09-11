@@ -9,7 +9,8 @@ import {
   Flex,
   Typography,
   Space,
-  Modal
+  Modal,
+  Spin
 } from 'antd';
 import {
   Download,
@@ -25,7 +26,7 @@ import { CrawlerLogsSkeleton } from './Skeletons';
 const { Title, Text } = Typography;
 
 export const CrawlerLogsTab = () => {
-  const { crawlerLogs, clearCrawlerLogs, simulateCrawlerHit, isLoadingData } = useGeoStore();
+  const { crawlerLogs, clearCrawlerLogs, simulateCrawlerHit, isLoadingData, isRealData } = useGeoStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [botFilter, setBotFilter] = useState(() => {
@@ -377,7 +378,9 @@ export const CrawlerLogsTab = () => {
     }
   ];
 
-  if (isLoadingData && (!activeLogsSource || activeLogsSource.length === 0)) {
+  const isLogsLoading = !isRealData || isLoadingData || isReloading;
+
+  if (isLogsLoading && (!activeLogsSource || activeLogsSource.length === 0)) {
     return <CrawlerLogsSkeleton />;
   }
 
@@ -496,7 +499,7 @@ export const CrawlerLogsTab = () => {
           columns={columns}
           dataSource={filteredLogs}
           rowKey="id"
-          loading={isLoadingData}
+          loading={isLogsLoading}
           pagination={{
             current: safePage,
             pageSize: 20,
@@ -505,7 +508,12 @@ export const CrawlerLogsTab = () => {
           }}
           className="zgeo-pure-table"
           locale={{
-            emptyText: (
+            emptyText: isLogsLoading ? (
+              <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
+                <Spin size="large" />
+                <span className="text-xs font-semibold text-slate-500">Loading AI crawler access logs...</span>
+              </div>
+            ) : (
               <div className="py-12 text-center text-slate-400">
                 <Bot size={32} className="mx-auto text-slate-300 mb-2" />
                 <div className="font-semibold text-slate-700 text-sm">No crawler activity recorded yet</div>

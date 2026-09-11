@@ -111,8 +111,14 @@ export const App = () => {
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={`zgeo-nav-pill ${isActive ? 'active' : ''}`}
+                  style={isActive ? {
+                    backgroundColor: '#ffffff',
+                    color: '#4338ca',
+                    borderColor: '#cbd5e1',
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)'
+                  } : {}}
                 >
-                  <span className="zgeo-nav-pill-icon">
+                  <span className="zgeo-nav-pill-icon" style={isActive ? { color: '#4f46e5' } : {}}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>

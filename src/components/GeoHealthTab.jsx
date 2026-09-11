@@ -169,6 +169,7 @@ export const GeoHealthTab = () => {
   const [isBulkEnriching, setIsBulkEnriching] = useState(false);
   const [bulkProgress, setBulkProgress] = useState(0);
   const [isOptimizingSingle, setIsOptimizingSingle] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
   const pollIntervalRef = useRef(null);
 
   const totalCount = products?.length || 0;
@@ -342,6 +343,8 @@ export const GeoHealthTab = () => {
   };
 
   const handleApplyFullEnrichment = async () => {
+    if (isApplying) return;
+    setIsApplying(true);
     try {
       if (startBulkOptimization) {
         await startBulkOptimization();
@@ -363,12 +366,17 @@ export const GeoHealthTab = () => {
         };
       });
       await regenerateLlmsTxt?.();
+      if (loadInitialData) {
+        await loadInitialData();
+      }
+      setBulkModalOpen(false);
+      message.success('Catalog enrichment applied! All products optimized in database & /llms.txt feed refreshed.');
     } catch (e) {
-      // safe fallback
+      message.error('Failed to finalize catalog enrichment.');
+    } finally {
+      setIsApplying(false);
+      setIsBulkEnriching(false);
     }
-    setBulkModalOpen(false);
-    setIsBulkEnriching(false);
-    message.success('Catalog enrichment applied. All products optimized in database & /llms.txt feed refreshed.');
   };
 
   const handleRecheckSelectedProduct = async () => {
@@ -707,14 +715,6 @@ export const GeoHealthTab = () => {
             className="zgeo-btn-white"
           >
             Re-Index Catalog Now
-          </Button>
-          <Button
-            type="primary"
-            icon={<Sparkles size={14} />}
-            onClick={() => setBulkModalOpen(true)}
-            className="zgeo-btn-brand"
-          >
-            Auto-Enrich Remaining ({attentionCount + criticalCount})
           </Button>
         </Flex>
       </div>
@@ -1384,49 +1384,59 @@ export const GeoHealthTab = () => {
             )}
           </div>
 
-          <div className="zgeo-enrich-token-callout">
-            <div className="flex items-center justify-between font-mono font-bold">
-              <span>Total Processed Tokens: ~820 tokens</span>
-              <span>Estimated Spend: &lt; $0.00028</span>
+          {/* Local Semantic Engine Telemetry (Zero API Tokens / Free) */}
+          <div className="p-3.5 bg-emerald-50/80 border border-emerald-200/80 rounded-xl space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-semibold text-emerald-950">
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck size={15} className="text-emerald-600" />
+                Local Semantic Engine (100% On-Device &amp; Private)
+              </span>
+              <span className="font-mono text-[11px] text-emerald-700 font-bold bg-emerald-100/90 px-2 py-0.5 rounded border border-emerald-300/60">
+                0 API Tokens • Free
+              </span>
             </div>
-            <span className="text-[11px] text-emerald-700 block">Catalog is now 100% AI Ready. /llms.txt feed refreshed successfully.</span>
+            <p className="text-[11px] text-emerald-800 leading-relaxed m-0">
+              Extracts structured specs, buyer FAQs, and Stock Matrix directly from existing WooCommerce product data on your server. Zero external LLM token spend or third-party API dependencies.
+            </p>
           </div>
 
-          <div className="zgeo-modal-footer">
-            {isBulkEnriching ? (
-              <button
-                type="button"
-                onClick={handleCancelBulkEnrichment}
-                className="zgeo-modal-btn-cancel text-rose-600 hover:text-rose-700 border-rose-200 hover:bg-rose-50 flex items-center gap-1.5 font-bold"
-              >
-                Stop / Cancel Job
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setBulkModalOpen(false)}
-                className="zgeo-modal-btn-cancel"
-              >
-                Cancel
-              </button>
-            )}
+          <div className="zgeo-modal-footer flex items-center justify-end gap-2 pt-2">
+            <Button
+              onClick={() => {
+                if (isBulkEnriching) {
+                  handleCancelBulkEnrichment();
+                } else {
+                  setBulkModalOpen(false);
+                }
+              }}
+              disabled={isApplying}
+              className="zgeo-btn-white"
+            >
+              {isBulkEnriching ? 'Stop / Cancel' : 'Cancel'}
+            </Button>
+
             {bulkProgress < 100 ? (
-              <button
-                type="button"
+              <Button
+                type="primary"
+                loading={isBulkEnriching}
                 disabled={isBulkEnriching}
                 onClick={handleStartBulkEnrichment}
-                className="zgeo-modal-btn-primary"
+                icon={!isBulkEnriching && <Sparkles size={14} />}
+                className="zgeo-btn-brand"
               >
-                <Sparkles size={14} /> {isBulkEnriching ? 'Enriching...' : 'Start Catalog Enrichment'}
-              </button>
+                {isBulkEnriching ? 'Enriching Catalog...' : 'Start Catalog Enrichment'}
+              </Button>
             ) : (
-              <button
-                type="button"
+              <Button
+                type="primary"
+                loading={isApplying}
+                disabled={isApplying}
                 onClick={handleApplyFullEnrichment}
-                className="zgeo-modal-btn-primary"
+                icon={!isApplying && <Check size={14} />}
+                className="zgeo-btn-brand"
               >
-                <Check size={14} /> Apply &amp; Mark 100% Healthy
-              </button>
+                {isApplying ? 'Applying Schema...' : 'Apply & Mark 100% Healthy'}
+              </Button>
             )}
           </div>
         </div>

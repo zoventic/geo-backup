@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { useGeoStore } from '../store/useGeoStore';
 import { api } from '../services/api';
-import { CrawlerLogsSkeleton } from './Skeletons';
 
 const { Title, Text } = Typography;
 
@@ -380,10 +379,6 @@ export const CrawlerLogsTab = () => {
 
   const isLogsLoading = !isRealData || isLoadingData || isReloading;
 
-  if (isLogsLoading && (!activeLogsSource || activeLogsSource.length === 0)) {
-    return <CrawlerLogsSkeleton />;
-  }
-
   return (
     <div className="zgeo-logs-tab space-y-7">
       {/* 1. Page Header */}
@@ -508,12 +503,7 @@ export const CrawlerLogsTab = () => {
           }}
           className="zgeo-pure-table"
           locale={{
-            emptyText: isLogsLoading ? (
-              <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
-                <Spin size="large" />
-                <span className="text-xs font-semibold text-slate-500">Loading AI crawler access logs...</span>
-              </div>
-            ) : (
+            emptyText: (
               <div className="py-12 text-center text-slate-400">
                 <Bot size={32} className="mx-auto text-slate-300 mb-2" />
                 <div className="font-semibold text-slate-700 text-sm">

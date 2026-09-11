@@ -692,76 +692,167 @@ export const GeoHealthTab = () => {
           body: { pointerEvents: 'auto', userSelect: 'text' }
         }}
         footer={
-          <div>
-            <div className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 mb-3 leading-relaxed">
-              {Number(selectedProduct?.score || selectedProduct?.contentScore || 0) >= 100 && !selectedProduct?.isStale ? (
-                <span>
-                  🟢 <strong>Catalog schema is 100% optimal:</strong> All 16 objective signals are satisfied. Use <strong>Re-check</strong> if you edited product details in WooCommerce, or <strong>Re-run Specs</strong> to regenerate AI summaries.
-                </span>
-              ) : (
-                <span>
-                  💡 <strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.
-                </span>
-              )}
-            </div>
-            <div className="zgeo-drawer-footer-actions">
-              <button
-                type="button"
-                onClick={() => setDrawerOpen(false)}
-                className="zgeo-drawer-btn-close"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                disabled={isOptimizingSingle}
-                onClick={handleRecheckSelectedProduct}
-                className="zgeo-drawer-btn-close"
-                style={{
-                  borderColor: '#94a3b8',
-                  color: '#1e293b',
-                  gap: 6
-                }}
-              >
-                <RefreshCw size={14} className={isOptimizingSingle ? 'animate-spin' : ''} />
-                <span>Re-check</span>
-              </button>
-              {Number(selectedProduct?.score || selectedProduct?.contentScore || 0) >= 100 && !selectedProduct?.isStale ? (
-                <button
-                  type="button"
-                  disabled={isOptimizingSingle}
-                  onClick={handleEnrichSelectedProduct}
-                  className="zgeo-drawer-btn-close"
-                  style={{
-                    flex: 1.3,
-                    borderColor: '#10b981',
-                    backgroundColor: '#ecfdf5',
-                    color: '#047857',
-                    gap: 6,
-                    fontWeight: 700
-                  }}
-                  title="Product is 100% optimal. Click to force re-generate AI structured specs if needed."
-                >
-                  {isOptimizingSingle ? (
-                    <RefreshCw className="animate-spin" size={15} />
+          (() => {
+            const prodScore = Number(selectedProduct?.score || selectedProduct?.contentScore || 0);
+            const isHundredPercent = prodScore >= 100 && !selectedProduct?.isStale;
+            const isStale = Boolean(selectedProduct?.isStale);
+            const isEnriched = Boolean(selectedProduct?.isOptimized);
+
+            const merchantActionKeys = [
+              'price_set',
+              'offer_completeness',
+              'featured_image',
+              'gallery_depth',
+              'image_alt_text',
+              'sku_present',
+              'shipping_info',
+              'meaningful_description',
+              'specifications_dimensions'
+            ];
+
+            const missingMerchantItems = (selectedProduct?.signalsList || []).filter(sig => {
+              const isFailOrPartial = sig.status === 'FAIL' || sig.status === 'PARTIAL' || (Number(sig.earned || 0) < Number(sig.weight || 0) && sig.status !== 'N/A');
+              return isFailOrPartial && merchantActionKeys.includes(sig.key);
+            });
+
+            const isEnrichedPartial = isEnriched && !isHundredPercent && !isStale && missingMerchantItems.length > 0;
+
+            return (
+              <div>
+                {/* 1. Informative Guidance Notice */}
+                {isHundredPercent ? (
+                  <div className="text-[11px] text-emerald-900 bg-emerald-50/90 border border-emerald-200 rounded-xl p-3 mb-3 leading-relaxed">
+                    🟢 <strong>Catalog schema is 100% optimal:</strong> All 16 objective signals are satisfied. Use <strong>Re-check</strong> if you edited product details in WooCommerce, or <strong>Re-run Specs</strong> to regenerate AI summaries.
+                  </div>
+                ) : isStale ? (
+                  <div className="text-[11px] text-amber-950 bg-amber-50/90 border border-amber-200 rounded-xl p-3 mb-3 leading-relaxed">
+                    ⚠️ <strong>Product modified in WooCommerce:</strong> Catalog data changed since last optimization. Click <strong>Re-check Schema</strong> to evaluate updated data, or <strong>1-Click Enrich</strong> to re-enrich.
+                  </div>
+                ) : isEnrichedPartial ? (
+                  <div className="text-[11px] text-slate-700 bg-amber-50/80 border border-amber-200 rounded-xl p-3 mb-3 leading-relaxed shadow-2xs">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="font-bold text-amber-950 flex items-center gap-1.5">
+                        ⚡ AI Enrichment Applied ({prodScore}% achieved):
+                      </span>
+                      <span className="text-[10px] font-mono text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded font-bold">
+                        {missingMerchantItems.length} catalog input{missingMerchantItems.length === 1 ? '' : 's'} needed
+                      </span>
+                    </div>
+                    <p className="text-slate-600 m-0 text-[11px]">
+                      Zoventic GEO generated automated schemas &amp; policies. The remaining <strong>{100 - prodScore} points</strong> require core catalog data in WooCommerce:
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 pt-2">
+                      {missingMerchantItems.slice(0, 3).map((item, idx) => (
+                        <span key={idx} className="inline-flex items-center text-[10px] bg-white border border-amber-300 text-amber-950 font-semibold px-2 py-0.5 rounded shadow-2xs">
+                          🔴 {item.name} (+{item.weight - Math.round(Number(item.earned || 0))} pts)
+                        </span>
+                      ))}
+                      {missingMerchantItems.length > 3 && (
+                        <span className="text-[10px] text-slate-500 self-center font-medium">+{missingMerchantItems.length - 3} more</span>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 mb-3 leading-relaxed">
+                    💡 <strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.
+                  </div>
+                )}
+
+                {/* 2. Footer Actions Button State Machine */}
+                <div className="zgeo-drawer-footer-actions">
+                  <button
+                    type="button"
+                    onClick={() => setDrawerOpen(false)}
+                    className="zgeo-drawer-btn-close"
+                  >
+                    Close
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={isOptimizingSingle}
+                    onClick={handleRecheckSelectedProduct}
+                    className="zgeo-drawer-btn-close"
+                    style={{
+                      borderColor: '#94a3b8',
+                      color: '#1e293b',
+                      gap: 6
+                    }}
+                    title="Re-check score after saving changes in WooCommerce"
+                  >
+                    <RefreshCw size={14} className={isOptimizingSingle ? 'animate-spin' : ''} />
+                    <span>Re-check</span>
+                  </button>
+
+                  {isHundredPercent ? (
+                    <button
+                      type="button"
+                      disabled={isOptimizingSingle}
+                      onClick={handleEnrichSelectedProduct}
+                      className="zgeo-drawer-btn-close"
+                      style={{
+                        flex: 1.3,
+                        borderColor: '#10b981',
+                        backgroundColor: '#ecfdf5',
+                        color: '#047857',
+                        gap: 6,
+                        fontWeight: 700
+                      }}
+                      title="Product is 100% optimal. Click to force re-generate AI structured specs if needed."
+                    >
+                      {isOptimizingSingle ? (
+                        <RefreshCw className="animate-spin" size={15} />
+                      ) : (
+                        <CheckCircle2 size={15} className="text-emerald-600" />
+                      )}
+                      <span>{isOptimizingSingle ? 'Regenerating...' : '✓ Fully Enriched (Re-run)'}</span>
+                    </button>
+                  ) : isEnrichedPartial ? (
+                    <a
+                      href={`post.php?post=${selectedProduct.id}&action=edit`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="zgeo-drawer-btn-enrich"
+                      style={{
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6
+                      }}
+                    >
+                      <span>Complete in WooCommerce</span>
+                      <ExternalLink size={14} />
+                    </a>
                   ) : (
-                    <CheckCircle2 size={15} className="text-emerald-600" />
+                    <button
+                      type="button"
+                      disabled={isOptimizingSingle}
+                      onClick={handleEnrichSelectedProduct}
+                      className="zgeo-drawer-btn-enrich"
+                    >
+                      {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
+                      <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
+                    </button>
                   )}
-                  <span>{isOptimizingSingle ? 'Regenerating...' : '✓ Fully Enriched (Re-run)'}</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  disabled={isOptimizingSingle}
-                  onClick={handleEnrichSelectedProduct}
-                  className="zgeo-drawer-btn-enrich"
-                >
-                  {isOptimizingSingle ? <RefreshCw className="animate-spin" size={16} /> : <Sparkles size={16} />}
-                  <span>{isOptimizingSingle ? 'Optimizing...' : '1-Click Enrich'}</span>
-                </button>
-              )}
-            </div>
-          </div>
+                </div>
+
+                {isEnrichedPartial && (
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 px-1">
+                    <span>Edit price, images &amp; specs, then click Re-check.</span>
+                    <button
+                      type="button"
+                      onClick={handleEnrichSelectedProduct}
+                      disabled={isOptimizingSingle}
+                      className="text-[11px] text-slate-400 hover:text-brand-600 underline cursor-pointer bg-transparent border-none p-0"
+                    >
+                      {isOptimizingSingle ? 'Re-running...' : 'Force Re-run AI'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })()
         }
       >
         {selectedProduct && (
@@ -925,6 +1016,21 @@ export const GeoHealthTab = () => {
                                     <span className="text-[10px] text-slate-400 uppercase">
                                       ({sig.type || 'binary'})
                                     </span>
+                                    {!isPass && !isNA && [
+                                      'price_set',
+                                      'offer_completeness',
+                                      'featured_image',
+                                      'gallery_depth',
+                                      'image_alt_text',
+                                      'sku_present',
+                                      'shipping_info',
+                                      'meaningful_description',
+                                      'specifications_dimensions'
+                                    ].includes(sig.key) && (
+                                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                                        WooCommerce Edit Needed
+                                      </span>
+                                    )}
                                   </div>
                                   <span className="text-[11px] text-slate-500 block mt-0.5">
                                     {diagnosticText}

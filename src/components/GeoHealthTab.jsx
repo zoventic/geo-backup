@@ -727,47 +727,7 @@ export const GeoHealthTab = () => {
             const isEnrichedPartial = isEnriched && !isHundredPercent && !isStale && missingMerchantItems.length > 0;
 
             return (
-              <div>
-                {/* 1. Informative Guidance Notice */}
-                {isHundredPercent ? (
-                  <div className="text-[11px] text-emerald-900 bg-emerald-50/90 border border-emerald-200 rounded-xl p-3 mb-3 leading-relaxed">
-                    🟢 <strong>Catalog schema is 100% optimal:</strong> All 16 objective signals are satisfied. Use <strong>Re-check</strong> if you edited product details in WooCommerce, or <strong>Re-run Specs</strong> to regenerate AI summaries.
-                  </div>
-                ) : isStale ? (
-                  <div className="text-[11px] text-amber-950 bg-amber-50/90 border border-amber-200 rounded-xl p-3 mb-3 leading-relaxed">
-                    ⚠️ <strong>Product modified in WooCommerce:</strong> Catalog data changed since last optimization. Click <strong>Re-check Schema</strong> to evaluate updated data, or <strong>1-Click Enrich</strong> to re-enrich.
-                  </div>
-                ) : isEnrichedPartial ? (
-                  <div className="text-[11px] text-slate-700 bg-amber-50/80 border border-amber-200 rounded-xl p-3 mb-3 leading-relaxed shadow-2xs">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <span className="font-bold text-amber-950 flex items-center gap-1.5">
-                        ⚡ AI Enrichment Applied ({prodScore}% achieved):
-                      </span>
-                      <span className="text-[10px] font-mono text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded font-bold">
-                        {missingMerchantItems.length} catalog input{missingMerchantItems.length === 1 ? '' : 's'} needed
-                      </span>
-                    </div>
-                    <p className="text-slate-600 m-0 text-[11px]">
-                      Zoventic GEO generated automated schemas &amp; policies. The remaining <strong>{100 - prodScore} points</strong> require core catalog data in WooCommerce:
-                    </p>
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      {missingMerchantItems.slice(0, 3).map((item, idx) => (
-                        <span key={idx} className="inline-flex items-center text-[10px] bg-white border border-amber-300 text-amber-950 font-semibold px-2 py-0.5 rounded shadow-2xs">
-                          🔴 {item.name} (+{item.weight - Math.round(Number(item.earned || 0))} pts)
-                        </span>
-                      ))}
-                      {missingMerchantItems.length > 3 && (
-                        <span className="text-[10px] text-slate-500 self-center font-medium">+{missingMerchantItems.length - 3} more</span>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-[11px] text-slate-600 bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 mb-3 leading-relaxed">
-                    💡 <strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.
-                  </div>
-                )}
-
-                {/* 2. Footer Actions Button State Machine */}
+              <div className="space-y-2">
                 <div className="zgeo-drawer-footer-actions">
                   <button
                     key="btn-close"
@@ -801,13 +761,11 @@ export const GeoHealthTab = () => {
                       type="button"
                       disabled={isOptimizingSingle}
                       onClick={handleEnrichSelectedProduct}
-                      className="zgeo-drawer-btn-close"
+                      className="zgeo-drawer-btn-enrich"
                       style={{
-                        flex: 1.3,
                         borderColor: '#10b981',
                         backgroundColor: '#ecfdf5',
                         color: '#047857',
-                        gap: 6,
                         fontWeight: 700
                       }}
                       title="Product is 100% optimal. Click to force re-generate AI structured specs if needed."
@@ -825,12 +783,6 @@ export const GeoHealthTab = () => {
                       type="button"
                       onClick={() => window.open(`post.php?post=${selectedProduct.id}&action=edit`, '_blank')}
                       className="zgeo-drawer-btn-enrich"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 6
-                      }}
                     >
                       <span>Complete in WooCommerce</span>
                       <ExternalLink size={14} />
@@ -850,8 +802,8 @@ export const GeoHealthTab = () => {
                 </div>
 
                 {isEnrichedPartial && (
-                  <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 px-1">
-                    <span>Edit price, images &amp; specs, then click Re-check.</span>
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 px-1 pt-0.5">
+                    <span>Edit required catalog data in WooCommerce, then click Re-check.</span>
                     <button
                       type="button"
                       onClick={handleEnrichSelectedProduct}
@@ -867,57 +819,113 @@ export const GeoHealthTab = () => {
           })()
         }
       >
-        {selectedProduct && (
-          <div className="space-y-5">
-            {/* Dual Diagnostic Cards: Content Readiness vs Warehouse Stock */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                <span className="text-slate-500 text-[11px] font-medium block">Content Readiness</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-extrabold text-2xl font-mono text-emerald-600">
-                    {selectedProduct.score}%
+        {selectedProduct && (() => {
+          const prodScore = Number(selectedProduct?.score || selectedProduct?.contentScore || 0);
+          const isHundredPercent = prodScore >= 100 && !selectedProduct?.isStale;
+          const isStale = Boolean(selectedProduct?.isStale);
+          const isEnriched = Boolean(selectedProduct?.isOptimized);
+
+          const merchantActionKeys = [
+            'price_set',
+            'offer_completeness',
+            'featured_image',
+            'gallery_depth',
+            'image_alt_text',
+            'sku_present',
+            'shipping_info',
+            'meaningful_description',
+            'specifications_dimensions'
+          ];
+
+          const missingMerchantItems = (selectedProduct?.signalsList || []).filter(sig => {
+            const isFailOrPartial = sig.status === 'FAIL' || sig.status === 'PARTIAL' || (Number(sig.earned || 0) < Number(sig.weight || 0) && sig.status !== 'N/A');
+            return isFailOrPartial && merchantActionKeys.includes(sig.key);
+          });
+
+          const isEnrichedPartial = isEnriched && !isHundredPercent && !isStale && missingMerchantItems.length > 0;
+
+          return (
+            <div className="space-y-5">
+              {/* Dual Diagnostic Cards: Content Readiness vs Warehouse Stock */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-slate-500 text-[11px] font-medium block">Content Readiness</span>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="font-extrabold text-2xl font-mono text-emerald-600">
+                      {selectedProduct.score}%
+                    </span>
+                    <span className="text-slate-700 text-xs font-semibold truncate">{selectedProduct.label}</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 block mt-1">
+                    Earned {selectedProduct.earnedPoints ?? selectedProduct.score} / {selectedProduct.applicableWeight ?? 100} applicable points
                   </span>
-                  <span className="text-slate-700 text-xs font-semibold truncate">{selectedProduct.label}</span>
                 </div>
-                <span className="text-[10px] text-slate-400 block mt-1">
-                  Earned {selectedProduct.earnedPoints ?? selectedProduct.score} / {selectedProduct.applicableWeight ?? 100} applicable points
-                </span>
+
+                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-slate-500 text-[11px] font-medium block">Warehouse Stock</span>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className={`w-2 h-2 rounded-full ${selectedProduct.isInStock ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                    <span className={`font-bold text-sm ${selectedProduct.isInStock ? 'text-emerald-700' : 'text-amber-800'}`}>
+                      {selectedProduct.stockStatus}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 block mt-1">
+                    {selectedProduct.isInStock ? 'Active in AI orders' : 'Restock in WooCommerce'}
+                  </span>
+                </div>
               </div>
 
-              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                <span className="text-slate-500 text-[11px] font-medium block">Warehouse Stock</span>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className={`w-2 h-2 rounded-full ${selectedProduct.isInStock ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-                  <span className={`font-bold text-sm ${selectedProduct.isInStock ? 'text-emerald-700' : 'text-amber-800'}`}>
-                    {selectedProduct.stockStatus}
-                  </span>
+              {/* Informative Guidance & Status Banner */}
+              {isHundredPercent ? (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 leading-relaxed flex items-center gap-2">
+                  <span className="text-base flex-shrink-0">🟢</span>
+                  <span><strong>Catalog schema is 100% optimal:</strong> All 16 objective signals are satisfied. Use <strong>Re-check</strong> if you edited details in WooCommerce, or <strong>Re-run</strong> to regenerate AI summaries.</span>
                 </div>
-                <span className="text-[10px] text-slate-400 block mt-1">
-                  {selectedProduct.isInStock ? 'Active in AI orders' : 'Restock in WooCommerce'}
-                </span>
-              </div>
-            </div>
-
-            {/* Stale Revalidation Notice */}
-            {selectedProduct.isStale && (
-              <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-950">
-                <div className="flex items-start gap-2 min-w-0">
-                  <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <strong>Product modified in WooCommerce.</strong> Schema needs re-evaluation.
+              ) : isStale ? (
+                <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-950">
+                  <div className="flex items-start gap-2 min-w-0">
+                    <AlertTriangle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <strong>Product modified in WooCommerce.</strong> Schema needs re-evaluation. Re-check or 1-Click Enrich to re-evaluate.
+                    </div>
+                  </div>
+                  <Button
+                    size="small"
+                    icon={<RefreshCw size={12} className={isOptimizingSingle ? 'animate-spin' : ''} />}
+                    onClick={handleRecheckSelectedProduct}
+                    disabled={isOptimizingSingle}
+                    className="border-amber-400 text-amber-900 bg-white font-semibold flex-shrink-0 text-xs"
+                  >
+                    Re-check Now
+                  </Button>
+                </div>
+              ) : isEnrichedPartial ? (
+                <div className="p-3.5 bg-amber-50/80 border border-amber-200 rounded-xl text-xs space-y-2 shadow-2xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-bold text-amber-950 flex items-center gap-1.5">
+                      ⚡ AI Enrichment Applied ({prodScore}% achieved):
+                    </span>
+                    <span className="text-[10px] font-mono text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded font-bold">
+                      {missingMerchantItems.length} catalog input{missingMerchantItems.length === 1 ? '' : 's'} needed
+                    </span>
+                  </div>
+                  <p className="text-slate-600 m-0 text-xs leading-relaxed">
+                    Zoventic GEO generated automated schemas &amp; policies. The remaining <strong>{100 - prodScore} points</strong> require core catalog data in WooCommerce:
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {missingMerchantItems.map((item, idx) => (
+                      <span key={idx} className="inline-flex items-center text-[10px] bg-white border border-amber-300 text-amber-950 font-semibold px-2 py-0.5 rounded shadow-2xs">
+                        🔴 {item.name} (+{item.weight - Math.round(Number(item.earned || 0))} pts)
+                      </span>
+                    ))}
                   </div>
                 </div>
-                <Button
-                  size="small"
-                  icon={<RefreshCw size={12} className={isOptimizingSingle ? 'animate-spin' : ''} />}
-                  onClick={handleRecheckSelectedProduct}
-                  disabled={isOptimizingSingle}
-                  className="border-amber-400 text-amber-900 bg-white font-semibold flex-shrink-0 text-xs"
-                >
-                  Re-check Now
-                </Button>
-              </div>
-            )}
+              ) : (
+                <div className="p-3 text-xs text-slate-600 bg-slate-50 border border-slate-200/80 rounded-xl leading-relaxed flex items-center gap-2">
+                  <span className="text-base flex-shrink-0">💡</span>
+                  <span><strong>1-Click Enrich</strong> generates zero-hallucination structured specs, buyer FAQs &amp; return policy schema. <strong>Re-check Schema</strong> re-evaluates all signals without touching merchant descriptions.</span>
+                </div>
+              )}
 
             {/* 16-Signal Diagnostic Audit Checklist Grouped by Category */}
             <div className="space-y-4">
@@ -1117,7 +1125,8 @@ export const GeoHealthTab = () => {
               </pre>
             </div>
           </div>
-        )}
+        );
+      })()}
       </Drawer>
 
       {/* 6. Bulk Auto-Enrich Modal */}

@@ -2809,6 +2809,12 @@ body.toplevel_page_zoventic-geo div.updated {
   .ant-modal-wrap {
     padding-top: calc(46px + 16px) !important;
   }
+.zgeo-modal,
+.zgeo-modal *,
+.zgeo-drawer,
+.zgeo-drawer * {
+  box-sizing: border-box !important;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
 }
 
 .zgeo-modal .ant-modal-content {
@@ -3520,13 +3526,15 @@ button.zgeo-radar-email-cancel-btn:hover {
 .zgeo-drawer .zgeo-drawer-footer-actions {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
   width: 100% !important;
 }
 
 .zgeo-drawer button.zgeo-drawer-btn-close,
 .zgeo-drawer .zgeo-drawer-btn-close {
-  flex: 1 !important;
+  flex: 0 0 auto !important;
+  min-width: 80px !important;
+  padding: 0 16px !important;
   height: 42px !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -3553,7 +3561,8 @@ button.zgeo-radar-email-cancel-btn:hover {
 
 .zgeo-drawer button.zgeo-drawer-btn-enrich,
 .zgeo-drawer .zgeo-drawer-btn-enrich {
-  flex: 1 !important;
+  flex: 1 1 auto !important;
+  min-width: 170px !important;
   height: 42px !important;
   display: inline-flex !important;
   align-items: center !important;

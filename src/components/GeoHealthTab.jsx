@@ -97,6 +97,36 @@ export const GeoHealthTab = () => {
   } = useGeoStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [citabilityFilter, setCitabilityFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const p = parseInt(params.get('health_p') || params.get('paged'), 10);
+        if (p && p > 0) return p;
+        const saved = sessionStorage.getItem('zgeo_health_page');
+        if (saved) {
+          const sp = parseInt(saved, 10);
+          if (sp > 0) return sp;
+        }
+      } catch (e) {}
+    }
+    return 1;
+  });
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    try {
+      sessionStorage.setItem('zgeo_health_page', String(page));
+      const url = new URL(window.location.href);
+      if (page > 1) {
+        url.searchParams.set('health_p', String(page));
+      } else {
+        url.searchParams.delete('health_p');
+      }
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  };
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [bulkModalOpen, setBulkModalOpen] = useState(false);
@@ -407,6 +437,17 @@ export const GeoHealthTab = () => {
     return matchesSearch;
   });
 
+  const totalPages = Math.ceil(filteredProducts.length / 20) || 1;
+  const safePage = (!isLoadingData && filteredProducts.length > 0)
+    ? Math.min(currentPage, totalPages)
+    : currentPage;
+
+  useEffect(() => {
+    if (!isLoadingData && filteredProducts.length > 0 && currentPage > totalPages) {
+      handlePageChange(totalPages);
+    }
+  }, [isLoadingData, filteredProducts.length, totalPages, currentPage]);
+
   const columns = [
     {
       title: 'PRODUCT DETAILS',
@@ -645,7 +686,10 @@ export const GeoHealthTab = () => {
               prefix={<Search size={15} className="text-slate-400 mr-1.5 flex-shrink-0" />}
               placeholder="Search product name, SKU, or tag..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                handlePageChange(1);
+              }}
               allowClear
               className="zgeo-antd-search zgeo-slate-bg"
             />
@@ -656,7 +700,10 @@ export const GeoHealthTab = () => {
             <Select
               id="product-score-filter"
               value={citabilityFilter}
-              onChange={setCitabilityFilter}
+              onChange={(val) => {
+                setCitabilityFilter(val);
+                handlePageChange(1);
+              }}
               className="zgeo-antd-select zgeo-slate-bg"
               style={{ width: 195 }}
               popupMatchSelectWidth={false}
@@ -675,7 +722,12 @@ export const GeoHealthTab = () => {
           columns={columns}
           dataSource={filteredProducts}
           rowKey="id"
-          pagination={{ pageSize: 20, showSizeChanger: false }}
+          pagination={{
+            current: safePage,
+            pageSize: 20,
+            showSizeChanger: false,
+            onChange: handlePageChange
+          }}
           className="zgeo-pure-table"
           locale={{
             emptyText: (

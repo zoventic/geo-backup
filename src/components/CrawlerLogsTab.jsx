@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   Table,
@@ -24,7 +24,7 @@ import { api } from '../services/api';
 const { Title, Text } = Typography;
 
 export const CrawlerLogsTab = () => {
-  const { crawlerLogs, clearCrawlerLogs, simulateCrawlerHit } = useGeoStore();
+  const { crawlerLogs, clearCrawlerLogs, simulateCrawlerHit, isLoadingData } = useGeoStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [botFilter, setBotFilter] = useState('all');
@@ -33,6 +33,36 @@ export const CrawlerLogsTab = () => {
   const [isClearing, setIsClearing] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
   const [isSimulatingHit, setIsSimulatingHit] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const p = parseInt(params.get('crawlers_p'), 10);
+        if (p && p > 0) return p;
+        const saved = sessionStorage.getItem('zgeo_crawlers_page');
+        if (saved) {
+          const sp = parseInt(saved, 10);
+          if (sp > 0) return sp;
+        }
+      } catch (e) {}
+    }
+    return 1;
+  });
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    try {
+      sessionStorage.setItem('zgeo_crawlers_page', String(page));
+      const url = new URL(window.location.href);
+      if (page > 1) {
+        url.searchParams.set('crawlers_p', String(page));
+      } else {
+        url.searchParams.delete('crawlers_p');
+      }
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  };
 
   const handleSimulateHit = async () => {
     setIsSimulatingHit(true);
@@ -156,6 +186,17 @@ export const CrawlerLogsTab = () => {
     return matchesSearch && matchesBot && matchesStatus;
   });
 
+  const totalPages = Math.ceil(filteredLogs.length / 20) || 1;
+  const safePage = (!isLoadingData && filteredLogs.length > 0)
+    ? Math.min(currentPage, totalPages)
+    : currentPage;
+
+  useEffect(() => {
+    if (!isLoadingData && filteredLogs.length > 0 && currentPage > totalPages) {
+      handlePageChange(totalPages);
+    }
+  }, [isLoadingData, filteredLogs.length, totalPages, currentPage]);
+
   const handleExportCsv = () => {
     if (filteredLogs.length === 0) {
       message.warning('No crawler logs match your current filter to export.');
@@ -193,6 +234,7 @@ export const CrawlerLogsTab = () => {
         await clearCrawlerLogs();
       }
       setClearModalOpen(false);
+      handlePageChange(1);
       message.success('Crawler access logs cleared successfully.');
     } catch (err) {
       message.error('Failed to clear logs.');
@@ -333,7 +375,10 @@ export const CrawlerLogsTab = () => {
               prefix={<Search size={15} className="text-slate-400 mr-1.5 flex-shrink-0" />}
               placeholder="Filter by endpoint, IP, or user-agent..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                handlePageChange(1);
+              }}
               allowClear
               className="zgeo-antd-search"
             />
@@ -345,7 +390,10 @@ export const CrawlerLogsTab = () => {
               <Select
                 id="log-bot-filter"
                 value={botFilter}
-                onChange={setBotFilter}
+                onChange={(val) => {
+                  setBotFilter(val);
+                  handlePageChange(1);
+                }}
                 className="zgeo-antd-select"
                 style={{ width: 175 }}
                 popupMatchSelectWidth={false}
@@ -367,7 +415,10 @@ export const CrawlerLogsTab = () => {
               <Select
                 id="log-status-filter"
                 value={statusFilter}
-                onChange={setStatusFilter}
+                onChange={(val) => {
+                  setStatusFilter(val);
+                  handlePageChange(1);
+                }}
                 className="zgeo-antd-select"
                 style={{ width: 140 }}
                 popupMatchSelectWidth={false}
@@ -388,7 +439,12 @@ export const CrawlerLogsTab = () => {
           columns={columns}
           dataSource={filteredLogs}
           rowKey="id"
-          pagination={{ pageSize: 20, showSizeChanger: false }}
+          pagination={{
+            current: safePage,
+            pageSize: 20,
+            showSizeChanger: false,
+            onChange: handlePageChange
+          }}
           className="zgeo-pure-table"
           locale={{
             emptyText: (

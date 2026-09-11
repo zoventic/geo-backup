@@ -17,7 +17,7 @@ export const VALID_TABS = ['overview', 'radar', 'health', 'crawlers', 'simulator
 export const getInitialTab = () => {
   if (typeof window !== 'undefined') {
     // 1. Check URL hash (e.g. #health, #radar)
-    const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+    const hash = window.location.hash.replace(/^#\/?/, '').split('?')[0].toLowerCase();
     if (VALID_TABS.includes(hash)) {
       return hash;
     }

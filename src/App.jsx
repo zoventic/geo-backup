@@ -32,7 +32,7 @@ export const App = () => {
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+      const hash = window.location.hash.replace(/^#\/?/, '').split('?')[0].toLowerCase();
       if (['overview', 'radar', 'health', 'crawlers', 'simulator', 'llms', 'settings'].includes(hash)) {
         setActiveTab(hash);
       }
